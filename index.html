@@ -1,0 +1,2915 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مدير معمل ريجنت - RIS Science Department</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Cairo', 'sans-serif'],
+                    },
+                    colors: {
+                        ris: {
+                            navy: '#1E2859',
+                            navyDark: '#141B3D',
+                            navyLight: '#2B3875',
+                            red: '#E31E24',
+                            redDark: '#BE161B',
+                            redLight: '#FDE8E9',
+                            bg: '#F8FAFC',
+                            ink: '#0F172A',
+                            border: '#E2E8F0'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #F8FAFC;
+            color: #0F172A;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F1F5F9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #1E2859;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        @media print {
+            @page {
+                size: A4 landscape;
+                margin: 12mm;
+            }
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            body * {
+                visibility: hidden;
+            }
+            #print-area, #print-area * {
+                visibility: visible;
+            }
+            #print-area {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                background: white !important;
+                color: #0F172A !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+                border: none !important;
+            }
+            .print-table {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 11px;
+                margin-top: 10px;
+            }
+            .print-table th {
+                background-color: #1E2859 !important;
+                color: #FFFFFF !important;
+                border: 1px solid #1E2859 !important;
+                padding: 8px 6px !important;
+                font-weight: 800;
+                text-align: right;
+            }
+            .print-table td {
+                border: 1px solid #CBD5E1 !important;
+                padding: 7px 6px !important;
+                vertical-align: middle;
+            }
+            .print-table tr:nth-child(even) td {
+                background-color: #F8FAFC !important;
+            }
+            .print-table tr {
+                page-break-inside: avoid;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-ris-bg text-ris-ink min-h-screen flex flex-col md:flex-row pb-20 md:pb-0">
+
+    <!-- ================= DESKTOP SIDEBAR ================= -->
+    <aside id="admin-sidebar" class="hidden md:flex md:flex-col md:w-72 bg-ris-navy text-white shrink-0 sticky top-0 h-screen shadow-xl z-30 no-print">
+        <div class="p-5 border-b border-white/10 flex flex-col items-center text-center bg-ris-navyDark/40">
+            <div class="bg-white p-2.5 rounded-2xl shadow-md mb-3 w-24 h-24 flex items-center justify-center">
+                <svg viewBox="0 0 200 215" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                    <g fill="none" stroke="#0F172A" stroke-width="2" stroke-linecap="round">
+                        <path d="M90 12 Q105 8 118 14" />
+                        <path d="M168 42 Q178 52 180 66" />
+                        <path d="M174 134 Q166 148 152 154" />
+                        <path d="M36 146 Q24 136 22 122" />
+                        <path d="M32 54 Q40 40 54 34" />
+                    </g>
+                    <ellipse cx="100" cy="95" rx="76" ry="30" transform="rotate(-30 100 95)" fill="none" stroke="#0F172A" stroke-width="11"/>
+                    <ellipse cx="100" cy="95" rx="76" ry="30" transform="rotate(-30 100 95)" fill="none" stroke="#E31E24" stroke-width="7"/>
+                    <ellipse cx="100" cy="95" rx="76" ry="30" transform="rotate(30 100 95)" fill="none" stroke="#0F172A" stroke-width="11"/>
+                    <ellipse cx="100" cy="95" rx="76" ry="30" transform="rotate(30 100 95)" fill="none" stroke="#E31E24" stroke-width="7"/>
+                    <ellipse cx="100" cy="95" rx="30" ry="76" fill="none" stroke="#0F172A" stroke-width="11"/>
+                    <ellipse cx="100" cy="95" rx="30" ry="76" fill="none" stroke="#E31E24" stroke-width="7"/>
+                    <circle cx="114" cy="24" r="11" fill="#1E2859" stroke="#0F172A" stroke-width="2.5"/>
+                    <circle cx="38" cy="116" r="11" fill="#1E2859" stroke="#0F172A" stroke-width="2.5"/>
+                    <circle cx="146" cy="146" r="11" fill="#1E2859" stroke="#0F172A" stroke-width="2.5"/>
+                    <circle cx="100" cy="95" r="28" fill="#1E2859" stroke="#0F172A" stroke-width="3"/>
+                    <text x="100" y="104" text-anchor="middle" fill="#FFFFFF" font-family="Cairo, Arial, sans-serif" font-weight="900" font-size="24">RIS</text>
+                    <text x="100" y="198" text-anchor="middle" fill="#1E2859" font-family="Cairo, Arial, sans-serif" font-weight="900" font-size="14" letter-spacing="0.5">SCIENCE DEPARTMENT</text>
+                </svg>
+            </div>
+            <h1 class="font-extrabold text-base tracking-wide text-white">مدير معمل ريجنت</h1>
+            <p class="text-xs text-slate-300 mt-0.5">Regent International School</p>
+            <div id="sync-status-badge" class="mt-2 px-2.5 py-0.5 rounded-full bg-white/10 text-[10px] font-bold text-slate-200 flex items-center gap-1.5">
+                <span id="sync-dot" class="w-2 h-2 rounded-full bg-amber-400"></span>
+                <span id="sync-label">جاري الاتصال بالسحابة...</span>
+            </div>
+        </div>
+
+        <nav class="flex-1 p-4 space-y-1.5 overflow-y-auto">
+            <button onclick="switchTab('dashboard')" id="nav-desk-dashboard" class="nav-btn-desk w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold bg-ris-red text-white shadow-md transition">
+                <span>🏠</span>
+                <span>الرئيسية ولوحة المتابعة</span>
+            </button>
+            <button onclick="switchTab('requests')" id="nav-desk-requests" class="nav-btn-desk w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold text-slate-200 hover:bg-white/10 transition">
+                <span class="flex items-center gap-3"><span>📩</span><span>طلبات المدرسين</span></span>
+                <span id="badge-desk-requests" class="bg-ris-red text-white text-xs font-extrabold px-2 py-0.5 rounded-full">0</span>
+            </button>
+            <button onclick="switchTab('cabinets')" id="nav-desk-cabinets" class="nav-btn-desk w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-200 hover:bg-white/10 transition">
+                <span>🗄️</span>
+                <span>الدواليب وبطاقات QR</span>
+            </button>
+            <button onclick="switchTab('inventory')" id="nav-desk-inventory" class="nav-btn-desk w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-200 hover:bg-white/10 transition">
+                <span>🧪</span>
+                <span>العُهدة والأصناف</span>
+            </button>
+            <button onclick="switchTab('loans')" id="nav-desk-loans" class="nav-btn-desk w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold text-slate-200 hover:bg-white/10 transition">
+                <span class="flex items-center gap-3"><span>🔄</span><span>إعارة الأدوات للمدرسين</span></span>
+                <span id="badge-desk-loans" class="bg-ris-red text-white text-xs font-extrabold px-2 py-0.5 rounded-full">0</span>
+            </button>
+            <button onclick="switchTab('logs')" id="nav-desk-logs" class="nav-btn-desk w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-200 hover:bg-white/10 transition">
+                <span>📉</span>
+                <span>الاستهلاك والتوالف</span>
+            </button>
+            <button onclick="switchTab('reports')" id="nav-desk-reports" class="nav-btn-desk w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-200 hover:bg-white/10 transition">
+                <span>📊</span>
+                <span>التقارير والنسخ الاحتياطي</span>
+            </button>
+        </nav>
+
+        <div class="p-4 border-t border-white/10 bg-ris-navyDark/30 space-y-2">
+            <button onclick="openTeacherQRModal()" class="w-full py-2 px-3 bg-emerald-600/90 hover:bg-emerald-600 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition">
+                <span>📱</span>
+                <span>باركود بوابة المدرسين (QR)</span>
+            </button>
+            <button onclick="enterTeacherPortalPreview()" class="w-full py-2 px-3 bg-white/10 hover:bg-white/20 text-slate-200 rounded-xl text-[11px] font-bold flex items-center justify-center gap-2 transition">
+                <span>👁️</span>
+                <span>معاينة شاشة المدرس</span>
+            </button>
+            <button onclick="openCheckoutModal()" class="w-full py-2 px-3 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition">
+                <span>📤</span>
+                <span>خروج أداة مع مدرس</span>
+            </button>
+            <button onclick="openItemModal()" class="w-full py-2.5 px-3 bg-ris-red hover:bg-ris-redDark text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow transition">
+                <span>➕</span>
+                <span>إضافة صنف جديد</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- ================= MOBILE TOP HEADER ================= -->
+    <header id="admin-mobile-header" class="md:hidden bg-ris-navy text-white px-4 py-3 flex items-center justify-between sticky top-0 z-30 shadow-md no-print">
+        <div class="flex items-center gap-2.5">
+            <div class="bg-white p-1 rounded-xl w-10 h-10 flex items-center justify-center shrink-0">
+                <svg viewBox="0 0 200 190" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                    <ellipse cx="100" cy="95" rx="76" ry="30" transform="rotate(-30 100 95)" fill="none" stroke="#E31E24" stroke-width="9"/>
+                    <ellipse cx="100" cy="95" rx="76" ry="30" transform="rotate(30 100 95)" fill="none" stroke="#E31E24" stroke-width="9"/>
+                    <ellipse cx="100" cy="95" rx="30" ry="76" fill="none" stroke="#E31E24" stroke-width="9"/>
+                    <circle cx="100" cy="95" r="30" fill="#1E2859"/>
+                    <text x="100" y="105" text-anchor="middle" fill="#FFFFFF" font-family="Cairo, sans-serif" font-weight="900" font-size="26">RIS</text>
+                </svg>
+            </div>
+            <div>
+                <h1 class="font-extrabold text-sm leading-tight">مدير معمل ريجنت</h1>
+                <p class="text-[11px] text-slate-300">RIS Science Department</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-1.5">
+            <button onclick="openTeacherQRModal()" class="p-2 bg-emerald-600 rounded-xl text-xs font-bold" title="QR المدرسين">📱</button>
+            <button onclick="openCheckoutModal()" class="p-2 bg-white/15 rounded-xl text-xs font-bold" title="خروج أداة">📤</button>
+            <button onclick="openItemModal()" class="px-3 py-2 bg-ris-red rounded-xl text-xs font-bold shadow">➕ صنف</button>
+        </div>
+    </header>
+
+    <!-- ================= ISOLATED TEACHER PORTAL VIEW ================= -->
+    <div id="teacher-portal-view" class="hidden min-h-screen w-full bg-ris-bg flex flex-col">
+        <header class="bg-ris-navy text-white py-5 px-4 shadow-lg">
+            <div class="max-w-2xl mx-auto flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                    <div class="bg-white p-1.5 rounded-2xl w-14 h-14 flex items-center justify-center shrink-0 shadow">
+                        <svg viewBox="0 0 200 215" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                            <ellipse cx="100" cy="95" rx="76" ry="30" transform="rotate(-30 100 95)" fill="none" stroke="#0F172A" stroke-width="11"/>
+                            <ellipse cx="100" cy="95" rx="76" ry="30" transform="rotate(-30 100 95)" fill="none" stroke="#E31E24" stroke-width="7"/>
+                            <ellipse cx="100" cy="95" rx="76" ry="30" transform="rotate(30 100 95)" fill="none" stroke="#0F172A" stroke-width="11"/>
+                            <ellipse cx="100" cy="95" rx="76" ry="30" transform="rotate(30 100 95)" fill="none" stroke="#E31E24" stroke-width="7"/>
+                            <ellipse cx="100" cy="95" rx="30" ry="76" fill="none" stroke="#0F172A" stroke-width="11"/>
+                            <ellipse cx="100" cy="95" rx="30" ry="76" fill="none" stroke="#E31E24" stroke-width="7"/>
+                            <circle cx="114" cy="24" r="11" fill="#1E2859" stroke="#0F172A" stroke-width="2.5"/>
+                            <circle cx="38" cy="116" r="11" fill="#1E2859" stroke="#0F172A" stroke-width="2.5"/>
+                            <circle cx="146" cy="146" r="11" fill="#1E2859" stroke="#0F172A" stroke-width="2.5"/>
+                            <circle cx="100" cy="95" r="28" fill="#1E2859" stroke="#0F172A" stroke-width="3"/>
+                            <text x="100" y="104" text-anchor="middle" fill="#FFFFFF" font-family="Cairo, Arial, sans-serif" font-weight="900" font-size="24">RIS</text>
+                            <text x="100" y="198" text-anchor="middle" fill="#1E2859" font-family="Cairo, Arial, sans-serif" font-weight="900" font-size="14">SCIENCE DEPARTMENT</text>
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="inline-block px-2.5 py-0.5 rounded-full bg-ris-red text-white text-[10px] font-extrabold mb-1">Regent International School</span>
+                        <h1 class="font-black text-lg md:text-xl leading-tight">بوابة طلبات تحضير معمل العلوم</h1>
+                        <p class="text-xs text-slate-300">Science Lab Preparation Request Form</p>
+                    </div>
+                </div>
+                <button id="exit-teacher-preview-btn" onclick="exitTeacherPortalPreview()" class="hidden px-3 py-2 bg-white/15 hover:bg-white/25 text-white rounded-xl text-xs font-bold border border-white/20 shrink-0">
+                    🔙 رجوع للإدارة
+                </button>
+            </div>
+        </header>
+
+        <div class="flex-1 max-w-2xl w-full mx-auto p-4 md:p-6">
+            <div id="teacher-form-card" class="bg-white rounded-3xl border border-ris-border shadow-md p-6 md:p-8 space-y-5">
+                <div class="border-b border-slate-100 pb-3">
+                    <h2 class="font-black text-base md:text-lg text-ris-navy">📋 بيانات الحصة والأدوات المطلوبة</h2>
+                    <p class="text-xs text-slate-500 mt-0.5">يرجى تسجيل الطلب قبل موعد الحصة بوقت كافٍ ليتمكن محضر المعمل من تجهيز الأدوات.</p>
+                </div>
+
+                <form id="teacher-request-form" onsubmit="submitTeacherRequest(event)" class="space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">اسم المدرس (Teacher Name) *</label>
+                            <input type="text" id="tr-name" required placeholder="مثال: Mr. Ahmed Hassan" class="w-full px-3.5 py-3 bg-ris-bg border border-slate-300 rounded-xl text-xs font-semibold focus:outline-none focus:border-ris-navy">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">رقم الموبايل / واتساب *</label>
+                            <input type="tel" id="tr-phone" required placeholder="مثال: 01012345678" class="w-full px-3.5 py-3 bg-ris-bg border border-slate-300 rounded-xl text-xs font-semibold focus:outline-none focus:border-ris-navy">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">المادة والصف الدراسي (Grade & Subject) *</label>
+                            <input type="text" id="tr-grade" required placeholder="مثال: Grade 9B - Chemistry" class="w-full px-3.5 py-3 bg-ris-bg border border-slate-300 rounded-xl text-xs font-semibold focus:outline-none focus:border-ris-navy">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">اسم التجربة أو الدرس *</label>
+                            <input type="text" id="tr-experiment" required placeholder="مثال: الكشف عن السكريات / المعايرة" class="w-full px-3.5 py-3 bg-ris-bg border border-slate-300 rounded-xl text-xs font-semibold focus:outline-none focus:border-ris-navy">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">تاريخ الحصة (Session Date) *</label>
+                            <input type="date" id="tr-date" required onchange="updateTeacherDayPreview()" class="w-full px-3.5 py-3 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold text-ris-navy focus:outline-none focus:border-ris-navy">
+                            <div id="tr-day-label" class="text-[11px] font-extrabold text-ris-red mt-1">اليوم: --</div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">رقم الحصة / السيشن (Session) *</label>
+                            <select id="tr-session" required class="w-full px-3.5 py-3 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold text-ris-navy focus:outline-none focus:border-ris-navy">
+                                <option value="Session 1 (الحصة الأولى)">Session 1 (الحصة الأولى)</option>
+                                <option value="Session 2 (الحصة الثانية)">Session 2 (الحصة الثانية)</option>
+                                <option value="Session 3 (الحصة الثالثة)">Session 3 (الحصة الثالثة)</option>
+                                <option value="Session 4 (الحصة الرابعة)">Session 4 (الحصة الرابعة)</option>
+                                <option value="Session 5 (الحصة الخامسة)">Session 5 (الحصة الخامسة)</option>
+                                <option value="Session 6 (الحصة السادسة)">Session 6 (الحصة السادسة)</option>
+                                <option value="Session 7 (الحصة السابعة)">Session 7 (الحصة السابعة)</option>
+                                <option value="Session 8 (الحصة الثامنة)">Session 8 (الحصة الثامنة)</option>
+                                <option value="Break / Activity (الفسحة / نشاط)">Break / Activity (الفسحة / نشاط)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                        <label class="block text-xs font-extrabold text-ris-navy">🧪 إضافة أدوات أو مواد من قائمة المعمل (اختياري):</label>
+                        <div class="flex flex-col sm:flex-row gap-2">
+                            <select id="tr-item-picker" class="flex-1 px-3 py-2.5 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-ris-navy"></select>
+                            <input type="text" id="tr-item-qty" placeholder="الكمية (مثلاً: 5)" class="sm:w-28 px-3 py-2.5 bg-white border border-slate-300 rounded-xl text-xs font-bold">
+                            <button type="button" onclick="addTeacherSelectedItem()" class="px-4 py-2.5 bg-ris-navy hover:bg-ris-navyDark text-white rounded-xl text-xs font-bold shrink-0">➕ إضافة للقائمة</button>
+                        </div>
+                        <div id="tr-selected-items-list" class="flex flex-wrap gap-2"></div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">تفاصيل الطلبات والمواد المطلوبة / ملاحظات إضافية *</label>
+                        <textarea id="tr-notes" rows="3" required placeholder="اكتب هنا كافة الأدوات، المواد الكيميائية، التركيزات المطلوبة، أو عدد المجموعات..." class="w-full px-3.5 py-3 bg-ris-bg border border-slate-300 rounded-xl text-xs font-semibold focus:outline-none focus:border-ris-navy"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">مكان تنفيذ التجربة *</label>
+                        <select id="tr-location" class="w-full px-3.5 py-3 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold text-ris-navy">
+                            <option value="داخل معمل العلوم (Inside Science Lab)">🔬 داخل معمل العلوم (Inside Science Lab)</option>
+                            <option value="استلام الأدوات للفصل (Take to Classroom)">🏫 استلام الأدوات للفصل (Take to Classroom)</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="w-full py-3.5 px-6 bg-ris-red hover:bg-ris-redDark text-white rounded-2xl text-sm font-black shadow-lg transition flex items-center justify-center gap-2">
+                        <span>🚀</span>
+                        <span>إرسال طلب التحضير لمحضر المعمل</span>
+                    </button>
+                </form>
+            </div>
+
+            <div id="teacher-success-card" class="hidden bg-white rounded-3xl border border-emerald-200 shadow-md p-8 text-center space-y-4">
+                <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-700 mx-auto flex items-center justify-center text-3xl font-black">✓</div>
+                <h2 class="text-xl font-black text-ris-navy">تم إرسال طلبك بنجاح إلى محضر المعمل!</h2>
+                <p id="teacher-success-summary" class="text-xs text-slate-600 leading-relaxed max-w-md mx-auto"></p>
+                <div class="pt-3">
+                    <button onclick="resetTeacherPortalForm()" class="px-6 py-3 bg-ris-navy hover:bg-ris-navyDark text-white rounded-xl text-xs font-bold shadow">
+                        ➕ تقديم طلب جديد لحصة أخرى
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MAIN CONTENT AREA ================= -->
+    <main id="admin-main-content" class="flex-1 p-4 md:p-8 max-w-7xl mx-auto w-full space-y-6">
+
+        <!-- ==================== TAB 1: DASHBOARD ==================== -->
+        <section id="tab-dashboard" class="space-y-6">
+            <div class="bg-gradient-to-l from-ris-navy to-ris-navyLight text-white rounded-3xl p-6 md:p-8 shadow-lg relative overflow-hidden">
+                <div class="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                    <div>
+                        <span class="inline-block px-3 py-1 rounded-full bg-ris-red text-white text-xs font-bold mb-2">RIS Science Lab Management</span>
+                        <h2 class="text-2xl md:text-3xl font-black">أهلاً بك في نظام إدارة معمل العلوم</h2>
+                        <p class="text-slate-200 text-sm md:text-base mt-1 max-w-2xl">متابعة دقيقة للعُهدة، خريطة الدواليب، طلبات المدرسين، الإعارات الخارجية، وتنبيهات الصلاحية.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2.5 shrink-0">
+                        <button onclick="openTeacherQRModal()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-bold shadow-md transition flex items-center gap-2">
+                            <span>📱</span><span>باركود المدرسين (QR)</span>
+                        </button>
+                        <button onclick="openItemModal()" class="px-4 py-2.5 bg-ris-red hover:bg-ris-redDark text-white rounded-xl text-sm font-bold shadow-md transition flex items-center gap-2">
+                            <span>➕</span><span>إضافة صنف</span>
+                        </button>
+                        <button onclick="openCheckoutModal()" class="px-4 py-2.5 bg-white text-ris-navy hover:bg-slate-100 rounded-xl text-sm font-bold shadow-md transition flex items-center gap-2">
+                            <span>📤</span><span>خروج أداة مع مدرس</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 lg:grid-cols-6 gap-3.5">
+                <div onclick="switchTab('requests')" class="cursor-pointer bg-white p-4 rounded-2xl border border-ris-border hover:border-emerald-500 shadow-sm transition">
+                    <div class="text-xs font-bold text-slate-500">📩 طلبات المدرسين</div>
+                    <div id="kpi-pending-requests" class="text-2xl font-black text-emerald-700 mt-1">0</div>
+                    <div class="text-[11px] text-emerald-600 font-semibold mt-0.5">بانتظار التحضير</div>
+                </div>
+                <div onclick="switchTab('inventory')" class="cursor-pointer bg-white p-4 rounded-2xl border border-ris-border hover:border-ris-navy shadow-sm transition">
+                    <div class="text-xs font-bold text-slate-500">📦 إجمالي الأصناف</div>
+                    <div id="kpi-total-items" class="text-2xl font-black text-ris-navy mt-1">0</div>
+                    <div class="text-[11px] text-slate-400 mt-0.5">مسجلة بالعُهدة</div>
+                </div>
+                <div onclick="jumpToInventoryFilter('low')" class="cursor-pointer bg-white p-4 rounded-2xl border border-ris-border hover:border-amber-500 shadow-sm transition">
+                    <div class="text-xs font-bold text-slate-500">⚠️ نواقص المخزن</div>
+                    <div id="kpi-low-stock" class="text-2xl font-black text-amber-600 mt-1">0</div>
+                    <div class="text-[11px] text-amber-600 font-semibold mt-0.5">تحتاج طلب شراء</div>
+                </div>
+                <div onclick="jumpToInventoryFilter('expiring')" class="cursor-pointer bg-white p-4 rounded-2xl border border-ris-border hover:border-ris-red shadow-sm transition">
+                    <div class="text-xs font-bold text-slate-500">☣️ تنبيهات الصلاحية</div>
+                    <div id="kpi-expiry-alerts" class="text-2xl font-black text-ris-red mt-1">0</div>
+                    <div class="text-[11px] text-ris-red font-semibold mt-0.5">منتهية أو قرب الانتهاء</div>
+                </div>
+                <div onclick="jumpToInventoryFilter('maintenance')" class="cursor-pointer bg-white p-4 rounded-2xl border border-ris-border hover:border-purple-500 shadow-sm transition">
+                    <div class="text-xs font-bold text-slate-500">🛠️ صيانة ومعايرة</div>
+                    <div id="kpi-maintenance" class="text-2xl font-black text-purple-700 mt-1">0</div>
+                    <div class="text-[11px] text-purple-600 font-semibold mt-0.5">أجهزة تحت الفحص</div>
+                </div>
+                <div onclick="switchTab('loans')" class="cursor-pointer bg-white p-4 rounded-2xl border border-ris-border hover:border-blue-500 shadow-sm transition">
+                    <div class="text-xs font-bold text-slate-500">🔄 معار خارج المعمل</div>
+                    <div id="kpi-active-loans" class="text-2xl font-black text-blue-700 mt-1">0</div>
+                    <div class="text-[11px] text-blue-600 font-semibold mt-0.5">مع المدرسين حالياً</div>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 md:p-5 rounded-2xl border border-ris-border shadow-sm space-y-3">
+                <div class="flex items-center justify-between">
+                    <label for="dashboard-search-input" class="font-extrabold text-sm text-ris-navy">🔍 بحث سريع عن مكان أي أداة أو مادة في الدواليب:</label>
+                    <button id="dashboard-search-clear" onclick="clearDashboardSearch()" class="hidden text-xs font-bold text-ris-red hover:underline">مسح البحث ✕</button>
+                </div>
+                <input type="text" id="dashboard-search-input" oninput="handleDashboardSearch()" placeholder="اكتب اسم الصنف بالعربي أو الإنجليزي أو الكود أو اسم الدولاب (مثال: HCl أو Beaker أو Cabinet A)..." class="w-full px-4 py-3 bg-ris-bg border border-slate-300 rounded-xl text-sm font-semibold focus:outline-none focus:border-ris-navy">
+                <div id="dashboard-search-results" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="bg-white p-5 rounded-2xl border border-ris-border shadow-sm space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-extrabold text-base text-ris-navy">🚨 التنبيهات العاجلة والمتابعة اليومية</h3>
+                        <span id="urgent-alerts-count" class="px-2.5 py-0.5 rounded-full bg-ris-red text-white text-xs font-black">0</span>
+                    </div>
+                    <div id="urgent-alerts-list" class="space-y-2.5 max-h-80 overflow-y-auto pr-1"></div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-ris-border shadow-sm space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-extrabold text-base text-ris-navy">🔄 أدوات خارج المعمل حالياً مع المدرسين</h3>
+                        <button onclick="openCheckoutModal()" class="text-xs font-bold text-ris-red hover:underline">+ تسجيل خروج</button>
+                    </div>
+                    <div id="dashboard-active-loans-list" class="space-y-2.5 max-h-80 overflow-y-auto pr-1"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 2: TEACHER REQUESTS ==================== -->
+        <section id="tab-requests" class="hidden space-y-5">
+            <div class="bg-white p-5 rounded-2xl border border-ris-border shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-xl font-black text-ris-navy">📩 طلبات المدرسين لتحضير التجارب</h2>
+                    <p class="text-xs text-slate-500 mt-0.5">الطلبات الواردة من المدرسين عبر بوابة QR Code مرتبة حسب مواعيد الحصص</p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="openTeacherQRModal()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow">📱 باركود المدرسين (QR)</button>
+                    <button onclick="enterTeacherPortalPreview()" class="px-4 py-2.5 bg-ris-navy hover:bg-ris-navyDark text-white rounded-xl text-xs font-bold">👁️ معاينة شاشة المدرس</button>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap gap-2">
+                <button onclick="setRequestFilter('all')" id="req-filter-all" class="req-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-ris-navy text-white">الكل</button>
+                <button onclick="setRequestFilter('pending')" id="req-filter-pending" class="req-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700">⏳ قيد الانتظار</button>
+                <button onclick="setRequestFilter('prepared')" id="req-filter-prepared" class="req-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700">✅ تم التحضير</button>
+                <button onclick="setRequestFilter('loaned')" id="req-filter-loaned" class="req-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700">🔄 معار للفصل</button>
+                <button onclick="setRequestFilter('completed')" id="req-filter-completed" class="req-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700">🏁 مكتمل</button>
+            </div>
+
+            <div id="teacher-requests-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div>
+        </section>
+
+        <!-- ==================== TAB 3: CABINETS & QR ==================== -->
+        <section id="tab-cabinets" class="hidden space-y-5">
+            <div class="bg-white p-5 rounded-2xl border border-ris-border shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-xl font-black text-ris-navy">🗄️ خريطة الدواليب وأكواد QR</h2>
+                    <p class="text-xs text-slate-500 mt-0.5">إضافة وتعديل دواليب المعمل وطباعة ملصقات QR للجرد السريع أمام كل دولاب</p>
+                </div>
+                <button onclick="openCabinetModal()" class="px-4 py-2.5 bg-ris-red hover:bg-ris-redDark text-white rounded-xl text-xs font-bold shadow shrink-0">➕ إضافة دولاب جديد</button>
+            </div>
+
+            <div id="cabinets-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        </section>
+
+        <!-- ==================== TAB 4: INVENTORY & ITEMS ==================== -->
+        <section id="tab-inventory" class="hidden space-y-5">
+            <div class="bg-white p-5 rounded-2xl border border-ris-border shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-xl font-black text-ris-navy">🧪 سجل العُهدة والأصناف</h2>
+                    <p class="text-xs text-slate-500 mt-0.5">إدارة المواد الكيميائية، الزجاجيات، والأجهزة المعملية ومواقع تخزينها</p>
+                </div>
+                <button onclick="openItemModal()" class="px-4 py-2.5 bg-ris-red hover:bg-ris-redDark text-white rounded-xl text-xs font-bold shadow shrink-0">➕ إضافة صنف جديد</button>
+            </div>
+
+            <div class="bg-white p-4 rounded-2xl border border-ris-border shadow-sm grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                <input type="text" id="inv-search" oninput="renderInventory()" placeholder="🔍 بحث بالاسم أو الكود..." class="px-3.5 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-semibold">
+                <select id="inv-type-filter" onchange="renderInventory()" class="px-3.5 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold text-ris-navy">
+                    <option value="all">جميع التصنيفات (الكل)</option>
+                    <option value="chemical">🧪 مواد كيميائية</option>
+                    <option value="glassware">🧫 أدوات زجاجية</option>
+                    <option value="equipment">🔬 أجهزة معملية</option>
+                </select>
+                <select id="inv-cabinet-filter" onchange="renderInventory()" class="px-3.5 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold text-ris-navy">
+                    <option value="all">جميع الدواليب (الكل)</option>
+                </select>
+                <select id="inv-status-filter" onchange="renderInventory()" class="px-3.5 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold text-ris-navy">
+                    <option value="all">جميع الحالات</option>
+                    <option value="low">⚠️ نواقص (أقل من الحد الأدنى)</option>
+                    <option value="expiring">☣️ صلاحية منتهية / قريبة</option>
+                    <option value="maintenance">🛠️ تحتاج صيانة / معايرة</option>
+                    <option value="loaned">🔄 معارة خارج المعمل حالياً</option>
+                </select>
+            </div>
+
+            <div id="inventory-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        </section>
+
+        <!-- ==================== TAB 5: EXTERNAL TEACHER LOANS ==================== -->
+        <section id="tab-loans" class="hidden space-y-5">
+            <div class="bg-white p-5 rounded-2xl border border-ris-border shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-xl font-black text-ris-navy">🔄 إعارة وخروج الأدوات مع المدرسين</h2>
+                    <p class="text-xs text-slate-500 mt-0.5">تتبع الأدوات الخارجة للفصول وإرجاعها للمخزن مع احتساب أي توالف تلقائياً</p>
+                </div>
+                <button onclick="openCheckoutModal()" class="px-4 py-2.5 bg-ris-red hover:bg-ris-redDark text-white rounded-xl text-xs font-bold shadow shrink-0">📤 تسجيل خروج أداة مع مدرس</button>
+            </div>
+
+            <div class="space-y-3">
+                <div class="flex items-center gap-2">
+                    <h3 class="font-extrabold text-base text-ris-navy">العُهد الموجودة خارج المعمل حالياً</h3>
+                    <span id="active-loans-counter" class="px-2.5 py-0.5 rounded-full bg-blue-600 text-white text-xs font-black">0</span>
+                </div>
+                <div id="active-loans-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl border border-ris-border shadow-sm space-y-3">
+                <h3 class="font-extrabold text-base text-ris-navy">📚 أرشيف الإعارات السابقة والمسترجعة</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-right text-xs min-w-[640px]">
+                        <thead class="bg-slate-100 text-ris-navy font-extrabold">
+                            <tr>
+                                <th class="p-3 rounded-r-xl">الصنف</th>
+                                <th class="p-3">المدرس والفصل</th>
+                                <th class="p-3">الكمية الخارجة</th>
+                                <th class="p-3">عادت سليمة</th>
+                                <th class="p-3">تالفة / مكسورة</th>
+                                <th class="p-3">تاريخ الإرجاع</th>
+                                <th class="p-3 rounded-l-xl">ملاحظات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="returned-loans-tbody" class="divide-y divide-slate-100"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 6: CONSUMPTION & BREAKAGE LOGS ==================== -->
+        <section id="tab-logs" class="hidden space-y-5">
+            <div class="bg-white p-5 rounded-2xl border border-ris-border shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-xl font-black text-ris-navy">📉 سجل الاستهلاك والتوالف والصيانة</h2>
+                    <p class="text-xs text-slate-500 mt-0.5">توثيق استهلاك الكيماويات وكسر الأدوات الزجاجية وخصمها من الرصيد تلقائياً</p>
+                </div>
+                <button onclick="openLogModal()" class="px-4 py-2.5 bg-ris-red hover:bg-ris-redDark text-white rounded-xl text-xs font-bold shadow shrink-0">➕ تسجيل حركة استهلاك / كسر</button>
+            </div>
+
+            <div class="flex flex-wrap gap-2">
+                <button onclick="setLogFilter('all')" id="log-filter-all" class="log-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-ris-navy text-white">الكل</button>
+                <button onclick="setLogFilter('consumption')" id="log-filter-consumption" class="log-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700">🧪 استهلاك</button>
+                <button onclick="setLogFilter('breakage')" id="log-filter-breakage" class="log-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700">💔 كسر / تلف</button>
+                <button onclick="setLogFilter('maintenance')" id="log-filter-maintenance" class="log-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700">🛠️ صيانة</button>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl border border-ris-border shadow-sm overflow-x-auto">
+                <table class="w-full text-right text-xs min-w-[640px]">
+                    <thead class="bg-slate-100 text-ris-navy font-extrabold">
+                        <tr>
+                            <th class="p-3.5 rounded-r-xl">التاريخ</th>
+                            <th class="p-3.5">نوع الحركة</th>
+                            <th class="p-3.5">الصنف</th>
+                            <th class="p-3.5">الكمية المخصومة</th>
+                            <th class="p-3.5">المدرس / الفصل</th>
+                            <th class="p-3.5 rounded-l-xl">ملاحظات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logs-tbody" class="divide-y divide-slate-100"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 7: REPORTS & BACKUP ==================== -->
+        <section id="tab-reports" class="hidden space-y-6">
+            <div class="bg-white p-5 rounded-2xl border border-ris-border shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-xl font-black text-ris-navy">📊 التقارير الرسمية والنسخ الاحتياطي</h2>
+                    <p class="text-xs text-slate-500 mt-0.5">تصدير تقارير الجرد الشامل، المشتريات، السلامة، وحفظ نسخة احتياطية كاملة لبيانات المعمل</p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="exportBackupJSON()" class="px-3.5 py-2 bg-ris-navy hover:bg-ris-navyDark text-white rounded-xl text-xs font-bold transition">💾 حفظ نسخة احتياطية (JSON)</button>
+                    <label class="cursor-pointer px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-ris-navy rounded-xl text-xs font-bold transition">
+                        📂 استعادة نسخة (JSON)
+                        <input type="file" accept=".json" onchange="importBackupJSON(event)" class="hidden">
+                    </label>
+                    <button onclick="confirmResetDemoData()" class="px-3.5 py-2 bg-ris-redLight hover:bg-red-200 text-ris-red rounded-xl text-xs font-bold transition">🔄 إعادة الضبط</button>
+                </div>
+            </div>
+
+            <!-- Report 0: Comprehensive Full Inventory Audit Report -->
+            <div class="bg-white p-5 rounded-2xl border-2 border-ris-navy/20 shadow-sm space-y-4">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+                    <div>
+                        <span class="inline-block px-2.5 py-0.5 rounded-full bg-ris-navy text-white text-[10px] font-bold mb-1">جرد العُهدة الكامل • Full Audit</span>
+                        <h3 class="font-extrabold text-base text-ris-navy">📋 التقرير الشامل لعُهدة وجرد المعمل (كافة الأصناف والدواليب)</h3>
+                        <p class="text-xs text-slate-500">يعرض جميع الأصناف مرتبة حسب الدولاب مع الرصيد بالمخزن، الكمية المعارة خارج المعمل، الإجمالي الفعلي للعُهدة، والحالة</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2 shrink-0">
+                        <select id="report-full-cab-filter" onchange="renderReports()" class="px-3 py-2 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold text-ris-navy">
+                            <option value="all">كل الدواليب (جرد شامل)</option>
+                        </select>
+                        <button onclick="exportFullInventoryCSV()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition">📥 تصدير Excel شامل (CSV)</button>
+                        <button onclick="printFullInventoryReport()" class="px-3.5 py-2 bg-ris-red hover:bg-ris-redDark text-white rounded-xl text-xs font-bold shadow transition">🖨️ طباعة / حفظ PDF رسمي</button>
+                    </div>
+                </div>
+                <div id="report-full-summary-pills" class="flex flex-wrap gap-2 text-[11px] font-extrabold"></div>
+                <div class="overflow-x-auto rounded-xl border border-slate-300">
+                    <table class="w-full text-right text-xs min-w-[760px] border-collapse">
+                        <thead class="bg-ris-navy text-white font-extrabold">
+                            <tr>
+                                <th class="p-3 border border-ris-navy">م</th>
+                                <th class="p-3 border border-ris-navy">الكود</th>
+                                <th class="p-3 border border-ris-navy">اسم الصنف (عربي / EN)</th>
+                                <th class="p-3 border border-ris-navy">التصنيف</th>
+                                <th class="p-3 border border-ris-navy">الدولاب والرف</th>
+                                <th class="p-3 border border-ris-navy text-center">بالمخزن</th>
+                                <th class="p-3 border border-ris-navy text-center">معار خارجياً</th>
+                                <th class="p-3 border border-ris-navy text-center">إجمالي العُهدة</th>
+                                <th class="p-3 border border-ris-navy text-center">الحد الأدنى</th>
+                                <th class="p-3 border border-ris-navy text-center">الحالة</th>
+                                <th class="p-3 border border-ris-navy">الصلاحية / السيريال</th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-full-inventory-tbody" class="divide-y divide-slate-200"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Report 1: Purchase Requisition -->
+            <div class="bg-white p-5 rounded-2xl border border-ris-border shadow-sm space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <h3 class="font-extrabold text-base text-ris-navy">🛒 كشف النواقص والمشتريات المطلوبة (Low Stock Requisition)</h3>
+                        <p class="text-xs text-slate-500">يجمع تلقائياً كافة المواد والأدوات التي وصل رصيدها للحد الأدنى أو أقل</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="exportProcurementCSV()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition">📥 تصدير Excel (CSV)</button>
+                        <button onclick="printReportSection('procurement')" class="px-3.5 py-2 bg-ris-navy hover:bg-ris-navyDark text-white rounded-xl text-xs font-bold transition">🖨️ طباعة الكشف</button>
+                    </div>
+                </div>
+                <div class="overflow-x-auto rounded-xl border border-slate-300">
+                    <table class="w-full text-right text-xs border-collapse min-w-[600px]">
+                        <thead class="bg-ris-navy text-white font-extrabold">
+                            <tr>
+                                <th class="p-3 border border-ris-navy">الكود</th>
+                                <th class="p-3 border border-ris-navy">اسم الصنف</th>
+                                <th class="p-3 border border-ris-navy">الدولاب / الرف</th>
+                                <th class="p-3 border border-ris-navy text-center">الرصيد الحالي</th>
+                                <th class="p-3 border border-ris-navy text-center">الحد الأدنى</th>
+                                <th class="p-3 border border-ris-navy text-center">الكمية المقترح طلبها</th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-procurement-tbody" class="divide-y divide-slate-200"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Report 2: Safety & Expiry -->
+            <div class="bg-white p-5 rounded-2xl border border-ris-border shadow-sm space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <h3 class="font-extrabold text-base text-ris-navy">☣️ تقرير السلامة وتاريخ الصلاحية والأجهزة المعطلة</h3>
+                        <p class="text-xs text-slate-500">المواد الكيميائية التي تنتهي صلاحيتها خلال 60 يوماً أو المنتهية، والأجهزة التي تحتاج صيانة</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="exportSafetyCSV()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition">📥 تصدير Excel (CSV)</button>
+                        <button onclick="printReportSection('safety')" class="px-3.5 py-2 bg-ris-navy hover:bg-ris-navyDark text-white rounded-xl text-xs font-bold transition">🖨️ طباعة التقرير</button>
+                    </div>
+                </div>
+                <div class="overflow-x-auto rounded-xl border border-slate-300">
+                    <table class="w-full text-right text-xs border-collapse min-w-[600px]">
+                        <thead class="bg-ris-navy text-white font-extrabold">
+                            <tr>
+                                <th class="p-3 border border-ris-navy">الكود</th>
+                                <th class="p-3 border border-ris-navy">الصنف</th>
+                                <th class="p-3 border border-ris-navy">المكان</th>
+                                <th class="p-3 border border-ris-navy">سبب التنبيه</th>
+                                <th class="p-3 border border-ris-navy">التفاصيل / الإجراء</th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-safety-tbody" class="divide-y divide-slate-200"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Report 3: Active External Checkouts -->
+            <div class="bg-white p-5 rounded-2xl border border-ris-border shadow-sm space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <h3 class="font-extrabold text-base text-ris-navy">🔄 تقرير العُهد المعارة خارج المعمل حالياً</h3>
+                        <p class="text-xs text-slate-500">بيان بالأدوات الموجودة مع المدرسين بالفصول ولم يتم إرجاعها بعد</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="exportLoansCSV()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition">📥 تصدير Excel (CSV)</button>
+                        <button onclick="printReportSection('loans')" class="px-3.5 py-2 bg-ris-navy hover:bg-ris-navyDark text-white rounded-xl text-xs font-bold transition">🖨️ طباعة التقرير</button>
+                    </div>
+                </div>
+                <div class="overflow-x-auto rounded-xl border border-slate-300">
+                    <table class="w-full text-right text-xs border-collapse min-w-[600px]">
+                        <thead class="bg-ris-navy text-white font-extrabold">
+                            <tr>
+                                <th class="p-3 border border-ris-navy">الأداة / الجهاز</th>
+                                <th class="p-3 border border-ris-navy text-center">الكمية</th>
+                                <th class="p-3 border border-ris-navy">المدرس المستلم</th>
+                                <th class="p-3 border border-ris-navy">الفصل / الوجهة</th>
+                                <th class="p-3 border border-ris-navy">موعد الإرجاع المتوقع</th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-loans-tbody" class="divide-y divide-slate-200"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Report 4: Teacher Requests Schedule -->
+            <div class="bg-white p-5 rounded-2xl border border-ris-border shadow-sm space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <h3 class="font-extrabold text-base text-ris-navy">📩 جدول طلبات المدرسين لتحضير التجارب</h3>
+                        <p class="text-xs text-slate-500">جدول منسق بطلبات المدرسين ومواعيد السيشن جاهز للتصدير أو الطباعة اليومية</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="exportRequestsCSV()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition">📥 تصدير Excel (CSV)</button>
+                        <button onclick="printReportSection('requests')" class="px-3.5 py-2 bg-ris-navy hover:bg-ris-navyDark text-white rounded-xl text-xs font-bold transition">🖨️ طباعة الجدول</button>
+                    </div>
+                </div>
+                <div class="overflow-x-auto rounded-xl border border-slate-300">
+                    <table class="w-full text-right text-xs border-collapse min-w-[680px]">
+                        <thead class="bg-ris-navy text-white font-extrabold">
+                            <tr>
+                                <th class="p-3 border border-ris-navy">التاريخ واليوم</th>
+                                <th class="p-3 border border-ris-navy">السيشن / الحصة</th>
+                                <th class="p-3 border border-ris-navy">المدرس والصف</th>
+                                <th class="p-3 border border-ris-navy">التجربة والمكان</th>
+                                <th class="p-3 border border-ris-navy">الطلبات والملاحظات</th>
+                                <th class="p-3 border border-ris-navy text-center">الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-requests-tbody" class="divide-y divide-slate-200"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ================= MOBILE BOTTOM NAVIGATION ================= -->
+    <nav id="admin-mobile-nav" class="md:hidden fixed bottom-0 inset-x-0 bg-white border-t border-slate-200 z-30 flex items-center gap-1 overflow-x-auto no-scrollbar py-1.5 px-2 shadow-lg no-print">
+        <button onclick="switchTab('dashboard')" id="nav-mob-dashboard" class="nav-btn-mob min-w-[64px] shrink-0 flex flex-col items-center py-1 px-1.5 rounded-xl text-ris-red font-extrabold text-[10px]">
+            <span class="text-base">🏠</span><span>الرئيسية</span>
+        </button>
+        <button onclick="switchTab('requests')" id="nav-mob-requests" class="nav-btn-mob min-w-[64px] shrink-0 relative flex flex-col items-center py-1 px-1.5 rounded-xl text-slate-500 font-semibold text-[10px]">
+            <span class="text-base">📩</span><span>الطلبات</span>
+            <span id="badge-mob-requests" class="absolute top-0.5 right-1 bg-ris-red text-white text-[9px] font-black px-1.5 rounded-full">0</span>
+        </button>
+        <button onclick="switchTab('cabinets')" id="nav-mob-cabinets" class="nav-btn-mob min-w-[64px] shrink-0 flex flex-col items-center py-1 px-1.5 rounded-xl text-slate-500 font-semibold text-[10px]">
+            <span class="text-base">🗄️</span><span>الدواليب</span>
+        </button>
+        <button onclick="switchTab('inventory')" id="nav-mob-inventory" class="nav-btn-mob min-w-[64px] shrink-0 flex flex-col items-center py-1 px-1.5 rounded-xl text-slate-500 font-semibold text-[10px]">
+            <span class="text-base">🧪</span><span>العُهدة</span>
+        </button>
+        <button onclick="switchTab('loans')" id="nav-mob-loans" class="nav-btn-mob min-w-[64px] shrink-0 relative flex flex-col items-center py-1 px-1.5 rounded-xl text-slate-500 font-semibold text-[10px]">
+            <span class="text-base">🔄</span><span>الإعارة</span>
+            <span id="badge-mob-loans" class="absolute top-0.5 right-1 bg-ris-red text-white text-[9px] font-black px-1.5 rounded-full">0</span>
+        </button>
+        <button onclick="switchTab('logs')" id="nav-mob-logs" class="nav-btn-mob min-w-[64px] shrink-0 flex flex-col items-center py-1 px-1.5 rounded-xl text-slate-500 font-semibold text-[10px]">
+            <span class="text-base">📉</span><span>الاستهلاك</span>
+        </button>
+        <button onclick="switchTab('reports')" id="nav-mob-reports" class="nav-btn-mob min-w-[64px] shrink-0 flex flex-col items-center py-1 px-1.5 rounded-xl text-slate-500 font-semibold text-[10px]">
+            <span class="text-base">📊</span><span>التقارير</span>
+        </button>
+    </nav>
+
+    <!-- ================= HIDDEN PRINT AREA ================= -->
+    <div id="print-area" class="hidden"></div>
+
+    <!-- ================= MODAL: TEACHER PORTAL QR POSTER ================= -->
+    <div id="teacher-qr-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4 my-8">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 class="font-black text-lg text-ris-navy">📱 باركود بوابة طلبات المدرسين</h3>
+                <button onclick="closeModal('teacher-qr-modal')" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center font-bold">✕</button>
+            </div>
+
+            <div id="teacher-qr-poster" class="border-4 border-ris-navy rounded-3xl p-6 text-center bg-white space-y-3 shadow-sm">
+                <div class="inline-block px-3 py-1 rounded-full bg-ris-red text-white text-[11px] font-black tracking-wide">RIS SCIENCE DEPARTMENT</div>
+                <h4 class="text-xl font-black text-ris-navy">بوابة طلبات تحضير المعمل</h4>
+                <p class="text-xs font-bold text-slate-600">امسح الكود بكاميرا الموبايل لتسجيل طلبك وموعد الحصة</p>
+                <div id="teacher-qr-svg-box" class="w-44 h-44 mx-auto my-2 p-2 border-2 border-slate-200 rounded-2xl bg-white flex items-center justify-center"></div>
+                <div class="text-[11px] font-extrabold text-ris-navy bg-slate-100 py-2 px-3 rounded-xl">
+                    Scan QR Code to Request Lab Equipment & Chemicals
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <label class="block text-[11px] font-bold text-slate-500">الرابط المباشر لبوابة المدرسين (بدون صلاحيات إدارة):</label>
+                <div class="flex gap-2">
+                    <input type="text" id="teacher-portal-url-input" readonly class="flex-1 px-3 py-2 bg-slate-100 border border-slate-200 rounded-xl text-[11px] font-mono text-left" dir="ltr">
+                    <button onclick="copyTeacherPortalLink()" class="px-3 py-2 bg-ris-navy text-white rounded-xl text-xs font-bold shrink-0">نسخ</button>
+                </div>
+            </div>
+
+            <div class="flex gap-2 pt-2">
+                <button onclick="printTeacherQRPoster()" class="flex-1 py-3 bg-ris-red hover:bg-ris-redDark text-white rounded-xl text-xs font-bold shadow">🖨️ طباعة البوستر لباب المعمل</button>
+                <button onclick="closeModal('teacher-qr-modal')" class="px-4 py-3 bg-slate-100 hover:bg-slate-200 rounded-xl text-xs font-bold">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MODAL 1: ADD / EDIT CABINET ================= -->
+    <div id="cabinet-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 id="cabinet-modal-title" class="font-black text-lg text-ris-navy">إضافة دولاب جديد</h3>
+                <button onclick="closeModal('cabinet-modal')" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center font-bold">✕</button>
+            </div>
+            <form id="cabinet-form" onsubmit="saveCabinet(event)" class="space-y-3.5">
+                <input type="hidden" id="cab-edit-id">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">كود الدولاب (Code) *</label>
+                        <input type="text" id="cab-code" required placeholder="مثال: Cabinet D" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">عدد الأرفف / الأدراج *</label>
+                        <input type="number" id="cab-shelves" min="1" max="20" value="4" required class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">اسم الدولاب بالعربي *</label>
+                    <input type="text" id="cab-name-ar" required placeholder="مثال: دولاب أجهزة الفيزياء والكهرباء" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-semibold">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">اسم الدولاب بالإنجليزي *</label>
+                    <input type="text" id="cab-name-en" required placeholder="e.g. Physics & Electricity Cabinet" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-semibold">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">التخصص / التصنيف</label>
+                        <input type="text" id="cab-specialty" placeholder="مثال: أجهزة قياس" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-semibold">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">لون التمييز</label>
+                        <select id="cab-color" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold">
+                            <option value="navy">كحلي ريجنت (Navy)</option>
+                            <option value="red">أحمر تحذيري (Atomic Red)</option>
+                            <option value="emerald">أخضر زمردي (Emerald)</option>
+                            <option value="amber">برتقالي / كهرماني (Amber)</option>
+                            <option value="purple">بنفسجي (Purple)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+                    <button type="button" onclick="closeModal('cabinet-modal')" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 rounded-xl text-xs font-bold">إلغاء</button>
+                    <button type="submit" class="px-5 py-2.5 bg-ris-navy hover:bg-ris-navyDark text-white rounded-xl text-xs font-bold shadow">حفظ الدولاب</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= MODAL 2: CABINET QR & QUICK SHELF INVENTORY ================= -->
+    <div id="cabinet-qr-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-2xl w-full p-6 shadow-2xl border border-slate-200 space-y-5 my-8">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 id="qr-modal-title" class="font-black text-lg text-ris-navy">بطاقة QR ومحتويات الدولاب</h3>
+                <button onclick="closeModal('cabinet-qr-modal')" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center font-bold">✕</button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 items-center">
+                <div id="qr-printable-card" class="border-2 border-ris-navy rounded-2xl p-4 text-center bg-white space-y-2 shadow-sm">
+                    <div class="flex items-center justify-center gap-2 border-b border-slate-200 pb-2">
+                        <span class="font-black text-xs text-ris-navy">RIS SCIENCE DEPARTMENT</span>
+                        <span class="w-2 h-2 rounded-full bg-ris-red"></span>
+                    </div>
+                    <div id="qr-svg-container" class="w-36 h-36 mx-auto my-2 flex items-center justify-center"></div>
+                    <div id="qr-cab-code" class="text-xl font-black text-ris-red">Cabinet A</div>
+                    <div id="qr-cab-name" class="text-xs font-bold text-ris-navy">دولاب الكيماويات العامة</div>
+                    <div id="qr-cab-meta" class="text-[11px] text-slate-500">4 أرفف • جرد المعمل الذكي</div>
+                </div>
+
+                <div class="space-y-3">
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        يمكنك طباعة هذه البطاقة ولصقها على باب الدولاب في المعمل، واستخدام القائمة أدناه لتعديل الكميات فوراً بضغطة زر أثناء الجرد الفعلي.
+                    </p>
+                    <button onclick="printCabinetQRLabel()" class="w-full py-3 px-4 bg-ris-red hover:bg-ris-redDark text-white rounded-xl text-xs font-bold shadow flex items-center justify-center gap-2 transition">
+                        <span>🖨️</span>
+                        <span>طباعة ملصق QR لباب الدولاب</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="space-y-2 border-t border-slate-100 pt-4">
+                <h4 class="font-extrabold text-sm text-ris-navy">محتويات الدولاب (تعديل سريع للكمية أثناء الجرد):</h4>
+                <div id="qr-cabinet-items-list" class="space-y-2 max-h-60 overflow-y-auto pr-1"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MODAL 3: ADD / EDIT INVENTORY ITEM ================= -->
+    <div id="item-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-xl w-full p-6 shadow-2xl border border-slate-200 space-y-4 my-8">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 id="item-modal-title" class="font-black text-lg text-ris-navy">إضافة صنف جديد للعُهدة</h3>
+                <button onclick="closeModal('item-modal')" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center font-bold">✕</button>
+            </div>
+            <form id="item-form" onsubmit="saveItemForm(event)" class="space-y-3.5">
+                <input type="hidden" id="item-edit-id">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">نوع الصنف *</label>
+                        <select id="item-type" onchange="toggleItemTypeFields()" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold text-ris-navy">
+                            <option value="chemical">🧪 مادة كيميائية (Chemical)</option>
+                            <option value="glassware">🧫 أداة زجاجية / مستهلكات</option>
+                            <option value="equipment">🔬 جهاز معملي (Equipment)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">كود الصنف (Code) *</label>
+                        <input type="text" id="item-code" required placeholder="مثال: CHM-014" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">الاسم بالعربي *</label>
+                        <input type="text" id="item-name-ar" required placeholder="مثال: حمض الهيدروكلوريك" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-semibold">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">الاسم بالإنجليزي *</label>
+                        <input type="text" id="item-name-en" required placeholder="e.g. Hydrochloric Acid" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-semibold">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">الدولاب *</label>
+                        <select id="item-cabinet" required class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold text-ris-navy"></select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">الرف / الدرج *</label>
+                        <input type="text" id="item-shelf" required placeholder="مثال: Shelf 2" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-semibold">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">الكمية الحالية *</label>
+                        <input type="number" step="any" min="0" id="item-qty" required value="10" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">الوحدة *</label>
+                        <input type="text" id="item-unit" required placeholder="ml / g / pcs" value="pcs" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">الحد الأدنى للتنبيه *</label>
+                        <input type="number" step="any" min="0" id="item-min-qty" required value="3" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold">
+                    </div>
+                </div>
+
+                <div id="fields-chemical" class="p-3.5 rounded-2xl bg-red-50/60 border border-red-100 space-y-3">
+                    <div class="text-xs font-extrabold text-ris-red">بيانات المادة الكيميائية والسلامة (MSDS)</div>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-700 mb-1">التركيز (Concentration)</label>
+                            <input type="text" id="chem-conc" placeholder="مثال: 1M أو 37%" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-700 mb-1">تاريخ الانتهاء</label>
+                            <input type="date" id="chem-expiry" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-700 mb-1">درجة الخطورة</label>
+                            <select id="chem-hazard" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs font-bold">
+                                <option value="آمن">🟢 آمن (Safe)</option>
+                                <option value="قابل للاشتعال">🔥 قابل للاشتعال (Flammable)</option>
+                                <option value="مادة أكالة">🧪 مادة أكالة (Corrosive)</option>
+                                <option value="سام / مهيج">☠️ سام / مهيج (Toxic)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-700 mb-1">إرشادات السلامة وطريقة التخفيف</label>
+                        <input type="text" id="chem-safety" placeholder="مثال: يُضاف الحمض للماء ببطء داخل خزانة الغازات مع ارتداء القفازات" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs">
+                    </div>
+                </div>
+
+                <div id="fields-glassware" class="hidden p-3.5 rounded-2xl bg-blue-50/60 border border-blue-100 space-y-3">
+                    <div class="text-xs font-extrabold text-ris-navy">مواصفات الأداة الزجاجية</div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-700 mb-1">المقاس / السعة</label>
+                            <input type="text" id="glass-size" placeholder="مثال: 250ml" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-700 mb-1">الخامة</label>
+                            <input type="text" id="glass-material" placeholder="مثال: Borosilicate Glass" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="fields-equipment" class="hidden p-3.5 rounded-2xl bg-purple-50/60 border border-purple-100 space-y-3">
+                    <div class="text-xs font-extrabold text-purple-900">بيانات الجهاز وحالة الصيانة</div>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-700 mb-1">الرقم التسلسلي (Serial)</label>
+                            <input type="text" id="eq-serial" placeholder="SN-2025-88" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-700 mb-1">حالة الجهاز</label>
+                            <select id="eq-condition" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs font-bold">
+                                <option value="يعمل بكفاءة">✅ يعمل بكفاءة</option>
+                                <option value="يحتاج معايرة">⚠️ يحتاج معايرة</option>
+                                <option value="عطلان / صيانة">🛠️ عطلان / صيانة</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-700 mb-1">تاريخ آخر صيانة</label>
+                            <input type="date" id="eq-maint-date" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+                    <button type="button" onclick="closeModal('item-modal')" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 rounded-xl text-xs font-bold">إلغاء</button>
+                    <button type="submit" class="px-5 py-2.5 bg-ris-red hover:bg-ris-redDark text-white rounded-xl text-xs font-bold shadow">حفظ الصنف</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= MODAL 4: ITEM DETAILS & MSDS ================= -->
+    <div id="details-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 class="font-black text-lg text-ris-navy">تفاصيل الصنف وإرشادات السلامة</h3>
+                <button onclick="closeModal('details-modal')" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center font-bold">✕</button>
+            </div>
+            <div id="details-modal-content" class="space-y-3 text-xs"></div>
+        </div>
+    </div>
+
+    <!-- ================= MODAL 5: EXTERNAL CHECKOUT (LOAN OUT) ================= -->
+    <div id="checkout-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 class="font-black text-lg text-ris-navy">📤 تسجيل خروج أداة مع مدرس</h3>
+                <button onclick="closeModal('checkout-modal')" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center font-bold">✕</button>
+            </div>
+            <form id="checkout-form" onsubmit="saveCheckoutForm(event)" class="space-y-3.5">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">اختر الأداة أو الجهاز *</label>
+                    <select id="loan-item-id" required class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold text-ris-navy"></select>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">الكمية الخارجة *</label>
+                        <input type="number" step="any" min="0.1" id="loan-qty" required value="1" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">موعد الإرجاع المتوقع *</label>
+                        <input type="text" id="loan-expected" required placeholder="مثال: نهاية الحصة الرابعة" value="نهاية اليوم الدراسي" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-semibold">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">اسم المدرس المستلم *</label>
+                    <input type="text" id="loan-teacher" required placeholder="مثال: Mr. Ahmed Hassan" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-semibold">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">الفصل / الوجهة خارج المعمل *</label>
+                    <input type="text" id="loan-destination" required placeholder="مثال: Grade 9B - Room 204" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-semibold">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">ملاحظات إضافية</label>
+                    <input type="text" id="loan-notes" placeholder="مثال: تم تسليم الجهاز مع كابل الشاحن" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs">
+                </div>
+                <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+                    <button type="button" onclick="closeModal('checkout-modal')" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 rounded-xl text-xs font-bold">إلغاء</button>
+                    <button type="submit" class="px-5 py-2.5 bg-ris-red hover:bg-ris-redDark text-white rounded-xl text-xs font-bold shadow">تأكيد خروج العُهدة</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= MODAL 6: SMART RETURN MODAL ================= -->
+    <div id="return-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 class="font-black text-lg text-ris-navy">✅ تأكيد إرجاع العُهدة للمعمل</h3>
+                <button onclick="closeModal('return-modal')" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center font-bold">✕</button>
+            </div>
+            <form id="return-form" onsubmit="saveReturnForm(event)" class="space-y-3.5">
+                <input type="hidden" id="return-loan-id">
+                <div id="return-loan-summary" class="p-3 rounded-xl bg-blue-50 border border-blue-100 text-xs text-ris-navy font-semibold"></div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-emerald-700 mb-1">الكمية العائدة سليمة *</label>
+                        <input type="number" step="any" min="0" id="return-good-qty" required oninput="syncReturnQuantities('good')" class="w-full px-3 py-2.5 bg-emerald-50/50 border border-emerald-300 rounded-xl text-xs font-black text-emerald-800">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-ris-red mb-1">كمية تالفة / مكسورة *</label>
+                        <input type="number" step="any" min="0" id="return-damaged-qty" required value="0" oninput="syncReturnQuantities('damaged')" class="w-full px-3 py-2.5 bg-red-50/50 border border-red-300 rounded-xl text-xs font-black text-ris-red">
+                    </div>
+                </div>
+                <p class="text-[11px] text-slate-500">💡 الكمية السليمة تُضاف تلقائياً لرصيد الدولاب، وأي كمية تالفة تُسجل تلقائياً في سجل التوالف باسم المدرس.</p>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">ملاحظات الاستلام</label>
+                    <input type="text" id="return-notes" placeholder="مثال: عادت بحالة ممتازة" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs">
+                </div>
+                <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+                    <button type="button" onclick="closeModal('return-modal')" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 rounded-xl text-xs font-bold">إلغاء</button>
+                    <button type="submit" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow">تأكيد الإرجاع للمخزن</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= MODAL 7: CONSUMPTION & BREAKAGE LOG ================= -->
+    <div id="log-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 class="font-black text-lg text-ris-navy">📉 تسجيل استهلاك أو كسر</h3>
+                <button onclick="closeModal('log-modal')" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center font-bold">✕</button>
+            </div>
+            <form id="log-form" onsubmit="saveLogForm(event)" class="space-y-3.5">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">اختر الصنف *</label>
+                    <select id="log-item-id" required class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold text-ris-navy"></select>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">نوع الحركة *</label>
+                        <select id="log-type" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold">
+                            <option value="consumption">🧪 استهلاك تجربة</option>
+                            <option value="breakage">💔 كسر / تلف</option>
+                            <option value="maintenance">🛠️ سحب للصيانة</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">الكمية المخصومة *</label>
+                        <input type="number" step="any" min="0.1" id="log-qty" required value="1" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">المدرس / الفصل</label>
+                        <input type="text" id="log-teacher" placeholder="مثال: Ms. Mona - G10" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">التاريخ *</label>
+                        <input type="date" id="log-date" required class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">ملاحظات / سبب الحركة</label>
+                    <input type="text" id="log-notes" placeholder="مثال: تجربة المعايرة الحمضية القاعدية" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs">
+                </div>
+                <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+                    <button type="button" onclick="closeModal('log-modal')" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 rounded-xl text-xs font-bold">إلغاء</button>
+                    <button type="submit" class="px-5 py-2.5 bg-ris-red hover:bg-ris-redDark text-white rounded-xl text-xs font-bold shadow">تسجيل وخصم من الرصيد</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= CUSTOM CONFIRMATION MODAL ================= -->
+    <div id="confirm-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 text-center space-y-4">
+            <div class="w-12 h-12 rounded-2xl bg-ris-redLight text-ris-red mx-auto flex items-center justify-center text-2xl font-black">!</div>
+            <h3 id="confirm-title" class="font-black text-base text-ris-navy">تأكيد الإجراء</h3>
+            <p id="confirm-message" class="text-xs text-slate-600 leading-relaxed"></p>
+            <div class="flex gap-2 justify-center pt-2">
+                <button onclick="closeModal('confirm-modal')" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 rounded-xl text-xs font-bold">إلغاء</button>
+                <button id="confirm-ok-btn" class="flex-1 py-2.5 bg-ris-red hover:bg-ris-redDark text-white rounded-xl text-xs font-bold shadow">نعم، متابعة</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= TOAST NOTIFICATION ================= -->
+    <div id="toast" class="fixed bottom-20 md:bottom-6 left-1/2 -translate-x-1/2 z-50 hidden items-center gap-2.5 px-5 py-3 rounded-2xl bg-ris-navy text-white text-xs font-bold shadow-2xl border border-white/15">
+        <span id="toast-icon">✅</span>
+        <span id="toast-text">تم الحفظ بنجاح</span>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // ================= FIREBASE CLOUD CONFIGURATION =================
+        const firebaseConfig = {
+            apiKey: "AIzaSyCHsR2-Iccj5oJGjN9KhHnIT3dDGrB0Wdw",
+            authDomain: "regent-lab.firebaseapp.com",
+            projectId: "regent-lab",
+            storageBucket: "regent-lab.firebasestorage.app",
+            messagingSenderId: "351781323945",
+            appId: "1:351781323945:web:f92eac84d7bfa2eb8915b8",
+            measurementId: "G-R5H2GEL171"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        try { getAnalytics(app); } catch (e) {}
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'regent-lab';
+        const stateDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'lab_system', 'main_state');
+
+        let currentUser = null;
+        let unsubscribeRealtime = null;
+        let currentTab = 'dashboard';
+        let currentRequestFilter = 'all';
+        let currentLogFilter = 'all';
+        let isTeacherMode = false;
+        let teacherSelectedItems = [];
+        let activeQRCodeCabinetId = null;
+
+        function setSyncBadge(online, text) {
+            const dot = document.getElementById('sync-dot');
+            const label = document.getElementById('sync-label');
+            if (!dot || !label) return;
+            dot.className = `w-2 h-2 rounded-full ${online ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`;
+            label.textContent = text;
+        }
+
+        function getDefaultState() {
+            const today = new Date().toISOString().split('T')[0];
+            const futureDate = new Date(Date.now() + 25 * 86400000).toISOString().split('T')[0];
+            const farFutureDate = new Date(Date.now() + 280 * 86400000).toISOString().split('T')[0];
+            return {
+                cabinets: [
+                    { id: 'cab-1', code: 'Cabinet A', nameAr: 'دولاب الكيماويات العامة', nameEn: 'General Chemicals', shelves: 4, specialty: 'مواد كيميائية وأملاح', color: 'navy' },
+                    { id: 'cab-2', code: 'Acid Vault', nameAr: 'خزانة الأحماض والقلويات', nameEn: 'Acids & Bases Vault', shelves: 3, specialty: 'مواد أكالة وخطرة', color: 'red' },
+                    { id: 'cab-3', code: 'Cabinet B', nameAr: 'دولاب الزجاجيات والمخابير', nameEn: 'Glassware & Beakers', shelves: 5, specialty: 'أدوات زجاجية', color: 'emerald' },
+                    { id: 'cab-4', code: 'Cabinet C', nameAr: 'دولاب الأجهزة والميكروسكوبات', nameEn: 'Lab Equipment & Optics', shelves: 4, specialty: 'أجهزة قياس وبصريات', color: 'purple' }
+                ],
+                items: [
+                    { id: 'itm-1', type: 'chemical', code: 'CHM-101', nameAr: 'حمض الهيدروكلوريك', nameEn: 'Hydrochloric Acid (HCl)', cabinet: 'Acid Vault', shelf: 'Shelf 1', qty: 450, unit: 'ml', minQty: 500, conc: '1M', expiry: farFutureDate, hazard: 'مادة أكالة', safety: 'يُحفظ في خزانة الأحماض وتُرتدى القفازات والنظارة الواقية.' },
+                    { id: 'itm-2', type: 'chemical', code: 'CHM-102', nameAr: 'محلول بندكت', nameEn: 'Benedict Reagent', cabinet: 'Cabinet A', shelf: 'Shelf 2', qty: 300, unit: 'ml', minQty: 200, conc: 'Standard', expiry: futureDate, hazard: 'آمن', safety: 'يستخدم في حمام مائي ساخن للكشف عن السكريات الأحادية.' },
+                    { id: 'itm-3', type: 'glassware', code: 'GLS-201', nameAr: 'كأس زجاجي مدرج 250 مل', nameEn: 'Graduated Beaker 250ml', cabinet: 'Cabinet B', shelf: 'Shelf 1', qty: 24, unit: 'pcs', minQty: 15, size: '250ml', material: 'Borosilicate' },
+                    { id: 'itm-4', type: 'glassware', code: 'GLS-205', nameAr: 'أنبوبة اختبار زجاجية', nameEn: 'Pyrex Test Tubes', cabinet: 'Cabinet B', shelf: 'Shelf 3', qty: 12, unit: 'pcs', minQty: 20, size: '16x150mm', material: 'Pyrex' },
+                    { id: 'itm-5', type: 'equipment', code: 'EQP-301', nameAr: 'ميكروسكوب ضوئي مركب', nameEn: 'Compound Light Microscope', cabinet: 'Cabinet C', shelf: 'Shelf 1', qty: 8, unit: 'pcs', minQty: 6, serial: 'RIS-MIC-01..08', condition: 'يعمل بكفاءة', maintDate: today },
+                    { id: 'itm-6', type: 'equipment', code: 'EQP-304', nameAr: 'ميزان رقمي حساس', nameEn: 'Digital Analytical Balance', cabinet: 'Cabinet C', shelf: 'Shelf 2', qty: 3, unit: 'pcs', minQty: 3, serial: 'RIS-BAL-04', condition: 'يحتاج معايرة', maintDate: today }
+                ],
+                loans: [
+                    { id: 'ln-1', itemId: 'itm-5', qty: 2, teacher: 'Mr. Kareem Adel', destination: 'Grade 8A - Biology Class', checkoutDate: today, expectedReturn: 'نهاية الحصة الخامسة', notes: 'لفحص شرائح الخلايا النباتية', status: 'active' }
+                ],
+                logs: [
+                    { id: 'lg-1', itemId: 'itm-1', type: 'consumption', qty: 150, teacher: 'Ms. Sara Nabil - G10', date: today, notes: 'تجربة تفاعل الأحماض مع الكربونات' },
+                    { id: 'lg-2', itemId: 'itm-4', type: 'breakage', qty: 3, teacher: 'Mr. Omar Tarek - G9', date: today, notes: 'كسر غير مقصود أثناء الغسيل' }
+                ],
+                teacherRequests: [
+                    {
+                        id: 'req-1',
+                        teacherName: 'Ms. Nadia Mahmoud',
+                        phone: '01001234567',
+                        grade: 'Grade 9A - Chemistry',
+                        experiment: 'الكشف عن الجلوكوز باستخدام محلول بندكت',
+                        date: today,
+                        dayName: getArabicDayName(today),
+                        session: 'Session 3 (الحصة الثالثة)',
+                        location: 'داخل معمل العلوم (Inside Science Lab)',
+                        selectedItems: [{ itemId: 'itm-2', name: 'محلول بندكت (Benedict Reagent)', qty: '100ml' }, { itemId: 'itm-4', name: 'أنبوبة اختبار زجاجية', qty: '10' }],
+                        notes: 'نحتاج حمام مائي ساخن و5 مجموعات عمل للطلاب',
+                        status: 'pending',
+                        createdAt: new Date().toISOString()
+                    }
+                ]
+            };
+        }
+
+        // ================= CLOUD DATA SERVICE LAYER =================
+        const LabDataService = {
+            async initAuth() {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    const cred = await signInWithCustomToken(auth, __initial_auth_token);
+                    currentUser = cred.user;
+                } else {
+                    const cred = await signInAnonymously(auth);
+                    currentUser = cred.user;
+                }
+                return currentUser;
+            },
+            async load() {
+                try {
+                    if (!currentUser) await this.initAuth();
+                    const snap = await getDoc(stateDocRef);
+                    if (snap.exists()) {
+                        const parsed = snap.data();
+                        setSyncBadge(true, 'متصل بالسحابة لحظياً');
+                        return {
+                            cabinets: parsed.cabinets || [],
+                            items: parsed.items || [],
+                            loans: parsed.loans || [],
+                            logs: parsed.logs || [],
+                            teacherRequests: parsed.teacherRequests || []
+                        };
+                    }
+                    const def = getDefaultState();
+                    await this.save(def);
+                    setSyncBadge(true, 'متصل بالسحابة لحظياً');
+                    return def;
+                } catch (e) {
+                    console.warn('Firestore fallback mode:', e);
+                    setSyncBadge(false, 'وضع التشغيل المباشر');
+                    return getDefaultState();
+                }
+            },
+            async save(currentState) {
+                try {
+                    if (!currentUser) await this.initAuth();
+                    await setDoc(stateDocRef, {
+                        cabinets: currentState.cabinets || [],
+                        items: currentState.items || [],
+                        loans: currentState.loans || [],
+                        logs: currentState.logs || [],
+                        teacherRequests: currentState.teacherRequests || [],
+                        updatedAt: new Date().toISOString()
+                    });
+                    setSyncBadge(true, 'متصل بالسحابة لحظياً');
+                } catch (e) {
+                    console.warn('Firestore save warning:', e);
+                    setSyncBadge(false, 'حفظ بالجلسة الحالية');
+                }
+            },
+            subscribeRealtime() {
+                if (!currentUser || unsubscribeRealtime) return;
+                try {
+                    unsubscribeRealtime = onSnapshot(stateDocRef, (snap) => {
+                        if (!snap.exists()) return;
+                        const parsed = snap.data();
+                        state = {
+                            cabinets: parsed.cabinets || [],
+                            items: parsed.items || [],
+                            loans: parsed.loans || [],
+                            logs: parsed.logs || [],
+                            teacherRequests: parsed.teacherRequests || []
+                        };
+                        setSyncBadge(true, 'متصل بالسحابة لحظياً');
+                        if (isTeacherMode) {
+                            populateTeacherSafeItemPicker();
+                        } else {
+                            renderAll();
+                        }
+                    }, (err) => {
+                        console.warn('Realtime sync listener warning:', err);
+                        setSyncBadge(false, 'وضع التشغيل المباشر');
+                    });
+                } catch (e) {}
+            }
+        };
+
+        let state = getDefaultState();
+
+        async function loadState() {
+            state = await LabDataService.load();
+        }
+
+        async function saveState() {
+            renderAll();
+            await LabDataService.save(state);
+        }
+
+        // ================= UTILITIES & HELPERS =================
+        function showToast(msg, icon = '✅') {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-text').textContent = msg;
+            document.getElementById('toast-icon').textContent = icon;
+            toast.classList.remove('hidden');
+            toast.classList.add('flex');
+            clearTimeout(window._toastTimer);
+            window._toastTimer = setTimeout(() => {
+                toast.classList.add('hidden');
+                toast.classList.remove('flex');
+            }, 3000);
+        }
+
+        function openModal(id) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.classList.remove('hidden');
+            el.classList.add('flex');
+        }
+
+        function closeModal(id) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.classList.add('hidden');
+            el.classList.remove('flex');
+        }
+
+        function openConfirmModal(title, message, onConfirm) {
+            document.getElementById('confirm-title').textContent = title;
+            document.getElementById('confirm-message').textContent = message;
+            const okBtn = document.getElementById('confirm-ok-btn');
+            okBtn.onclick = async () => {
+                closeModal('confirm-modal');
+                await onConfirm();
+            };
+            openModal('confirm-modal');
+        }
+
+        function getArabicDayName(dateStr) {
+            if (!dateStr) return '--';
+            const d = new Date(dateStr + 'T00:00:00');
+            if (isNaN(d.getTime())) return '--';
+            const days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+            return days[d.getDay()];
+        }
+
+        function getExpiryStatus(expiryStr) {
+            if (!expiryStr) return null;
+            const exp = new Date(expiryStr + 'T00:00:00');
+            if (isNaN(exp.getTime())) return null;
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const diffDays = Math.ceil((exp - today) / 86400000);
+            if (diffDays < 0) return { status: 'expired', label: `منتهي الصلاحية (${expiryStr})`, badge: 'bg-ris-red text-white' };
+            if (diffDays <= 60) return { status: 'soon', label: `ينتهي خلال ${diffDays} يوم (${expiryStr})`, badge: 'bg-amber-100 text-amber-800' };
+            return { status: 'ok', label: `ساري حتى ${expiryStr}`, badge: 'bg-emerald-50 text-emerald-700' };
+        }
+
+        function getActiveLoanQtyForItem(itemId) {
+            return state.loans
+                .filter(l => l.itemId === itemId && l.status === 'active')
+                .reduce((sum, l) => sum + Number(l.qty || 0), 0);
+        }
+
+        function generateQRSVG(text) {
+            let hash = 0;
+            for (let i = 0; i < text.length; i++) {
+                hash = ((hash << 5) - hash) + text.charCodeAt(i);
+                hash |= 0;
+            }
+            const size = 21;
+            const cell = 6;
+            let rects = '';
+            const isFinder = (r, c) => (r < 7 && c < 7) || (r < 7 && c >= size - 7) || (r >= size - 7 && c < 7);
+            for (let r = 0; r < size; r++) {
+                for (let c = 0; c < size; c++) {
+                    if (isFinder(r, c)) continue;
+                    const bit = Math.abs(Math.sin(hash + r * 31 + c * 17)) > 0.48;
+                    if (bit) {
+                        rects += `<rect x="${c * cell}" y="${r * cell}" width="${cell}" height="${cell}" fill="#1E2859"/>`;
+                    }
+                }
+            }
+            const finder = (x, y) => `
+                <rect x="${x}" y="${y}" width="${7 * cell}" height="${7 * cell}" fill="none" stroke="#1E2859" stroke-width="${cell}"/>
+                <rect x="${x + 2 * cell}" y="${y + 2 * cell}" width="${3 * cell}" height="${3 * cell}" fill="#E31E24"/>
+            `;
+            const total = size * cell;
+            return `<svg viewBox="0 0 ${total} ${total}" class="w-full h-full">${rects}${finder(0, 0)}${finder((size - 7) * cell, 0)}${finder(0, (size - 7) * cell)}</svg>`;
+        }
+
+        // ================= NAVIGATION & TABS =================
+        function switchTab(tabId) {
+            currentTab = tabId;
+            const allTabs = ['dashboard', 'requests', 'cabinets', 'inventory', 'loans', 'logs', 'reports'];
+            allTabs.forEach(t => {
+                const sec = document.getElementById(`tab-${t}`);
+                if (sec) sec.classList.toggle('hidden', t !== tabId);
+
+                const deskBtn = document.getElementById(`nav-desk-${t}`);
+                if (deskBtn) {
+                    if (t === tabId) {
+                        deskBtn.className = 'nav-btn-desk w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold bg-ris-red text-white shadow-md transition';
+                    } else {
+                        deskBtn.className = 'nav-btn-desk w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold text-slate-200 hover:bg-white/10 transition';
+                    }
+                }
+
+                const mobBtn = document.getElementById(`nav-mob-${t}`);
+                if (mobBtn) {
+                    if (t === tabId) {
+                        mobBtn.classList.remove('text-slate-500', 'font-semibold');
+                        mobBtn.classList.add('text-ris-red', 'font-extrabold', 'bg-ris-redLight/50');
+                        mobBtn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                    } else {
+                        mobBtn.classList.add('text-slate-500', 'font-semibold');
+                        mobBtn.classList.remove('text-ris-red', 'font-extrabold', 'bg-ris-redLight/50');
+                    }
+                }
+            });
+            renderAll();
+        }
+
+        function jumpToInventoryFilter(statusVal) {
+            switchTab('inventory');
+            const statusSelect = document.getElementById('inv-status-filter');
+            if (statusSelect) statusSelect.value = statusVal;
+            renderInventory();
+        }
+
+        // ================= TEACHER PORTAL MODE =================
+        function checkPortalMode() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('mode') === 'teacher') {
+                activateTeacherPortal(false);
+            } else {
+                renderAll();
+            }
+        }
+
+        function activateTeacherPortal(isPreview) {
+            isTeacherMode = true;
+            document.getElementById('admin-sidebar').classList.add('hidden');
+            document.getElementById('admin-mobile-header').classList.add('hidden');
+            document.getElementById('admin-main-content').classList.add('hidden');
+            document.getElementById('admin-mobile-nav').classList.add('hidden');
+            document.getElementById('teacher-portal-view').classList.remove('hidden');
+            const exitBtn = document.getElementById('exit-teacher-preview-btn');
+            if (exitBtn) exitBtn.classList.toggle('hidden', !isPreview);
+            const today = new Date().toISOString().split('T')[0];
+            const dateInput = document.getElementById('tr-date');
+            if (dateInput && !dateInput.value) dateInput.value = today;
+            updateTeacherDayPreview();
+            populateTeacherSafeItemPicker();
+        }
+
+        function enterTeacherPortalPreview() {
+            activateTeacherPortal(true);
+        }
+
+        function exitTeacherPortalPreview() {
+            isTeacherMode = false;
+            document.getElementById('teacher-portal-view').classList.add('hidden');
+            document.getElementById('admin-sidebar').classList.remove('hidden');
+            document.getElementById('admin-mobile-header').classList.remove('hidden');
+            document.getElementById('admin-main-content').classList.remove('hidden');
+            document.getElementById('admin-mobile-nav').classList.remove('hidden');
+            renderAll();
+        }
+
+        function updateTeacherDayPreview() {
+            const dateVal = document.getElementById('tr-date').value;
+            document.getElementById('tr-day-label').textContent = `اليوم: ${getArabicDayName(dateVal)}`;
+        }
+
+        function populateTeacherSafeItemPicker() {
+            const picker = document.getElementById('tr-item-picker');
+            if (!picker) return;
+            picker.innerHTML = `<option value="">-- اختر أداة أو مادة من القائمة --</option>` +
+                state.items.map(i => `<option value="${i.id}">${i.nameAr} (${i.nameEn})</option>`).join('');
+            renderTeacherSelectedItems();
+        }
+
+        function addTeacherSelectedItem() {
+            const picker = document.getElementById('tr-item-picker');
+            const qtyInput = document.getElementById('tr-item-qty');
+            const itemId = picker.value;
+            if (!itemId) {
+                showToast('اختر أداة أولاً من القائمة', '⚠️');
+                return;
+            }
+            const item = state.items.find(i => i.id === itemId);
+            if (!item) return;
+            const qty = qtyInput.value.trim() || '1';
+            teacherSelectedItems.push({ itemId: item.id, name: `${item.nameAr} (${item.nameEn})`, qty });
+            picker.value = '';
+            qtyInput.value = '';
+            renderTeacherSelectedItems();
+        }
+
+        function removeTeacherSelectedItem(idx) {
+            teacherSelectedItems.splice(idx, 1);
+            renderTeacherSelectedItems();
+        }
+
+        function renderTeacherSelectedItems() {
+            const container = document.getElementById('tr-selected-items-list');
+            if (!container) return;
+            if (teacherSelectedItems.length === 0) {
+                container.innerHTML = `<span class="text-[11px] text-slate-400">لم يتم إضافة أصناف محددة بعد (يمكنك كتابة طلباتك في الملاحظات بالأسفل).</span>`;
+                return;
+            }
+            container.innerHTML = teacherSelectedItems.map((si, idx) => `
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-ris-navy text-white text-[11px] font-bold">
+                    <span>${si.name} × ${si.qty}</span>
+                    <button type="button" onclick="removeTeacherSelectedItem(${idx})" class="text-ris-red font-black hover:text-white">✕</button>
+                </span>
+            `).join('');
+        }
+
+        async function submitTeacherRequest(e) {
+            e.preventDefault();
+            const dateVal = document.getElementById('tr-date').value;
+            const req = {
+                id: 'req-' + Date.now(),
+                teacherName: document.getElementById('tr-name').value.trim(),
+                phone: document.getElementById('tr-phone').value.trim(),
+                grade: document.getElementById('tr-grade').value.trim(),
+                experiment: document.getElementById('tr-experiment').value.trim(),
+                date: dateVal,
+                dayName: getArabicDayName(dateVal),
+                session: document.getElementById('tr-session').value,
+                location: document.getElementById('tr-location').value,
+                selectedItems: [...teacherSelectedItems],
+                notes: document.getElementById('tr-notes').value.trim(),
+                status: 'pending',
+                createdAt: new Date().toISOString()
+            };
+            state.teacherRequests.unshift(req);
+            await saveState();
+            document.getElementById('teacher-form-card').classList.add('hidden');
+            document.getElementById('teacher-success-card').classList.remove('hidden');
+            document.getElementById('teacher-success-summary').innerHTML = `
+                تم تسجيل طلب <strong>${req.teacherName}</strong> لتجربة <strong>"${req.experiment}"</strong><br>
+                الموعد: <strong>${req.dayName} ${req.date} - ${req.session}</strong>
+            `;
+        }
+
+        function resetTeacherPortalForm() {
+            document.getElementById('teacher-request-form').reset();
+            teacherSelectedItems = [];
+            renderTeacherSelectedItems();
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('tr-date').value = today;
+            updateTeacherDayPreview();
+            document.getElementById('teacher-success-card').classList.add('hidden');
+            document.getElementById('teacher-form-card').classList.remove('hidden');
+        }
+
+        function openTeacherQRModal() {
+            const baseUrl = window.location.href.split('?')[0];
+            const teacherUrl = `${baseUrl}?mode=teacher`;
+            document.getElementById('teacher-portal-url-input').value = teacherUrl;
+            document.getElementById('teacher-qr-svg-box').innerHTML = generateQRSVG(teacherUrl);
+            openModal('teacher-qr-modal');
+        }
+
+        function copyTeacherPortalLink() {
+            const input = document.getElementById('teacher-portal-url-input');
+            input.select();
+            document.execCommand('copy');
+            showToast('تم نسخ رابط بوابة المدرسين بنجاح');
+        }
+
+        function printTeacherQRPoster() {
+            const posterHtml = document.getElementById('teacher-qr-poster').outerHTML;
+            const printArea = document.getElementById('print-area');
+            printArea.innerHTML = `<div class="max-w-md mx-auto pt-8">${posterHtml}</div>`;
+            printArea.classList.remove('hidden');
+            window.print();
+            printArea.classList.add('hidden');
+        }
+
+        // ================= DASHBOARD RENDERING =================
+        function renderDashboard() {
+            const pendingReqs = state.teacherRequests.filter(r => r.status === 'pending').length;
+            const lowStockItems = state.items.filter(i => Number(i.qty) <= Number(i.minQty));
+            const expiryAlertItems = state.items.filter(i => {
+                if (i.type !== 'chemical') return false;
+                const st = getExpiryStatus(i.expiry);
+                return st && st.status !== 'ok';
+            });
+            const maintItems = state.items.filter(i => i.type === 'equipment' && i.condition !== 'يعمل بكفاءة');
+            const activeLoans = state.loans.filter(l => l.status === 'active');
+
+            document.getElementById('kpi-pending-requests').textContent = pendingReqs;
+            document.getElementById('kpi-total-items').textContent = state.items.length;
+            document.getElementById('kpi-low-stock').textContent = lowStockItems.length;
+            document.getElementById('kpi-expiry-alerts').textContent = expiryAlertItems.length;
+            document.getElementById('kpi-maintenance').textContent = maintItems.length;
+            document.getElementById('kpi-active-loans').textContent = activeLoans.length;
+
+            ['badge-desk-requests', 'badge-mob-requests'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = pendingReqs;
+            });
+            ['badge-desk-loans', 'badge-mob-loans'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = activeLoans.length;
+            });
+
+            // Urgent Alerts Feed
+            const alerts = [];
+            pendingReqs > 0 && alerts.push({ color: 'border-emerald-300 bg-emerald-50/70', badge: 'bg-emerald-600 text-white', tag: 'طلب تحضير جديد', text: `يوجد ${pendingReqs} طلب تحضير تجربة من المدرسين بانتظار المراجعة.`, action: () => switchTab('requests') });
+            expiryAlertItems.forEach(i => {
+                const st = getExpiryStatus(i.expiry);
+                alerts.push({ color: 'border-red-300 bg-red-50/70', badge: 'bg-ris-red text-white', tag: 'تنبيه صلاحية', text: `${i.nameAr} (${i.cabinet}) — ${st.label}`, action: () => openItemDetails(i.id) });
+            });
+            lowStockItems.forEach(i => {
+                alerts.push({ color: 'border-amber-300 bg-amber-50/70', badge: 'bg-amber-600 text-white', tag: 'نواقص المخزن', text: `${i.nameAr} (${i.code}) — المتاح: ${i.qty} ${i.unit} (الحد الأدنى: ${i.minQty})`, action: () => switchTab('inventory') });
+            });
+            maintItems.forEach(i => {
+                alerts.push({ color: 'border-purple-300 bg-purple-50/70', badge: 'bg-purple-700 text-white', tag: i.condition, text: `${i.nameAr} (${i.code}) في ${i.cabinet}`, action: () => openItemModal(i.id) });
+            });
+
+            document.getElementById('urgent-alerts-count').textContent = alerts.length;
+            const alertsContainer = document.getElementById('urgent-alerts-list');
+            if (alerts.length === 0) {
+                alertsContainer.innerHTML = `<div class="p-6 text-center text-xs text-slate-400 font-bold">🎉 ممتاز! لا توجد تنبيهات عاجلة أو نواقص حالياً.</div>`;
+            } else {
+                alertsContainer.innerHTML = alerts.map((a, idx) => `
+                    <div onclick="window._dashAlertClick(${idx})" class="cursor-pointer p-3 rounded-xl border ${a.color} flex items-start justify-between gap-2 hover:shadow-sm transition">
+                        <div>
+                            <span class="inline-block px-2 py-0.5 rounded-md text-[10px] font-extrabold ${a.badge} mb-1">${a.tag}</span>
+                            <div class="text-xs font-bold text-ris-ink">${a.text}</div>
+                        </div>
+                        <span class="text-xs font-black text-ris-navy">←</span>
+                    </div>
+                `).join('');
+                window._dashAlertClick = (idx) => alerts[idx]?.action();
+            }
+
+            // Active Loans Feed
+            const loansContainer = document.getElementById('dashboard-active-loans-list');
+            if (activeLoans.length === 0) {
+                loansContainer.innerHTML = `<div class="p-6 text-center text-xs text-slate-400 font-bold">✅ جميع أدوات وأجهزة المعمل متواجدة بالداخل حالياً.</div>`;
+            } else {
+                loansContainer.innerHTML = activeLoans.map(l => {
+                    const item = state.items.find(i => i.id === l.itemId);
+                    return `
+                        <div class="p-3 rounded-xl border border-blue-200 bg-blue-50/50 flex items-center justify-between gap-3">
+                            <div>
+                                <div class="text-xs font-black text-ris-navy">${item ? item.nameAr : 'أداة معملية'} <span class="text-ris-red">(× ${l.qty})</span></div>
+                                <div class="text-[11px] font-semibold text-slate-600 mt-0.5">👨‍🏫 ${l.teacher} • 🏫 ${l.destination}</div>
+                                <div class="text-[10px] text-blue-700 font-bold mt-0.5">⏰ الإرجاع: ${l.expectedReturn}</div>
+                            </div>
+                            <button onclick="openReturnModal('${l.id}')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-[11px] font-bold shrink-0 shadow-sm">إرجاع ✓</button>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        function handleDashboardSearch() {
+            const q = document.getElementById('dashboard-search-input').value.trim().toLowerCase();
+            const clearBtn = document.getElementById('dashboard-search-clear');
+            const resultsEl = document.getElementById('dashboard-search-results');
+            clearBtn.classList.toggle('hidden', !q);
+            if (!q) {
+                resultsEl.innerHTML = '';
+                return;
+            }
+            const matches = state.items.filter(i =>
+                i.nameAr.toLowerCase().includes(q) ||
+                i.nameEn.toLowerCase().includes(q) ||
+                i.code.toLowerCase().includes(q) ||
+                i.cabinet.toLowerCase().includes(q)
+            );
+            if (matches.length === 0) {
+                resultsEl.innerHTML = `<div class="col-span-full text-center py-4 text-xs text-slate-400 font-bold">لا توجد نتائج مطابقة لـ "${q}"</div>`;
+                return;
+            }
+            resultsEl.innerHTML = matches.map(i => `
+                <div onclick="openItemDetails('${i.id}')" class="cursor-pointer p-3 rounded-xl bg-ris-bg border border-slate-200 hover:border-ris-navy transition">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] font-black px-2 py-0.5 rounded bg-ris-navy text-white">${i.code}</span>
+                        <span class="text-xs font-black text-ris-red">🗄️ ${i.cabinet} • ${i.shelf}</span>
+                    </div>
+                    <div class="font-extrabold text-xs text-ris-ink mt-1.5">${i.nameAr}</div>
+                    <div class="text-[11px] text-slate-500">${i.nameEn} • المتاح: <strong>${i.qty} ${i.unit}</strong></div>
+                </div>
+            `).join('');
+        }
+
+        function clearDashboardSearch() {
+            document.getElementById('dashboard-search-input').value = '';
+            handleDashboardSearch();
+        }
+
+        // ================= TEACHER REQUESTS ADMIN VIEW =================
+        function setRequestFilter(filter) {
+            currentRequestFilter = filter;
+            document.querySelectorAll('.req-filter-btn').forEach(btn => {
+                btn.className = 'req-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700';
+            });
+            const activeBtn = document.getElementById(`req-filter-${filter}`);
+            if (activeBtn) activeBtn.className = 'req-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-ris-navy text-white';
+            renderTeacherRequests();
+        }
+
+        function renderTeacherRequests() {
+            const grid = document.getElementById('teacher-requests-grid');
+            if (!grid) return;
+            let list = [...state.teacherRequests];
+            if (currentRequestFilter !== 'all') {
+                list = list.filter(r => r.status === currentRequestFilter);
+            }
+            if (list.length === 0) {
+                grid.innerHTML = `<div class="col-span-full bg-white p-8 rounded-2xl border border-ris-border text-center text-xs text-slate-400 font-bold">لا توجد طلبات مدرسين في هذا التصنيف حالياً.</div>`;
+                return;
+            }
+            const statusMap = {
+                pending: { label: '⏳ قيد الانتظار', cls: 'bg-amber-100 text-amber-800' },
+                prepared: { label: '✅ تم التحضير وجاهز', cls: 'bg-emerald-100 text-emerald-800' },
+                loaned: { label: '🔄 معار للفصل', cls: 'bg-blue-100 text-blue-800' },
+                completed: { label: '🏁 مكتمل', cls: 'bg-slate-200 text-slate-700' }
+            };
+            grid.innerHTML = list.map(req => {
+                const st = statusMap[req.status] || statusMap.pending;
+                const cleanPhone = (req.phone || '').replace(/\D/g, '');
+                const waPhone = cleanPhone.startsWith('0') ? '2' + cleanPhone : cleanPhone;
+                const waMsg = encodeURIComponent(`أهلاً ${req.teacherName}، تم تحضير أدوات تجربة "${req.experiment}" الخاصة بحصة ${req.session} (${req.dayName} ${req.date}) في معمل العلوم RIS.`);
+                const itemsTags = (req.selectedItems || []).map(si => `<span class="px-2 py-0.5 rounded-md bg-slate-100 text-ris-navy text-[10px] font-bold">${si.name} × ${si.qty}</span>`).join('');
+                return `
+                    <div class="bg-white p-5 rounded-2xl border border-ris-border shadow-sm space-y-3 flex flex-col justify-between">
+                        <div class="space-y-2.5">
+                            <div class="flex items-start justify-between gap-2">
+                                <div>
+                                    <div class="font-black text-sm text-ris-navy">👨‍🏫 ${req.teacherName} <span class="text-xs font-semibold text-slate-500">(${req.grade})</span></div>
+                                    <div class="text-xs font-bold text-ris-red mt-0.5">📅 ${req.dayName} ${req.date} • ⏰ ${req.session}</div>
+                                </div>
+                                <span class="px-2.5 py-1 rounded-full text-[11px] font-extrabold shrink-0 ${st.cls}">${st.label}</span>
+                            </div>
+                            <div class="p-3 rounded-xl bg-ris-bg border border-slate-200 space-y-1">
+                                <div class="text-xs font-extrabold text-ris-ink">🔬 التجربة: ${req.experiment}</div>
+                                <div class="text-[11px] text-slate-600">📍 ${req.location}</div>
+                                <div class="text-xs text-slate-700 pt-1 border-t border-slate-200/70">${req.notes}</div>
+                                ${itemsTags ? `<div class="flex flex-wrap gap-1 pt-1.5">${itemsTags}</div>` : ''}
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-1.5 pt-2 border-t border-slate-100">
+                            ${req.status === 'pending' ? `<button onclick="updateRequestStatus('${req.id}', 'prepared')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-[11px] font-bold">✅ تأكيد التحضير</button>` : ''}
+                            <a href="https://wa.me/${waPhone}?text=${waMsg}" target="_blank" rel="noopener" class="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white rounded-xl text-[11px] font-bold">💬 واتساب</a>
+                            <button onclick="convertRequestToLoan('${req.id}')" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-[11px] font-bold">📤 تحويل لإعارة</button>
+                            <button onclick="convertRequestToLog('${req.id}')" class="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-[11px] font-bold">📉 تسجيل استهلاك</button>
+                            <button onclick="deleteTeacherRequest('${req.id}')" class="px-2.5 py-1.5 bg-slate-100 hover:bg-red-100 text-ris-red rounded-xl text-[11px] font-bold mr-auto">🗑️</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function updateRequestStatus(reqId, newStatus) {
+            const req = state.teacherRequests.find(r => r.id === reqId);
+            if (!req) return;
+            req.status = newStatus;
+            await saveState();
+            showToast('تم تحديث حالة طلب المدرس بنجاح');
+        }
+
+        function convertRequestToLoan(reqId) {
+            const req = state.teacherRequests.find(r => r.id === reqId);
+            if (!req) return;
+            openCheckoutModal();
+            document.getElementById('loan-teacher').value = req.teacherName;
+            document.getElementById('loan-destination').value = req.grade;
+            document.getElementById('loan-expected').value = `بعد ${req.session}`;
+            document.getElementById('loan-notes').value = `تجربة: ${req.experiment}`;
+            if (req.selectedItems?.length > 0) {
+                document.getElementById('loan-item-id').value = req.selectedItems[0].itemId;
+            }
+            req.status = 'loaned';
+            saveState();
+        }
+
+        function convertRequestToLog(reqId) {
+            const req = state.teacherRequests.find(r => r.id === reqId);
+            if (!req) return;
+            openLogModal();
+            document.getElementById('log-teacher').value = `${req.teacherName} - ${req.grade}`;
+            document.getElementById('log-notes').value = `استهلاك تجربة: ${req.experiment}`;
+            if (req.selectedItems?.length > 0) {
+                document.getElementById('log-item-id').value = req.selectedItems[0].itemId;
+            }
+            req.status = 'completed';
+            saveState();
+        }
+
+        function deleteTeacherRequest(reqId) {
+            openConfirmModal('حذف طلب المدرس', 'هل أنت متأكد من حذف هذا الطلب نهائياً؟', async () => {
+                state.teacherRequests = state.teacherRequests.filter(r => r.id !== reqId);
+                await saveState();
+                showToast('تم حذف الطلب');
+            });
+        }
+
+        // ================= CABINETS MANAGEMENT =================
+        function renderCabinets() {
+            const grid = document.getElementById('cabinets-grid');
+            if (!grid) return;
+            const colorBorders = {
+                navy: 'border-t-4 border-t-ris-navy',
+                red: 'border-t-4 border-t-ris-red',
+                emerald: 'border-t-4 border-t-emerald-600',
+                amber: 'border-t-4 border-t-amber-500',
+                purple: 'border-t-4 border-t-purple-700'
+            };
+            if (state.cabinets.length === 0) {
+                grid.innerHTML = `<div class="col-span-full bg-white p-8 rounded-2xl border border-ris-border text-center text-xs text-slate-400 font-bold">لا توجد دواليب مسجلة. اضغط على "+ إضافة دولاب جديد" للبدء.</div>`;
+                return;
+            }
+            grid.innerHTML = state.cabinets.map(cab => {
+                const cabItems = state.items.filter(i => i.cabinet === cab.code);
+                const borderCls = colorBorders[cab.color] || colorBorders.navy;
+                return `
+                    <div class="bg-white p-5 rounded-2xl border border-ris-border ${borderCls} shadow-sm flex flex-col justify-between space-y-4">
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="px-2.5 py-1 rounded-lg bg-ris-navy text-white text-xs font-black">${cab.code}</span>
+                                <span class="text-xs font-bold text-slate-500">${cab.shelves} أرفف • ${cabItems.length} صنف</span>
+                            </div>
+                            <h3 class="font-black text-base text-ris-ink pt-1">${cab.nameAr}</h3>
+                            <p class="text-xs text-slate-500 font-semibold">${cab.nameEn}</p>
+                            ${cab.specialty ? `<span class="inline-block px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 text-[11px] font-bold">🏷️ ${cab.specialty}</span>` : ''}
+                        </div>
+                        <div class="flex flex-wrap gap-2 pt-3 border-t border-slate-100">
+                            <button onclick="openCabinetQRModal('${cab.id}')" class="flex-1 py-2 px-3 bg-ris-navy hover:bg-ris-navyDark text-white rounded-xl text-xs font-bold transition">📱 QR وجرد سريع</button>
+                            <button onclick="openCabinetModal('${cab.id}')" class="py-2 px-3 bg-slate-100 hover:bg-slate-200 text-ris-navy rounded-xl text-xs font-bold transition">✏️ تعديل</button>
+                            <button onclick="deleteCabinet('${cab.id}')" class="py-2 px-3 bg-ris-redLight hover:bg-red-200 text-ris-red rounded-xl text-xs font-bold transition">🗑️</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openCabinetModal(cabId = null) {
+            const form = document.getElementById('cabinet-form');
+            form.reset();
+            document.getElementById('cab-edit-id').value = cabId || '';
+            if (cabId) {
+                const cab = state.cabinets.find(c => c.id === cabId);
+                if (!cab) return;
+                document.getElementById('cabinet-modal-title').textContent = 'تعديل بيانات الدولاب';
+                document.getElementById('cab-code').value = cab.code;
+                document.getElementById('cab-shelves').value = cab.shelves;
+                document.getElementById('cab-name-ar').value = cab.nameAr;
+                document.getElementById('cab-name-en').value = cab.nameEn;
+                document.getElementById('cab-specialty').value = cab.specialty || '';
+                document.getElementById('cab-color').value = cab.color || 'navy';
+            } else {
+                document.getElementById('cabinet-modal-title').textContent = 'إضافة دولاب جديد';
+            }
+            openModal('cabinet-modal');
+        }
+
+        async function saveCabinet(e) {
+            e.preventDefault();
+            const editId = document.getElementById('cab-edit-id').value;
+            const newCode = document.getElementById('cab-code').value.trim();
+            const data = {
+                code: newCode,
+                shelves: Number(document.getElementById('cab-shelves').value) || 4,
+                nameAr: document.getElementById('cab-name-ar').value.trim(),
+                nameEn: document.getElementById('cab-name-en').value.trim(),
+                specialty: document.getElementById('cab-specialty').value.trim(),
+                color: document.getElementById('cab-color').value
+            };
+
+            if (editId) {
+                const cab = state.cabinets.find(c => c.id === editId);
+                if (cab) {
+                    const oldCode = cab.code;
+                    Object.assign(cab, data);
+                    if (oldCode !== newCode) {
+                        state.items.forEach(itm => {
+                            if (itm.cabinet === oldCode) itm.cabinet = newCode;
+                        });
+                    }
+                }
+                showToast('تم تحديث بيانات الدولاب وربط الأصناف بنجاح');
+            } else {
+                state.cabinets.push({ id: 'cab-' + Date.now(), ...data });
+                showToast('تم إضافة الدولاب الجديد بنجاح');
+            }
+            closeModal('cabinet-modal');
+            await saveState();
+        }
+
+        function deleteCabinet(cabId) {
+            const cab = state.cabinets.find(c => c.id === cabId);
+            if (!cab) return;
+            const affectedCount = state.items.filter(i => i.cabinet === cab.code).length;
+            const msg = affectedCount > 0
+                ? `هذا الدولاب يحتوي على (${affectedCount}) صنف. سيتم نقل هذه الأصناف تلقائياً إلى "غير محدد" حتى لا تفقد أي بيانات. هل تريد المتابعة؟`
+                : `هل أنت متأكد من حذف "${cab.code} - ${cab.nameAr}"؟`;
+
+            openConfirmModal('حذف الدولاب', msg, async () => {
+                state.items.forEach(itm => {
+                    if (itm.cabinet === cab.code) itm.cabinet = 'غير محدد';
+                });
+                state.cabinets = state.cabinets.filter(c => c.id !== cabId);
+                await saveState();
+                showToast('تم حذف الدولاب ونقل الأصناف بأمان');
+            });
+        }
+
+        function openCabinetQRModal(cabId) {
+            activeQRCodeCabinetId = cabId;
+            const cab = state.cabinets.find(c => c.id === cabId);
+            if (!cab) return;
+            document.getElementById('qr-modal-title').textContent = `بطاقة QR وجرد: ${cab.code}`;
+            document.getElementById('qr-cab-code').textContent = cab.code;
+            document.getElementById('qr-cab-name').textContent = cab.nameAr;
+            document.getElementById('qr-cab-meta').textContent = `${cab.nameEn} • ${cab.shelves} أرفف`;
+            document.getElementById('qr-svg-container').innerHTML = generateQRSVG(`RIS-CABINET:${cab.code}`);
+            renderCabinetQRItems(cab.code);
+            openModal('cabinet-qr-modal');
+        }
+
+        function renderCabinetQRItems(cabCode) {
+            const listEl = document.getElementById('qr-cabinet-items-list');
+            const items = state.items.filter(i => i.cabinet === cabCode);
+            if (items.length === 0) {
+                listEl.innerHTML = `<div class="text-center py-4 text-xs text-slate-400 font-bold">هذا الدولاب فارغ حالياً.</div>`;
+                return;
+            }
+            listEl.innerHTML = items.map(i => `
+                <div class="p-2.5 rounded-xl bg-ris-bg border border-slate-200 flex items-center justify-between gap-2">
+                    <div>
+                        <div class="text-xs font-extrabold text-ris-navy">${i.nameAr} <span class="text-[10px] text-slate-400">(${i.shelf})</span></div>
+                        <div class="text-[11px] text-slate-500">${i.code}</div>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <button onclick="adjustItemQty('${i.id}', -1)" class="w-7 h-7 rounded-lg bg-ris-redLight text-ris-red font-black hover:bg-red-200">-</button>
+                        <span class="min-w-[60px] text-center text-xs font-black text-ris-ink">${i.qty} ${i.unit}</span>
+                        <button onclick="adjustItemQty('${i.id}', 1)" class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-800 font-black hover:bg-emerald-200">+</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function adjustItemQty(itemId, delta) {
+            const item = state.items.find(i => i.id === itemId);
+            if (!item) return;
+            item.qty = Math.max(0, Number(item.qty) + delta);
+            await saveState();
+            if (activeQRCodeCabinetId) {
+                const cab = state.cabinets.find(c => c.id === activeQRCodeCabinetId);
+                if (cab) renderCabinetQRItems(cab.code);
+            }
+        }
+
+        function printCabinetQRLabel() {
+            const cardHtml = document.getElementById('qr-printable-card').outerHTML;
+            const printArea = document.getElementById('print-area');
+            printArea.innerHTML = `<div class="max-w-xs mx-auto pt-10">${cardHtml}</div>`;
+            printArea.classList.remove('hidden');
+            window.print();
+            printArea.classList.add('hidden');
+        }
+
+        // ================= INVENTORY & ITEMS CRUD =================
+        function populateCabinetSelects() {
+            const optionsHtml = state.cabinets.map(c => `<option value="${c.code}">${c.code} - ${c.nameAr}</option>`).join('') + `<option value="غير محدد">غير محدد</option>`;
+            const itemCab = document.getElementById('item-cabinet');
+            if (itemCab) {
+                const prev = itemCab.value;
+                itemCab.innerHTML = optionsHtml;
+                if (prev) itemCab.value = prev;
+            }
+            const invFilter = document.getElementById('inv-cabinet-filter');
+            if (invFilter) {
+                const prev = invFilter.value || 'all';
+                invFilter.innerHTML = `<option value="all">جميع الدواليب (الكل)</option>` + state.cabinets.map(c => `<option value="${c.code}">${c.code} - ${c.nameAr}</option>`).join('') + `<option value="غير محدد">غير محدد</option>`;
+                invFilter.value = prev;
+            }
+            const repFilter = document.getElementById('report-full-cab-filter');
+            if (repFilter) {
+                const prev = repFilter.value || 'all';
+                repFilter.innerHTML = `<option value="all">كل الدواليب (جرد شامل)</option>` + state.cabinets.map(c => `<option value="${c.code}">${c.code} - ${c.nameAr}</option>`).join('') + `<option value="غير محدد">غير محدد</option>`;
+                repFilter.value = prev;
+            }
+        }
+
+        function renderInventory() {
+            populateCabinetSelects();
+            const grid = document.getElementById('inventory-grid');
+            if (!grid) return;
+            const q = (document.getElementById('inv-search')?.value || '').trim().toLowerCase();
+            const typeF = document.getElementById('inv-type-filter')?.value || 'all';
+            const cabF = document.getElementById('inv-cabinet-filter')?.value || 'all';
+            const statusF = document.getElementById('inv-status-filter')?.value || 'all';
+
+            const filtered = state.items.filter(i => {
+                if (q && !(i.nameAr.toLowerCase().includes(q) || i.nameEn.toLowerCase().includes(q) || i.code.toLowerCase().includes(q))) return false;
+                if (typeF !== 'all' && i.type !== typeF) return false;
+                if (cabF !== 'all' && i.cabinet !== cabF) return false;
+                if (statusF === 'low' && Number(i.qty) > Number(i.minQty)) return false;
+                if (statusF === 'expiring') {
+                    if (i.type !== 'chemical') return false;
+                    const st = getExpiryStatus(i.expiry);
+                    if (!st || st.status === 'ok') return false;
+                }
+                if (statusF === 'maintenance' && !(i.type === 'equipment' && i.condition !== 'يعمل بكفاءة')) return false;
+                if (statusF === 'loaned' && getActiveLoanQtyForItem(i.id) <= 0) return false;
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="col-span-full bg-white p-8 rounded-2xl border border-ris-border text-center text-xs text-slate-400 font-bold">لا توجد أصناف تطابق خيارات البحث والفلترة الحالية.</div>`;
+                return;
+            }
+
+            const typeBadges = {
+                chemical: { label: '🧪 مادة كيميائية', cls: 'bg-red-50 text-ris-red border-red-200' },
+                glassware: { label: '🧫 أداة زجاجية', cls: 'bg-blue-50 text-ris-navy border-blue-200' },
+                equipment: { label: '🔬 جهاز معملي', cls: 'bg-purple-50 text-purple-800 border-purple-200' }
+            };
+
+            grid.innerHTML = filtered.map(item => {
+                const tb = typeBadges[item.type] || typeBadges.equipment;
+                const isLow = Number(item.qty) <= Number(item.minQty);
+                const loanedQty = getActiveLoanQtyForItem(item.id);
+                const expSt = item.type === 'chemical' ? getExpiryStatus(item.expiry) : null;
+                return `
+                    <div class="bg-white p-5 rounded-2xl border ${isLow ? 'border-amber-400' : 'border-ris-border'} shadow-sm flex flex-col justify-between space-y-3">
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="px-2.5 py-0.5 rounded-lg border text-[10px] font-extrabold ${tb.cls}">${tb.label}</span>
+                                <span class="text-xs font-black text-slate-400">${item.code}</span>
+                            </div>
+                            <div>
+                                <h3 class="font-black text-sm text-ris-ink">${item.nameAr}</h3>
+                                <p class="text-xs text-slate-500 font-semibold">${item.nameEn}</p>
+                            </div>
+                            <div class="flex flex-wrap gap-1.5 pt-1">
+                                <span class="px-2.5 py-1 rounded-lg bg-ris-navy text-white text-[11px] font-bold">🗄️ ${item.cabinet} • ${item.shelf}</span>
+                                <span class="px-2.5 py-1 rounded-lg ${isLow ? 'bg-amber-100 text-amber-800' : 'bg-emerald-50 text-emerald-800'} text-[11px] font-extrabold">المتاح: ${item.qty} ${item.unit}</span>
+                                ${loanedQty > 0 ? `<span class="px-2.5 py-1 rounded-lg bg-blue-100 text-blue-800 text-[11px] font-extrabold">🔄 معار: ${loanedQty} ${item.unit}</span>` : ''}
+                            </div>
+                            ${expSt ? `<div class="inline-block px-2 py-0.5 rounded text-[10px] font-bold ${expSt.badge}">${expSt.label}</div>` : ''}
+                            ${item.type === 'equipment' ? `<div class="text-[11px] font-bold text-slate-600">الحالة: ${item.condition}</div>` : ''}
+                        </div>
+                        <div class="flex gap-1.5 pt-3 border-t border-slate-100">
+                            <button onclick="openItemDetails('${item.id}')" class="flex-1 py-2 px-2.5 bg-slate-100 hover:bg-slate-200 text-ris-navy rounded-xl text-[11px] font-bold">📄 التفاصيل</button>
+                            <button onclick="openItemModal('${item.id}')" class="py-2 px-2.5 bg-blue-50 hover:bg-blue-100 text-blue-800 rounded-xl text-[11px] font-bold">✏️ تعديل</button>
+                            <button onclick="deleteItem('${item.id}')" class="py-2 px-2.5 bg-ris-redLight hover:bg-red-200 text-ris-red rounded-xl text-[11px] font-bold">🗑️</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleItemTypeFields() {
+            const type = document.getElementById('item-type').value;
+            document.getElementById('fields-chemical').classList.toggle('hidden', type !== 'chemical');
+            document.getElementById('fields-glassware').classList.toggle('hidden', type !== 'glassware');
+            document.getElementById('fields-equipment').classList.toggle('hidden', type !== 'equipment');
+        }
+
+        function openItemModal(itemId = null) {
+            populateCabinetSelects();
+            const form = document.getElementById('item-form');
+            form.reset();
+            document.getElementById('item-edit-id').value = itemId || '';
+            if (itemId) {
+                const item = state.items.find(i => i.id === itemId);
+                if (!item) return;
+                document.getElementById('item-modal-title').textContent = 'تعديل بيانات الصنف';
+                document.getElementById('item-type').value = item.type;
+                document.getElementById('item-code').value = item.code;
+                document.getElementById('item-name-ar').value = item.nameAr;
+                document.getElementById('item-name-en').value = item.nameEn;
+                document.getElementById('item-cabinet').value = item.cabinet;
+                document.getElementById('item-shelf').value = item.shelf;
+                document.getElementById('item-qty').value = item.qty;
+                document.getElementById('item-unit').value = item.unit;
+                document.getElementById('item-min-qty').value = item.minQty;
+                if (item.type === 'chemical') {
+                    document.getElementById('chem-conc').value = item.conc || '';
+                    document.getElementById('chem-expiry').value = item.expiry || '';
+                    document.getElementById('chem-hazard').value = item.hazard || 'آمن';
+                    document.getElementById('chem-safety').value = item.safety || '';
+                } else if (item.type === 'glassware') {
+                    document.getElementById('glass-size').value = item.size || '';
+                    document.getElementById('glass-material').value = item.material || '';
+                } else if (item.type === 'equipment') {
+                    document.getElementById('eq-serial').value = item.serial || '';
+                    document.getElementById('eq-condition').value = item.condition || 'يعمل بكفاءة';
+                    document.getElementById('eq-maint-date').value = item.maintDate || '';
+                }
+            } else {
+                document.getElementById('item-modal-title').textContent = 'إضافة صنف جديد للعُهدة';
+            }
+            toggleItemTypeFields();
+            openModal('item-modal');
+        }
+
+        async function saveItemForm(e) {
+            e.preventDefault();
+            const editId = document.getElementById('item-edit-id').value;
+            const type = document.getElementById('item-type').value;
+            const base = {
+                type,
+                code: document.getElementById('item-code').value.trim(),
+                nameAr: document.getElementById('item-name-ar').value.trim(),
+                nameEn: document.getElementById('item-name-en').value.trim(),
+                cabinet: document.getElementById('item-cabinet').value,
+                shelf: document.getElementById('item-shelf').value.trim(),
+                qty: Number(document.getElementById('item-qty').value),
+                unit: document.getElementById('item-unit').value.trim(),
+                minQty: Number(document.getElementById('item-min-qty').value)
+            };
+            if (type === 'chemical') {
+                base.conc = document.getElementById('chem-conc').value.trim();
+                base.expiry = document.getElementById('chem-expiry').value;
+                base.hazard = document.getElementById('chem-hazard').value;
+                base.safety = document.getElementById('chem-safety').value.trim();
+            } else if (type === 'glassware') {
+                base.size = document.getElementById('glass-size').value.trim();
+                base.material = document.getElementById('glass-material').value.trim();
+            } else {
+                base.serial = document.getElementById('eq-serial').value.trim();
+                base.condition = document.getElementById('eq-condition').value;
+                base.maintDate = document.getElementById('eq-maint-date').value;
+            }
+
+            if (editId) {
+                const idx = state.items.findIndex(i => i.id === editId);
+                if (idx !== -1) state.items[idx] = { ...state.items[idx], ...base };
+                showToast('تم تحديث بيانات الصنف بنجاح');
+            } else {
+                state.items.unshift({ id: 'itm-' + Date.now(), ...base });
+                showToast('تم إضافة الصنف الجديد للعُهدة');
+            }
+            closeModal('item-modal');
+            await saveState();
+        }
+
+        function deleteItem(itemId) {
+            const item = state.items.find(i => i.id === itemId);
+            if (!item) return;
+            openConfirmModal('حذف الصنف من العُهدة', `هل أنت متأكد من حذف "${item.nameAr} (${item.code})" نهائياً؟`, async () => {
+                state.items = state.items.filter(i => i.id !== itemId);
+                await saveState();
+                showToast('تم حذف الصنف بنجاح');
+            });
+        }
+
+        function openItemDetails(itemId) {
+            const item = state.items.find(i => i.id === itemId);
+            if (!item) return;
+            const loanedQty = getActiveLoanQtyForItem(item.id);
+            let extraHtml = '';
+            if (item.type === 'chemical') {
+                extraHtml = `
+                    <div class="p-3.5 rounded-2xl bg-red-50 border border-red-100 space-y-1.5">
+                        <div class="font-extrabold text-ris-red">☣️ بيانات السلامة الكيميائية (MSDS)</div>
+                        <div><strong>التركيز:</strong> ${item.conc || 'غير محدد'}</div>
+                        <div><strong>تاريخ الصلاحية:</strong> ${item.expiry || 'غير محدد'}</div>
+                        <div><strong>درجة الخطورة:</strong> ${item.hazard || 'آمن'}</div>
+                        <div><strong>إرشادات السلامة والتخفيف:</strong> ${item.safety || 'تُتبع قواعد السلامة المعملية القياسية.'}</div>
+                    </div>
+                `;
+            } else if (item.type === 'glassware') {
+                extraHtml = `
+                    <div class="p-3.5 rounded-2xl bg-blue-50 border border-blue-100 space-y-1">
+                        <div class="font-extrabold text-ris-navy">🧫 المواصفات الفنية</div>
+                        <div><strong>المقاس / السعة:</strong> ${item.size || '-'}</div>
+                        <div><strong>الخامة:</strong> ${item.material || '-'}</div>
+                    </div>
+                `;
+            } else {
+                extraHtml = `
+                    <div class="p-3.5 rounded-2xl bg-purple-50 border border-purple-100 space-y-1">
+                        <div class="font-extrabold text-purple-900">🔬 سجل الجهاز والصيانة</div>
+                        <div><strong>الرقم التسلسلي:</strong> ${item.serial || '-'}</div>
+                        <div><strong>الحالة الفنية:</strong> ${item.condition || 'يعمل بكفاءة'}</div>
+                        <div><strong>تاريخ آخر معايرة/صيانة:</strong> ${item.maintDate || '-'}</div>
+                    </div>
+                `;
+            }
+            document.getElementById('details-modal-content').innerHTML = `
+                <div class="p-4 rounded-2xl bg-ris-bg border border-slate-200 space-y-1.5">
+                    <div class="flex justify-between items-center">
+                        <span class="font-black text-base text-ris-navy">${item.nameAr}</span>
+                        <span class="px-2.5 py-0.5 rounded bg-ris-navy text-white font-bold">${item.code}</span>
+                    </div>
+                    <div class="text-slate-500 font-semibold">${item.nameEn}</div>
+                    <div class="pt-2 grid grid-cols-2 gap-2">
+                        <div><strong>المكان:</strong> ${item.cabinet} - ${item.shelf}</div>
+                        <div><strong>المتاح بالمخزن:</strong> ${item.qty} ${item.unit}</div>
+                        <div><strong>معار خارجياً:</strong> ${loanedQty} ${item.unit}</div>
+                        <div><strong>الحد الأدنى:</strong> ${item.minQty} ${item.unit}</div>
+                    </div>
+                </div>
+                ${extraHtml}
+            `;
+            openModal('details-modal');
+        }
+
+        // ================= EXTERNAL TEACHER LOANS =================
+        function renderLoans() {
+            const activeGrid = document.getElementById('active-loans-grid');
+            const returnedTbody = document.getElementById('returned-loans-tbody');
+            const activeLoans = state.loans.filter(l => l.status === 'active');
+            const returnedLoans = state.loans.filter(l => l.status === 'returned');
+
+            document.getElementById('active-loans-counter').textContent = activeLoans.length;
+
+            if (activeLoans.length === 0) {
+                activeGrid.innerHTML = `<div class="col-span-full bg-white p-8 rounded-2xl border border-ris-border text-center text-xs text-slate-400 font-bold">لا توجد أدوات معارة خارج المعمل حالياً.</div>`;
+            } else {
+                activeGrid.innerHTML = activeLoans.map(l => {
+                    const item = state.items.find(i => i.id === l.itemId);
+                    return `
+                        <div class="bg-white p-5 rounded-2xl border-2 border-blue-200 shadow-sm flex flex-col justify-between space-y-3">
+                            <div class="space-y-1.5">
+                                <div class="flex items-center justify-between">
+                                    <span class="px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800 text-[10px] font-extrabold">🔄 خارج المعمل حالياً</span>
+                                    <span class="text-[11px] text-slate-400 font-bold">${l.checkoutDate}</span>
+                                </div>
+                                <h4 class="font-black text-sm text-ris-navy pt-1">${item ? item.nameAr : 'صنف محذوف'} <span class="text-ris-red">(× ${l.qty} ${item ? item.unit : ''})</span></h4>
+                                <div class="text-xs font-bold text-slate-700">👨‍🏫 المدرس: ${l.teacher}</div>
+                                <div class="text-xs text-slate-600">🏫 الوجهة: ${l.destination}</div>
+                                <div class="text-[11px] font-bold text-amber-700">⏰ موعد الإرجاع: ${l.expectedReturn}</div>
+                                ${l.notes ? `<div class="text-[11px] text-slate-500 bg-slate-50 p-2 rounded-lg">${l.notes}</div>` : ''}
+                            </div>
+                            <button onclick="openReturnModal('${l.id}')" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow transition">
+                                ✅ تأكيد إرجاع الأداة للمعمل
+                            </button>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            if (returnedLoans.length === 0) {
+                returnedTbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400 font-bold">لا يوجد سجل إعارات سابقة بعد.</td></tr>`;
+            } else {
+                returnedTbody.innerHTML = returnedLoans.map(l => {
+                    const item = state.items.find(i => i.id === l.itemId);
+                    return `
+                        <tr>
+                            <td class="p-3 font-bold text-ris-navy">${item ? item.nameAr : l.itemId}</td>
+                            <td class="p-3">${l.teacher} (${l.destination})</td>
+                            <td class="p-3 font-bold">${l.qty}</td>
+                            <td class="p-3 font-bold text-emerald-700">${l.returnedGoodQty ?? l.qty}</td>
+                            <td class="p-3 font-bold ${Number(l.returnedDamagedQty) > 0 ? 'text-ris-red' : 'text-slate-400'}">${l.returnedDamagedQty || 0}</td>
+                            <td class="p-3">${l.returnDate || '-'}</td>
+                            <td class="p-3 text-slate-500">${l.returnNotes || l.notes || '-'}</td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+        }
+
+        function openCheckoutModal() {
+            const select = document.getElementById('loan-item-id');
+            select.innerHTML = state.items.map(i => `<option value="${i.id}">${i.nameAr} (${i.code}) — المتاح: ${i.qty} ${i.unit}</option>`).join('');
+            document.getElementById('checkout-form').reset();
+            document.getElementById('loan-qty').value = 1;
+            document.getElementById('loan-expected').value = 'نهاية اليوم الدراسي';
+            openModal('checkout-modal');
+        }
+
+        async function saveCheckoutForm(e) {
+            e.preventDefault();
+            const itemId = document.getElementById('loan-item-id').value;
+            const qty = Number(document.getElementById('loan-qty').value);
+            const item = state.items.find(i => i.id === itemId);
+            if (!item) return;
+            if (qty > Number(item.qty)) {
+                showToast(`الكمية المطلوبة (${qty}) أكبر من المتاح بالمخزن (${item.qty})!`, '⚠️');
+                return;
+            }
+            item.qty = Number(item.qty) - qty;
+            state.loans.unshift({
+                id: 'ln-' + Date.now(),
+                itemId,
+                qty,
+                teacher: document.getElementById('loan-teacher').value.trim(),
+                destination: document.getElementById('loan-destination').value.trim(),
+                checkoutDate: new Date().toISOString().split('T')[0],
+                expectedReturn: document.getElementById('loan-expected').value.trim(),
+                notes: document.getElementById('loan-notes').value.trim(),
+                status: 'active'
+            });
+            closeModal('checkout-modal');
+            await saveState();
+            showToast('تم تسجيل خروج العُهدة وخصمها مؤقتاً من المخزن');
+        }
+
+        function openReturnModal(loanId) {
+            const loan = state.loans.find(l => l.id === loanId);
+            if (!loan) return;
+            const item = state.items.find(i => i.id === loan.itemId);
+            document.getElementById('return-loan-id').value = loanId;
+            document.getElementById('return-loan-summary').innerHTML = `
+                الصنف: <strong>${item ? item.nameAr : ''}</strong> • الكمية الخارجة: <strong>${loan.qty}</strong><br>
+                المستلم: <strong>${loan.teacher}</strong> (${loan.destination})
+            `;
+            document.getElementById('return-good-qty').value = loan.qty;
+            document.getElementById('return-good-qty').max = loan.qty;
+            document.getElementById('return-damaged-qty').value = 0;
+            document.getElementById('return-damaged-qty').max = loan.qty;
+            document.getElementById('return-notes').value = '';
+            openModal('return-modal');
+        }
+
+        function syncReturnQuantities(changedField) {
+            const loanId = document.getElementById('return-loan-id').value;
+            const loan = state.loans.find(l => l.id === loanId);
+            if (!loan) return;
+            const total = Number(loan.qty);
+            const goodEl = document.getElementById('return-good-qty');
+            const dmgEl = document.getElementById('return-damaged-qty');
+            if (changedField === 'good') {
+                const good = Math.min(total, Math.max(0, Number(goodEl.value)));
+                dmgEl.value = +(total - good).toFixed(2);
+            } else {
+                const dmg = Math.min(total, Math.max(0, Number(dmgEl.value)));
+                goodEl.value = +(total - dmg).toFixed(2);
+            }
+        }
+
+        async function saveReturnForm(e) {
+            e.preventDefault();
+            const loanId = document.getElementById('return-loan-id').value;
+            const loan = state.loans.find(l => l.id === loanId);
+            if (!loan) return;
+            const goodQty = Number(document.getElementById('return-good-qty').value);
+            const damagedQty = Number(document.getElementById('return-damaged-qty').value);
+            const item = state.items.find(i => i.id === loan.itemId);
+            const today = new Date().toISOString().split('T')[0];
+
+            if (item && goodQty > 0) {
+                item.qty = Number(item.qty) + goodQty;
+            }
+            if (damagedQty > 0) {
+                state.logs.unshift({
+                    id: 'lg-' + Date.now(),
+                    itemId: loan.itemId,
+                    type: 'breakage',
+                    qty: damagedQty,
+                    teacher: `${loan.teacher} (${loan.destination})`,
+                    date: today,
+                    notes: `تلف/كسر أثناء الإعارة الخارجية - ${document.getElementById('return-notes').value.trim()}`
+                });
+            }
+            loan.status = 'returned';
+            loan.returnedGoodQty = goodQty;
+            loan.returnedDamagedQty = damagedQty;
+            loan.returnDate = today;
+            loan.returnNotes = document.getElementById('return-notes').value.trim();
+
+            closeModal('return-modal');
+            await saveState();
+            showToast('تم تأكيد إرجاع العُهدة وتحديث أرصدة المخزن');
+        }
+
+        // ================= CONSUMPTION & BREAKAGE LOGS =================
+        function setLogFilter(filter) {
+            currentLogFilter = filter;
+            document.querySelectorAll('.log-filter-btn').forEach(btn => {
+                btn.className = 'log-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700';
+            });
+            const active = document.getElementById(`log-filter-${filter}`);
+            if (active) active.className = 'log-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-ris-navy text-white';
+            renderLogs();
+        }
+
+        function renderLogs() {
+            const tbody = document.getElementById('logs-tbody');
+            if (!tbody) return;
+            let list = [...state.logs];
+            if (currentLogFilter !== 'all') list = list.filter(l => l.type === currentLogFilter);
+            if (list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400 font-bold">لا توجد حركات مسجلة في هذا التصنيف.</td></tr>`;
+                return;
+            }
+            const badges = {
+                consumption: `<span class="px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800 font-bold">🧪 استهلاك</span>`,
+                breakage: `<span class="px-2.5 py-0.5 rounded-full bg-ris-redLight text-ris-red font-bold">💔 كسر / تلف</span>`,
+                maintenance: `<span class="px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-800 font-bold">🛠️ صيانة</span>`
+            };
+            tbody.innerHTML = list.map(l => {
+                const item = state.items.find(i => i.id === l.itemId);
+                return `
+                    <tr>
+                        <td class="p-3.5 font-bold">${l.date}</td>
+                        <td class="p-3.5">${badges[l.type] || l.type}</td>
+                        <td class="p-3.5 font-extrabold text-ris-navy">${item ? item.nameAr : l.itemId}</td>
+                        <td class="p-3.5 font-black text-ris-red">-${l.qty} ${item ? item.unit : ''}</td>
+                        <td class="p-3.5">${l.teacher || '-'}</td>
+                        <td class="p-3.5 text-slate-500">${l.notes || '-'}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function openLogModal() {
+            const select = document.getElementById('log-item-id');
+            select.innerHTML = state.items.map(i => `<option value="${i.id}">${i.nameAr} (${i.code}) — الرصيد: ${i.qty} ${i.unit}</option>`).join('');
+            document.getElementById('log-form').reset();
+            document.getElementById('log-qty').value = 1;
+            document.getElementById('log-date').value = new Date().toISOString().split('T')[0];
+            openModal('log-modal');
+        }
+
+        async function saveLogForm(e) {
+            e.preventDefault();
+            const itemId = document.getElementById('log-item-id').value;
+            const qty = Number(document.getElementById('log-qty').value);
+            const item = state.items.find(i => i.id === itemId);
+            if (item) {
+                item.qty = Math.max(0, Number(item.qty) - qty);
+            }
+            state.logs.unshift({
+                id: 'lg-' + Date.now(),
+                itemId,
+                type: document.getElementById('log-type').value,
+                qty,
+                teacher: document.getElementById('log-teacher').value.trim(),
+                date: document.getElementById('log-date').value,
+                notes: document.getElementById('log-notes').value.trim()
+            });
+            closeModal('log-modal');
+            await saveState();
+            showToast('تم تسجيل الحركة وخصم الكمية من الرصيد');
+        }
+
+        // ================= REPORTS & OFFICIAL TABLES =================
+        function getFullInventoryAuditRows(selectedCab = 'all') {
+            const catMap = { chemical: 'مادة كيميائية', glassware: 'أداة زجاجية', equipment: 'جهاز معملي' };
+            return state.items
+                .filter(i => selectedCab === 'all' || i.cabinet === selectedCab)
+                .sort((a, b) => (a.cabinet || '').localeCompare(b.cabinet || '') || (a.code || '').localeCompare(b.code || ''))
+                .map(i => {
+                    const inStock = Number(i.qty || 0);
+                    const loaned = getActiveLoanQtyForItem(i.id);
+                    const totalOwned = inStock + loaned;
+                    const isLow = inStock <= Number(i.minQty || 0);
+                    let statusText = isLow ? '⚠️ نقص مخزون' : '✅ متوفر';
+                    let extraRef = '-';
+                    if (i.type === 'chemical') {
+                        const st = getExpiryStatus(i.expiry);
+                        if (st && st.status === 'expired') statusText = '⛔ منتهي الصلاحية';
+                        else if (st && st.status === 'soon') statusText = '⏳ قرب الانتهاء';
+                        extraRef = i.expiry || '-';
+                    } else if (i.type === 'equipment') {
+                        if (i.condition && i.condition !== 'يعمل بكفاءة') statusText = `🛠️ ${i.condition}`;
+                        extraRef = i.serial || '-';
+                    } else {
+                        extraRef = i.size || '-';
+                    }
+                    return {
+                        code: i.code,
+                        nameAr: i.nameAr,
+                        nameEn: i.nameEn,
+                        category: catMap[i.type] || i.type,
+                        cabinet: i.cabinet,
+                        shelf: i.shelf,
+                        inStock,
+                        loaned,
+                        totalOwned,
+                        unit: i.unit,
+                        minQty: i.minQty,
+                        isLow,
+                        statusText,
+                        extraRef
+                    };
+                });
+        }
+
+        function renderReports() {
+            populateCabinetSelects();
+            const selectedCab = document.getElementById('report-full-cab-filter')?.value || 'all';
+            const fullRows = getFullInventoryAuditRows(selectedCab);
+
+            // Summary pills
+            const pillsEl = document.getElementById('report-full-summary-pills');
+            if (pillsEl) {
+                const totalLoanedUnits = fullRows.reduce((s, r) => s + r.loaned, 0);
+                const lowCount = fullRows.filter(r => r.isLow).length;
+                pillsEl.innerHTML = `
+                    <span class="px-3 py-1 rounded-full bg-ris-navy text-white">إجمالي البنود: ${fullRows.length}</span>
+                    <span class="px-3 py-1 rounded-full bg-blue-100 text-blue-800">قطع معارة خارج المعمل: ${totalLoanedUnits}</span>
+                    <span class="px-3 py-1 rounded-full bg-amber-100 text-amber-800">بنود تحت الحد الأدنى: ${lowCount}</span>
+                `;
+            }
+
+            // Full Inventory Table
+            const fullTbody = document.getElementById('report-full-inventory-tbody');
+            if (fullTbody) {
+                fullTbody.innerHTML = fullRows.length === 0
+                    ? `<tr><td colspan="11" class="p-6 text-center text-slate-400 font-bold">لا توجد أصناف في هذا النطاق.</td></tr>`
+                    : fullRows.map((r, idx) => `
+                        <tr class="${idx % 2 === 1 ? 'bg-slate-50/70' : 'bg-white'}">
+                            <td class="p-2.5 border border-slate-200 font-bold text-center">${idx + 1}</td>
+                            <td class="p-2.5 border border-slate-200 font-black text-ris-navy">${r.code}</td>
+                            <td class="p-2.5 border border-slate-200"><strong>${r.nameAr}</strong><br><span class="text-[10px] text-slate-500">${r.nameEn}</span></td>
+                            <td class="p-2.5 border border-slate-200">${r.category}</td>
+                            <td class="p-2.5 border border-slate-200 font-bold">${r.cabinet} - ${r.shelf}</td>
+                            <td class="p-2.5 border border-slate-200 text-center font-black">${r.inStock} ${r.unit}</td>
+                            <td class="p-2.5 border border-slate-200 text-center font-bold text-blue-700">${r.loaned}</td>
+                            <td class="p-2.5 border border-slate-200 text-center font-black text-ris-navy">${r.totalOwned} ${r.unit}</td>
+                            <td class="p-2.5 border border-slate-200 text-center">${r.minQty}</td>
+                            <td class="p-2.5 border border-slate-200 text-center font-bold">${r.statusText}</td>
+                            <td class="p-2.5 border border-slate-200">${r.extraRef}</td>
+                        </tr>
+                    `).join('');
+            }
+
+            // Procurement Table
+            const procTbody = document.getElementById('report-procurement-tbody');
+            const lowItems = state.items.filter(i => Number(i.qty) <= Number(i.minQty));
+            if (procTbody) {
+                procTbody.innerHTML = lowItems.length === 0
+                    ? `<tr><td colspan="6" class="p-5 text-center text-slate-400 font-bold">لا توجد نواقص حالياً.</td></tr>`
+                    : lowItems.map((i, idx) => `
+                        <tr class="${idx % 2 === 1 ? 'bg-slate-50/70' : 'bg-white'}">
+                            <td class="p-2.5 border border-slate-200 font-black text-ris-navy">${i.code}</td>
+                            <td class="p-2.5 border border-slate-200 font-bold">${i.nameAr} (${i.nameEn})</td>
+                            <td class="p-2.5 border border-slate-200">${i.cabinet} / ${i.shelf}</td>
+                            <td class="p-2.5 border border-slate-200 text-center font-black text-ris-red">${i.qty} ${i.unit}</td>
+                            <td class="p-2.5 border border-slate-200 text-center font-bold">${i.minQty} ${i.unit}</td>
+                            <td class="p-2.5 border border-slate-200 text-center font-black text-emerald-700">${Math.max(1, Math.ceil(Number(i.minQty) * 2 - Number(i.qty)))} ${i.unit}</td>
+                        </tr>
+                    `).join('');
+            }
+
+            // Safety Table
+            const safetyTbody = document.getElementById('report-safety-tbody');
+            const safetyRows = [];
+            state.items.forEach(i => {
+                if (i.type === 'chemical') {
+                    const st = getExpiryStatus(i.expiry);
+                    if (st && st.status !== 'ok') {
+                        safetyRows.push({ code: i.code, name: `${i.nameAr} (${i.nameEn})`, loc: `${i.cabinet} - ${i.shelf}`, reason: st.label, details: `درجة الخطورة: ${i.hazard}` });
+                    }
+                } else if (i.type === 'equipment' && i.condition !== 'يعمل بكفاءة') {
+                    safetyRows.push({ code: i.code, name: `${i.nameAr} (${i.nameEn})`, loc: `${i.cabinet} - ${i.shelf}`, reason: i.condition, details: `Serial: ${i.serial || '-'}` });
+                }
+            });
+            if (safetyTbody) {
+                safetyTbody.innerHTML = safetyRows.length === 0
+                    ? `<tr><td colspan="5" class="p-5 text-center text-slate-400 font-bold">جميع المواد سارية الصلاحية والأجهزة تعمل بكفاءة.</td></tr>`
+                    : safetyRows.map((r, idx) => `
+                        <tr class="${idx % 2 === 1 ? 'bg-slate-50/70' : 'bg-white'}">
+                            <td class="p-2.5 border border-slate-200 font-black text-ris-navy">${r.code}</td>
+                            <td class="p-2.5 border border-slate-200 font-bold">${r.name}</td>
+                            <td class="p-2.5 border border-slate-200">${r.loc}</td>
+                            <td class="p-2.5 border border-slate-200 font-bold text-ris-red">${r.reason}</td>
+                            <td class="p-2.5 border border-slate-200">${r.details}</td>
+                        </tr>
+                    `).join('');
+            }
+
+            // Active Loans Table
+            const loansTbody = document.getElementById('report-loans-tbody');
+            const activeLoans = state.loans.filter(l => l.status === 'active');
+            if (loansTbody) {
+                loansTbody.innerHTML = activeLoans.length === 0
+                    ? `<tr><td colspan="5" class="p-5 text-center text-slate-400 font-bold">لا توجد أدوات معارة خارج المعمل حالياً.</td></tr>`
+                    : activeLoans.map((l, idx) => {
+                        const item = state.items.find(i => i.id === l.itemId);
+                        return `
+                            <tr class="${idx % 2 === 1 ? 'bg-slate-50/70' : 'bg-white'}">
+                                <td class="p-2.5 border border-slate-200 font-bold text-ris-navy">${item ? `${item.nameAr} (${item.code})` : l.itemId}</td>
+                                <td class="p-2.5 border border-slate-200 text-center font-black">${l.qty} ${item ? item.unit : ''}</td>
+                                <td class="p-2.5 border border-slate-200 font-bold">${l.teacher}</td>
+                                <td class="p-2.5 border border-slate-200">${l.destination}</td>
+                                <td class="p-2.5 border border-slate-200 font-bold text-amber-700">${l.expectedReturn}</td>
+                            </tr>
+                        `;
+                    }).join('');
+            }
+
+            // Requests Table
+            const reqTbody = document.getElementById('report-requests-tbody');
+            if (reqTbody) {
+                reqTbody.innerHTML = state.teacherRequests.length === 0
+                    ? `<tr><td colspan="6" class="p-5 text-center text-slate-400 font-bold">لا توجد طلبات مدرسين مسجلة.</td></tr>`
+                    : state.teacherRequests.map((r, idx) => `
+                        <tr class="${idx % 2 === 1 ? 'bg-slate-50/70' : 'bg-white'}">
+                            <td class="p-2.5 border border-slate-200 font-bold">${r.dayName} ${r.date}</td>
+                            <td class="p-2.5 border border-slate-200 font-bold text-ris-red">${r.session}</td>
+                            <td class="p-2.5 border border-slate-200"><strong>${r.teacherName}</strong><br><span class="text-[10px] text-slate-500">${r.grade}</span></td>
+                            <td class="p-2.5 border border-slate-200"><strong>${r.experiment}</strong><br><span class="text-[10px] text-slate-500">${r.location}</span></td>
+                            <td class="p-2.5 border border-slate-200">${r.notes}</td>
+                            <td class="p-2.5 border border-slate-200 text-center font-bold">${r.status}</td>
+                        </tr>
+                    `).join('');
+            }
+        }
+
+        function buildOfficialPrintDocument(title, subtitle, tableHtml) {
+            const today = new Date().toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' });
+            return `
+                <div class="p-4">
+                    <div class="flex items-center justify-between border-b-4 border-ris-navy pb-4 mb-4">
+                        <div>
+                            <div class="text-xs font-black text-ris-red tracking-wider">REGENT INTERNATIONAL SCHOOL • RIS</div>
+                            <h1 class="text-xl font-black text-ris-navy mt-0.5">${title}</h1>
+                            <p class="text-xs text-slate-600 font-bold mt-0.5">${subtitle}</p>
+                        </div>
+                        <div class="text-left">
+                            <div class="font-black text-sm text-ris-navy">SCIENCE DEPARTMENT</div>
+                            <div class="text-xs text-slate-500 font-bold">تاريخ الإصدار: ${today}</div>
+                        </div>
+                    </div>
+                    ${tableHtml}
+                    <div class="grid grid-cols-3 gap-8 mt-10 pt-6 border-t border-slate-300 text-center text-xs font-extrabold text-ris-navy">
+                        <div>توقيع محضر المعمل (Lab Technician)<br><br>........................................</div>
+                        <div>اعتماد رئيس قسم العلوم (Head of Science)<br><br>........................................</div>
+                        <div>اعتماد إدارة المدرسة (School Principal)<br><br>........................................</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function printFullInventoryReport() {
+            const selectedCab = document.getElementById('report-full-cab-filter')?.value || 'all';
+            const tableEl = document.getElementById('report-full-inventory-tbody')?.closest('table');
+            if (!tableEl) return;
+            const cloned = tableEl.cloneNode(true);
+            cloned.className = 'print-table';
+            const printArea = document.getElementById('print-area');
+            printArea.innerHTML = buildOfficialPrintDocument(
+                'تقرير الجرد الشامل لعُهدة معمل العلوم',
+                `نطاق الجرد: ${selectedCab === 'all' ? 'كافة دواليب ومخازن المعمل' : selectedCab}`,
+                cloned.outerHTML
+            );
+            printArea.classList.remove('hidden');
+            window.print();
+            printArea.classList.add('hidden');
+        }
+
+        function printReportSection(sectionKey) {
+            const map = {
+                procurement: { tbodyId: 'report-procurement-tbody', title: 'كشف النواقص والمشتريات المطلوبة للمعمل', sub: 'الأصناف التي وصل رصيدها للحد الأدنى أو أقل' },
+                safety: { tbodyId: 'report-safety-tbody', title: 'تقرير السلامة وتاريخ الصلاحية وصيانة الأجهزة', sub: 'متابعة الصلاحيات الكيميائية والحالة الفنية للأجهزة' },
+                loans: { tbodyId: 'report-loans-tbody', title: 'تقرير العُهد المعارة خارج المعمل مع المدرسين', sub: 'الأدوات والأجهزة المتواجدة بالفصول حالياً' },
+                requests: { tbodyId: 'report-requests-tbody', title: 'جدول طلبات المدرسين لتحضير التجارب المعملية', sub: 'مواعيد الحصص والسيشن والأدوات المطلوبة' }
+            };
+            const cfg = map[sectionKey];
+            if (!cfg) return;
+            const tableEl = document.getElementById(cfg.tbodyId)?.closest('table');
+            if (!tableEl) return;
+            const cloned = tableEl.cloneNode(true);
+            cloned.className = 'print-table';
+            const printArea = document.getElementById('print-area');
+            printArea.innerHTML = buildOfficialPrintDocument(cfg.title, cfg.sub, cloned.outerHTML);
+            printArea.classList.remove('hidden');
+            window.print();
+            printArea.classList.add('hidden');
+        }
+
+        // ================= BACKUP & RESET =================
+        function exportBackupJSON() {
+            const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `RIS_Lab_Backup_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('تم تحميل النسخة الاحتياطية الكاملة (JSON)');
+        }
+
+        function importBackupJSON(event) {
+            const file = event.target.files?.[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = async (ev) => {
+                try {
+                    const parsed = JSON.parse(ev.target.result);
+                    if (!parsed.cabinets || !parsed.items) throw new Error('Invalid backup format');
+                    state = {
+                        cabinets: parsed.cabinets || [],
+                        items: parsed.items || [],
+                        loans: parsed.loans || [],
+                        logs: parsed.logs || [],
+                        teacherRequests: parsed.teacherRequests || []
+                    };
+                    await saveState();
+                    showToast('تم استعادة النسخة الاحتياطية بنجاح');
+                } catch (err) {
+                    showToast('ملف النسخة الاحتياطية غير صالح', '⚠️');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function confirmResetDemoData() {
+            openConfirmModal('إعادة ضبط البيانات التجريبية', 'هل تريد استعادة البيانات الافتراضية للمعمل؟ سيؤدي ذلك لاستبدال البيانات الحالية.', async () => {
+                state = getDefaultState();
+                await saveState();
+                showToast('تمت إعادة ضبط البيانات الافتراضية');
+            });
+        }
+
+        function renderAll() {
+            renderDashboard();
+            renderTeacherRequests();
+            renderCabinets();
+            renderInventory();
+            renderLoans();
+            renderLogs();
+            renderReports();
+        }
+
+        function downloadCSV(filename, rows) {
+            const csvContent = '\uFEFF' + rows.map(r => r.map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('تم تصدير ملف Excel بنجاح');
+        }
+
+        // Expose handlers to global window scope
+        Object.assign(window, {
+            switchTab,
+            openModal,
+            closeModal,
+            enterTeacherPortalPreview,
+            exitTeacherPortalPreview,
+            updateTeacherDayPreview,
+            addTeacherSelectedItem,
+            removeTeacherSelectedItem,
+            submitTeacherRequest,
+            resetTeacherPortalForm,
+            openTeacherQRModal,
+            copyTeacherPortalLink,
+            printTeacherQRPoster,
+            handleDashboardSearch,
+            clearDashboardSearch,
+            jumpToInventoryFilter,
+            setRequestFilter,
+            updateRequestStatus,
+            convertRequestToLoan,
+            convertRequestToLog,
+            deleteTeacherRequest,
+            openCabinetModal,
+            saveCabinet,
+            deleteCabinet,
+            openCabinetQRModal,
+            adjustItemQty,
+            printCabinetQRLabel,
+            renderInventory,
+            toggleItemTypeFields,
+            openItemModal,
+            saveItemForm,
+            deleteItem,
+            openItemDetails,
+            openCheckoutModal,
+            saveCheckoutForm,
+            openReturnModal,
+            syncReturnQuantities,
+            saveReturnForm,
+            setLogFilter,
+            openLogModal,
+            saveLogForm,
+            renderReports,
+            printFullInventoryReport,
+            printReportSection,
+            exportFullInventoryCSV: () => {
+                const cabFilterEl = document.getElementById('report-full-cab-filter');
+                const selectedCab = cabFilterEl ? cabFilterEl.value : 'all';
+                const rows = [['Code', 'Name (AR)', 'Name (EN)', 'Category', 'Cabinet', 'Shelf', 'In Stock', 'Loaned Out', 'Total Owned', 'Unit', 'Min Qty', 'Status', 'Expiry / Serial']];
+                getFullInventoryAuditRows(selectedCab).forEach(r => {
+                    rows.push([r.code, r.nameAr, r.nameEn, r.category, r.cabinet, r.shelf, r.inStock, r.loaned, r.totalOwned, r.unit, r.minQty, r.statusText, r.extraRef]);
+                });
+                downloadCSV(`RIS_Full_Inventory_Audit_${new Date().toISOString().split('T')[0]}.csv`, rows);
+            },
+            exportProcurementCSV: () => {
+                const rows = [['Code', 'Name (AR)', 'Name (EN)', 'Cabinet', 'Shelf', 'Current Qty', 'Min Qty', 'Unit', 'Suggested Order']];
+                state.items.filter(i => Number(i.qty) <= Number(i.minQty)).forEach(i => {
+                    rows.push([i.code, i.nameAr, i.nameEn, i.cabinet, i.shelf, i.qty, i.minQty, i.unit, Math.max(1, Math.ceil(Number(i.minQty) * 2 - Number(i.qty)))]);
+                });
+                downloadCSV('RIS_Lab_Procurement.csv', rows);
+            },
+            exportSafetyCSV: () => {
+                const rows = [['Code', 'Name', 'Location', 'Alert Reason', 'Details']];
+                state.items.forEach(i => {
+                    if (i.type === 'chemical') {
+                        const st = getExpiryStatus(i.expiry);
+                        if (st && st.status !== 'ok') rows.push([i.code, i.nameAr, `${i.cabinet}-${i.shelf}`, st.label, `Expiry: ${i.expiry} | Hazard: ${i.hazard}`]);
+                    } else if (i.type === 'equipment' && i.condition !== 'يعمل بكفاءة') {
+                        rows.push([i.code, i.nameAr, `${i.cabinet}-${i.shelf}`, i.condition, `Serial: ${i.serial || '-'}`]);
+                    }
+                });
+                downloadCSV('RIS_Lab_Safety_Audit.csv', rows);
+            },
+            exportLoansCSV: () => {
+                const rows = [['Item', 'Qty', 'Teacher', 'Destination', 'Checkout Date', 'Expected Return']];
+                state.loans.filter(l => l.status === 'active').forEach(l => {
+                    const item = state.items.find(i => i.id === l.itemId);
+                    rows.push([item ? `${item.nameAr} (${item.code})` : l.itemId, l.qty, l.teacher, l.destination, l.checkoutDate, l.expectedReturn]);
+                });
+                downloadCSV('RIS_Lab_Active_Loans.csv', rows);
+            },
+            exportRequestsCSV: () => {
+                const rows = [['Date', 'Day', 'Session', 'Teacher', 'Phone', 'Grade', 'Experiment', 'Location', 'Notes', 'Status']];
+                state.teacherRequests.forEach(r => {
+                    rows.push([r.date, r.dayName, r.session, r.teacherName, r.phone, r.grade, r.experiment, r.location, r.notes, r.status]);
+                });
+                downloadCSV('RIS_Teacher_Requests.csv', rows);
+            },
+            exportBackupJSON,
+            importBackupJSON,
+            confirmResetDemoData
+        });
+
+        // Boot Application Immediately
+        (async function boot() {
+            renderAll();
+            await loadState();
+            checkPortalMode();
+            LabDataService.subscribeRealtime();
+        })();
+    </script>
+</body>
+</html>
