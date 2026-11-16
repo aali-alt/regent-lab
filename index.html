@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Regent Science Lab — Regent International School</title>
+    <title>Science Lab — Regent International School</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- QRCodeJS Library for Scannable QR Codes -->
@@ -63,6 +63,78 @@
             border-radius: 10px;
         }
 
+        /* Executive Animations, Transitions & Micro-Interactions */
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(14px) scale(0.99);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes modalPopIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @keyframes toastSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(24px) scale(0.96);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+
+        .animate-view-enter {
+            animation: fadeSlideUp 0.36s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        .animate-modal-enter {
+            animation: modalPopIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        .animate-toast-enter {
+            animation: toastSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        .card-hover {
+            transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+                        box-shadow 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+                        border-color 0.2s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 26px -8px rgba(30, 40, 89, 0.14);
+        }
+
+        .btn-tactile {
+            transition: transform 0.16s cubic-bezier(0.16, 1, 0.3, 1),
+                        background-color 0.2s ease,
+                        box-shadow 0.2s ease,
+                        opacity 0.2s ease;
+        }
+
+        .btn-tactile:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-tactile:active {
+            transform: scale(0.97);
+        }
+
         @media print {
             body * { visibility: hidden !important; }
             #print-area, #print-area * { visibility: visible !important; }
@@ -108,48 +180,52 @@
     <div id="teacher-portal-shell" class="hidden min-h-screen bg-ris-bg flex flex-col">
         <header class="bg-ris-navy text-white py-5 px-4 shadow-lg border-b-4 border-ris-red">
             <div class="max-w-3xl mx-auto flex items-center justify-between gap-4">
-                <div class="flex items-center gap-3.5">
-                    <!-- Dual Logos: RIS Crest + Science Dept Atom -->
-                    <div class="flex items-center gap-2 bg-white rounded-2xl p-1.5 shadow-md shrink-0">
-                        <!-- Regent International School Shield Crest -->
-                        <svg viewBox="0 0 140 140" class="w-12 h-12">
-                            <path d="M18 14 C12 45, 14 95, 52 128" fill="none" stroke="#1E2859" stroke-width="4.5" stroke-linecap="round"/>
-                            <path d="M18 22 L10 14 M17 34 L9 26 M16 46 L8 38 M17 58 L9 50 M19 70 L11 62 M23 82 L15 74" stroke="#1E2859" stroke-width="3.5" stroke-linecap="round"/>
-                            <path d="M18 22 L24 14 M17 34 L23 26 M16 46 L22 38 M17 58 L23 50 M19 70 L25 62" stroke="#1E2859" stroke-width="3" stroke-linecap="round"/>
-                            <path d="M122 14 C128 45, 126 95, 88 128" fill="none" stroke="#1E2859" stroke-width="4.5" stroke-linecap="round"/>
-                            <path d="M122 22 L130 14 M123 34 L131 26 M124 46 L132 38 M123 58 L131 50 M121 70 L129 62 M117 82 L125 74" stroke="#1E2859" stroke-width="3.5" stroke-linecap="round"/>
-                            <path d="M122 22 L116 14 M123 34 L117 26 M124 46 L118 38 M123 58 L117 50 M121 70 L115 62" stroke="#1E2859" stroke-width="3" stroke-linecap="round"/>
-                            <path d="M30 14 H110 V76 C110 102, 70 124, 70 124 C70 124, 30 102, 30 76 Z" fill="#FFFFFF" stroke="#E31E24" stroke-width="4.5"/>
-                            <rect x="34" y="18" width="72" height="28" fill="#E31E24"/>
-                            <text x="70" y="33" text-anchor="middle" fill="#FFFFFF" font-size="14" font-weight="900" font-family="Georgia, serif">REGENT</text>
-                            <text x="70" y="42" text-anchor="middle" fill="#FFFFFF" font-size="5.6" font-weight="700" font-family="Inter, sans-serif">INTERNATIONAL SCHOOL</text>
-                            <rect x="34" y="49" width="34" height="26" fill="#1E2859"/>
-                            <path d="M40 70 Q51 74 62 70 M42 66 H60 V57 L51 52 L42 57 Z" fill="none" stroke="#FFFFFF" stroke-width="2"/>
-                            <path d="M35 80 L68 104 M35 88 L68 112 M42 99 L68 118" stroke="#E31E24" stroke-width="3.5"/>
-                            <path d="M72 49 H106 V76 C106 94, 72 114, 72 114 Z" fill="#1E2859"/>
-                            <text x="88" y="88" text-anchor="middle" fill="#FFFFFF" font-size="30" font-weight="900" font-family="Georgia, serif">R</text>
-                        </svg>
-                        <div class="w-px h-10 bg-slate-200"></div>
-                        <!-- RIS Science Department Atom Logo -->
-                        <svg viewBox="0 0 140 140" class="w-12 h-12">
-                            <ellipse cx="70" cy="58" rx="44" ry="17" transform="rotate(-32 70 58)" fill="none" stroke="#E31E24" stroke-width="5.5"/>
-                            <ellipse cx="70" cy="58" rx="44" ry="17" transform="rotate(32 70 58)" fill="none" stroke="#E31E24" stroke-width="5.5"/>
-                            <ellipse cx="70" cy="58" rx="44" ry="17" transform="rotate(90 70 58)" fill="none" stroke="#E31E24" stroke-width="5.5"/>
-                            <path d="M56 12 Q70 7 84 12" fill="none" stroke="#1E2859" stroke-width="2.5" stroke-linecap="round"/>
-                            <path d="M18 52 Q12 65 18 78" fill="none" stroke="#1E2859" stroke-width="2.5" stroke-linecap="round"/>
-                            <path d="M122 52 Q128 65 122 78" fill="none" stroke="#1E2859" stroke-width="2.5" stroke-linecap="round"/>
-                            <circle cx="70" cy="58" r="18" fill="#1E2859"/>
-                            <text x="70" y="64" text-anchor="middle" fill="#FFFFFF" font-size="15" font-weight="900" font-family="Inter, sans-serif">RIS</text>
-                            <circle cx="76" cy="18" r="6.5" fill="#1E2859"/>
-                            <circle cx="32" cy="74" r="6.5" fill="#1E2859"/>
-                            <circle cx="102" cy="84" r="6.5" fill="#1E2859"/>
-                            <text x="70" y="124" text-anchor="middle" fill="#1E2859" font-size="11.5" font-weight="900" font-family="Inter, sans-serif">SCIENCE DEPARTMENT</text>
+                <div class="flex items-center gap-4">
+                    <!-- Official Regent International School Crest Shield Logo -->
+                    <div class="bg-white rounded-2xl p-2 shadow-lg border border-slate-100 shrink-0">
+                        <svg viewBox="0 0 160 160" class="w-14 h-14 sm:w-16 sm:h-16" aria-label="Regent International School Crest">
+                            <!-- Left Laurel Wreath Branch -->
+                            <path d="M22 14 C14 55, 16 112, 62 146" fill="none" stroke="#1E2859" stroke-width="5" stroke-linecap="round"/>
+                            <path d="M21 24 L11 14 M20 38 L10 28 M19 52 L9 42 M20 66 L10 56 M22 80 L12 70 M26 94 L16 84 M33 108 L23 98" stroke="#1E2859" stroke-width="4" stroke-linecap="round"/>
+                            <path d="M21 24 L29 14 M20 38 L28 28 M19 52 L27 42 M20 66 L28 56 M22 80 L30 70 M26 94 L34 84" stroke="#1E2859" stroke-width="3.5" stroke-linecap="round"/>
+                            <!-- Right Laurel Wreath Branch -->
+                            <path d="M138 14 C146 55, 144 112, 98 146" fill="none" stroke="#1E2859" stroke-width="5" stroke-linecap="round"/>
+                            <path d="M139 24 L149 14 M140 38 L150 28 M141 52 L151 42 M140 66 L150 56 M138 80 L148 70 M134 94 L144 84 M127 108 L137 98" stroke="#1E2859" stroke-width="4" stroke-linecap="round"/>
+                            <path d="M139 24 L131 14 M140 38 L132 28 M141 52 L133 42 M140 66 L132 56 M138 80 L130 70 M134 94 L126 84" stroke="#1E2859" stroke-width="3.5" stroke-linecap="round"/>
+                            <!-- Outer Red & White Shield Outline -->
+                            <path d="M34 14 H126 V86 C126 116, 80 142, 80 142 C80 142, 34 116, 34 86 Z" fill="#FFFFFF" stroke="#E31E24" stroke-width="5.5" stroke-linejoin="round"/>
+                            <!-- Top Red Header Banner -->
+                            <rect x="39" y="19" width="82" height="33" fill="#E31E24"/>
+                            <text x="80" y="37" text-anchor="middle" fill="#FFFFFF" font-size="16.5" font-weight="900" letter-spacing="0.8" font-family="Georgia, serif">REGENT</text>
+                            <text x="80" y="47.5" text-anchor="middle" fill="#FFFFFF" font-size="6.4" font-weight="700" letter-spacing="0.4" font-family="Inter, sans-serif">INTERNATIONAL SCHOOL</text>
+                            <!-- Left Upper Quadrant: Navy Blue with School Building & Open Book -->
+                            <rect x="39" y="56" width="38.5" height="31" fill="#1E2859"/>
+                            <path d="M58.25 60 V64 H63 L58.25 61.5 Z" fill="#FFFFFF"/>
+                            <path d="M47 77 V69 L58.25 64 L69.5 69 V77 H47 Z" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linejoin="round"/>
+                            <rect x="51" y="71" width="3" height="3" fill="#FFFFFF"/>
+                            <rect x="62.5" y="71" width="3" height="3" fill="#FFFFFF"/>
+                            <rect x="56.5" y="72.5" width="3.5" height="4.5" fill="#FFFFFF"/>
+                            <path d="M45 81 Q51.5 79 58.25 82 Q65 79 71.5 81 V84 Q65 82 58.25 85 Q51.5 82 45 84 Z" fill="#FFFFFF"/>
+                            <!-- Left Lower Quadrant: White with 5 Diagonal Red Stripes -->
+                            <defs>
+                                <clipPath id="tp-stripes-clip">
+                                    <path d="M39 90 H77.5 V134 C58 122, 39 105, 39 90 Z"/>
+                                </clipPath>
+                            </defs>
+                            <g clip-path="url(#tp-stripes-clip)">
+                                <rect x="39" y="90" width="38.5" height="45" fill="#FFFFFF"/>
+                                <path d="M36 91 L80 123 M36 99 L80 131 M36 107 L80 139 M36 115 L80 147 M36 123 L80 155" stroke="#E31E24" stroke-width="4.2"/>
+                            </g>
+                            <!-- Right Half: Solid Navy Blue with Bold Serif 'R' -->
+                            <path d="M81.5 56 H121 V86 C121 110, 81.5 134, 81.5 134 Z" fill="#1E2859"/>
+                            <text x="100.5" y="103" text-anchor="middle" fill="#FFFFFF" font-size="38" font-weight="900" font-family="Georgia, serif">R</text>
                         </svg>
                     </div>
                     <div>
                         <span class="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-ris-red text-white mb-1">RIS Science Department</span>
-                        <h1 class="text-lg sm:text-xl font-black tracking-tight font-display">Regent Science Lab</h1>
-                        <p class="text-xs text-slate-300 font-medium">Regent International School — Teacher Experiment & Equipment Requisition Portal</p>
+                        <h1 class="text-xl sm:text-2xl font-black tracking-tight font-display leading-tight">Science Lab</h1>
+                        <p class="text-xs sm:text-sm text-slate-200 font-bold tracking-wide">Regent International School</p>
+                        <p class="text-[11px] text-slate-300 mt-0.5">Teacher Experiment & Equipment Requisition Portal</p>
                     </div>
                 </div>
                 <button id="exit-teacher-preview-btn" onclick="exitTeacherPortalMode()" class="hidden px-3.5 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white text-xs font-bold transition shrink-0">
@@ -196,7 +272,7 @@
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1.5">Period / Time Slot *</label>
-                        <select id="tp-session" required class="w-full px-3.5 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-sm font-medium focus:outline-none focus:border-ris-navy">
+                        <select id="tp-session" required class="w-full px-3.5 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-sm font-medium focus:outline-none focus:border-ris-navy transition">
                             <option value="Period 1">Period 1</option>
                             <option value="Period 2">Period 2</option>
                             <option value="Period 3">Period 3</option>
@@ -208,24 +284,61 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Room / Lab Location *</label>
-                        <select id="tp-location" class="w-full px-3.5 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-sm font-medium focus:outline-none focus:border-ris-navy">
-                            <option value="Lab 1 - Chemistry">Lab 1 — Chemistry</option>
-                            <option value="Lab 2 - Biology">Lab 2 — Biology</option>
-                            <option value="Lab 3 - Physics">Lab 3 — Physics</option>
-                            <option value="Classroom Delivery">Classroom Delivery (Loan)</option>
-                        </select>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Experiment Usage Mode *</label>
+                        <input type="hidden" id="tp-location-mode" value="in-lab">
+                        <div class="grid grid-cols-2 gap-1.5 p-1 bg-ris-bg border border-slate-300 rounded-xl">
+                            <button type="button" id="tp-mode-inlab-btn" onclick="setTeacherLocationMode('in-lab')" class="btn-tactile py-1.5 px-2 rounded-lg text-xs font-extrabold bg-ris-navy text-white shadow-xs">
+                                🔬 Inside Lab
+                            </button>
+                            <button type="button" id="tp-mode-outside-btn" onclick="setTeacherLocationMode('outside-lab')" class="btn-tactile py-1.5 px-2 rounded-lg text-xs font-bold text-slate-600 hover:text-ris-navy">
+                                🏫 Outside Lab
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- Dynamic Conditional Location Detail Box -->
+                <div id="tp-inlab-details" class="p-3.5 rounded-2xl bg-blue-50/70 border border-blue-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Experiment / Lesson Title *</label>
-                        <input type="text" id="tp-experiment" required placeholder="e.g., Food Tests — Benedict's & Biuret" class="w-full px-3.5 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-sm font-medium focus:outline-none focus:border-ris-navy">
+                        <div class="text-xs font-extrabold text-ris-navy">🔬 In-Lab Experiment Setup</div>
+                        <div class="text-[11px] text-slate-600">Select which Science Lab room you will conduct the session in:</div>
                     </div>
+                    <select id="tp-lab-room-select" class="sm:w-60 px-3.5 py-2 bg-white border border-blue-300 rounded-xl text-xs font-extrabold text-ris-navy focus:outline-none focus:border-ris-navy">
+                        <option value="Lab 1">Lab 1</option>
+                        <option value="Lab 2">Lab 2</option>
+                        <option value="Lab 3">Lab 3</option>
+                        <option value="Lab 4">Lab 4</option>
+                    </select>
+                </div>
+
+                <div id="tp-outsidelab-details" class="hidden p-4 rounded-2xl bg-amber-50/80 border border-amber-200 space-y-3 transition-all">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5">WhatsApp / Contact Number (Optional)</label>
-                        <input type="tel" id="tp-phone" placeholder="e.g., 01012345678" class="w-full px-3.5 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-sm font-medium focus:outline-none focus:border-ris-navy">
+                        <div class="text-xs font-extrabold text-amber-900">🏫 Outside Lab / Classroom Custody (Equipment Loan)</div>
+                        <div class="text-[11px] text-amber-800">Items taken outside the lab are registered as a temporary equipment loan. Please specify destination room and expected return schedule:</div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-bold text-amber-950 mb-1">Destination Classroom / Room *</label>
+                            <input type="text" id="tp-classroom-input" placeholder="e.g., Room 204 — Building B" class="w-full px-3.5 py-2 bg-white border border-amber-300 rounded-xl text-xs font-bold text-ris-ink focus:outline-none focus:border-ris-navy">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-amber-950 mb-1">Expected Return Date *</label>
+                            <input type="date" id="tp-return-date" class="w-full px-3.5 py-2 bg-white border border-amber-300 rounded-xl text-xs font-bold text-ris-ink focus:outline-none focus:border-ris-navy">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-amber-950 mb-1">Return Period / Time *</label>
+                            <select id="tp-return-period" class="w-full px-3.5 py-2 bg-white border border-amber-300 rounded-xl text-xs font-bold text-ris-ink focus:outline-none focus:border-ris-navy">
+                                <option value="End of Same Period">End of Same Period</option>
+                                <option value="Period 2">Period 2</option>
+                                <option value="Period 3">Period 3</option>
+                                <option value="Period 4">Period 4</option>
+                                <option value="Period 5">Period 5</option>
+                                <option value="Period 6">Period 6</option>
+                                <option value="Period 7">Period 7</option>
+                                <option value="Period 8">Period 8</option>
+                                <option value="End of School Day">End of School Day</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
@@ -265,27 +378,29 @@
     <div id="admin-app-shell" class="flex-1 flex flex-col lg:flex-row min-h-screen">
 
         <!-- Mobile Top Bar -->
-        <header class="lg:hidden bg-ris-navy text-white px-4 py-3 flex items-center justify-between sticky top-0 z-40 shadow-md">
-            <div class="flex items-center gap-2.5">
-                <div class="flex items-center gap-1.5 bg-white rounded-xl p-1">
-                    <svg viewBox="0 0 140 140" class="w-7 h-7">
-                        <path d="M30 14 H110 V76 C110 102, 70 124, 70 124 C70 124, 30 102, 30 76 Z" fill="#FFFFFF" stroke="#E31E24" stroke-width="6"/>
-                        <rect x="34" y="18" width="72" height="28" fill="#E31E24"/>
-                        <text x="70" y="36" text-anchor="middle" fill="#FFFFFF" font-size="15" font-weight="900" font-family="Georgia, serif">RIS</text>
-                        <path d="M72 49 H106 V76 C106 94, 72 114, 72 114 Z" fill="#1E2859"/>
-                        <text x="88" y="88" text-anchor="middle" fill="#FFFFFF" font-size="28" font-weight="900" font-family="Georgia, serif">R</text>
-                    </svg>
-                    <svg viewBox="0 0 140 140" class="w-7 h-7">
-                        <ellipse cx="70" cy="65" rx="46" ry="18" transform="rotate(-32 70 65)" fill="none" stroke="#E31E24" stroke-width="7"/>
-                        <ellipse cx="70" cy="65" rx="46" ry="18" transform="rotate(32 70 65)" fill="none" stroke="#E31E24" stroke-width="7"/>
-                        <ellipse cx="70" cy="65" rx="46" ry="18" transform="rotate(90 70 65)" fill="none" stroke="#E31E24" stroke-width="7"/>
-                        <circle cx="70" cy="65" r="20" fill="#1E2859"/>
-                        <text x="70" y="71" text-anchor="middle" fill="#FFFFFF" font-size="15" font-weight="900">RIS</text>
+        <header class="lg:hidden bg-ris-navy text-white px-4 py-3 flex items-center justify-between sticky top-0 z-40 shadow-md border-b-2 border-ris-red">
+            <div class="flex items-center gap-3">
+                <div class="bg-white rounded-xl p-1 shadow-xs border border-slate-100 shrink-0">
+                    <svg viewBox="0 0 160 160" class="w-9 h-9" aria-label="Regent International School Crest">
+                        <path d="M22 14 C14 55, 16 112, 62 146" fill="none" stroke="#1E2859" stroke-width="5.5" stroke-linecap="round"/>
+                        <path d="M21 24 L11 14 M20 38 L10 28 M19 52 L9 42 M20 66 L10 56 M22 80 L12 70 M26 94 L16 84" stroke="#1E2859" stroke-width="4.5" stroke-linecap="round"/>
+                        <path d="M138 14 C146 55, 144 112, 98 146" fill="none" stroke="#1E2859" stroke-width="5.5" stroke-linecap="round"/>
+                        <path d="M139 24 L149 14 M140 38 L150 28 M141 52 L151 42 M140 66 L150 56 M138 80 L148 70 M134 94 L144 84" stroke="#1E2859" stroke-width="4.5" stroke-linecap="round"/>
+                        <path d="M34 14 H126 V86 C126 116, 80 142, 80 142 C80 142, 34 116, 34 86 Z" fill="#FFFFFF" stroke="#E31E24" stroke-width="6"/>
+                        <rect x="39" y="19" width="82" height="33" fill="#E31E24"/>
+                        <text x="80" y="37" text-anchor="middle" fill="#FFFFFF" font-size="16" font-weight="900" font-family="Georgia, serif">REGENT</text>
+                        <text x="80" y="47.5" text-anchor="middle" fill="#FFFFFF" font-size="6.2" font-weight="700" font-family="Inter, sans-serif">INTERNATIONAL SCHOOL</text>
+                        <rect x="39" y="56" width="38.5" height="31" fill="#1E2859"/>
+                        <path d="M47 77 V69 L58.25 64 L69.5 69 V77 H47 Z" fill="none" stroke="#FFFFFF" stroke-width="2.2"/>
+                        <path d="M45 82 Q58.25 85 71.5 82" fill="none" stroke="#FFFFFF" stroke-width="2.5"/>
+                        <path d="M41 96 L76 121 M41 106 L76 131" stroke="#E31E24" stroke-width="4.5"/>
+                        <path d="M81.5 56 H121 V86 C121 110, 81.5 134, 81.5 134 Z" fill="#1E2859"/>
+                        <text x="100.5" y="103" text-anchor="middle" fill="#FFFFFF" font-size="38" font-weight="900" font-family="Georgia, serif">R</text>
                     </svg>
                 </div>
                 <div>
-                    <h1 class="text-sm font-black leading-tight font-display">Regent Science Lab</h1>
-                    <p class="text-[10px] text-slate-300">Regent International School</p>
+                    <h1 class="text-base font-black leading-tight font-display">Science Lab</h1>
+                    <p class="text-[11px] text-slate-200 font-semibold">Regent International School</p>
                 </div>
             </div>
             <button onclick="toggleMobileSidebar()" class="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs">
@@ -299,46 +414,49 @@
         <!-- Left Navigation Sidebar (Executive LTR) -->
         <aside id="app-sidebar" class="fixed lg:sticky top-0 left-0 h-screen w-72 bg-ris-navy text-white flex flex-col justify-between z-50 transform -translate-x-full lg:translate-x-0 transition-transform duration-200 shadow-2xl shrink-0 overflow-y-auto border-r border-white/10">
             <div class="p-5 space-y-5">
-                <!-- Dual Brand Header -->
+                <!-- Exclusive Official School Crest Brand Header -->
                 <div class="flex flex-col items-center text-center pt-1 pb-4 border-b border-white/10">
-                    <div class="flex items-center justify-center gap-3 bg-white rounded-2xl p-2.5 shadow-lg mb-3 w-full">
-                        <!-- Regent International School Shield Crest -->
-                        <svg viewBox="0 0 140 140" class="w-16 h-16 shrink-0">
-                            <path d="M18 14 C12 45, 14 95, 52 128" fill="none" stroke="#1E2859" stroke-width="4.5" stroke-linecap="round"/>
-                            <path d="M18 22 L10 14 M17 34 L9 26 M16 46 L8 38 M17 58 L9 50 M19 70 L11 62 M23 82 L15 74" stroke="#1E2859" stroke-width="3.5" stroke-linecap="round"/>
-                            <path d="M18 22 L24 14 M17 34 L23 26 M16 46 L22 38 M17 58 L23 50 M19 70 L25 62" stroke="#1E2859" stroke-width="3" stroke-linecap="round"/>
-                            <path d="M122 14 C128 45, 126 95, 88 128" fill="none" stroke="#1E2859" stroke-width="4.5" stroke-linecap="round"/>
-                            <path d="M122 22 L130 14 M123 34 L131 26 M124 46 L132 38 M123 58 L131 50 M121 70 L129 62 M117 82 L125 74" stroke="#1E2859" stroke-width="3.5" stroke-linecap="round"/>
-                            <path d="M122 22 L116 14 M123 34 L117 26 M124 46 L118 38 M123 58 L117 50 M121 70 L115 62" stroke="#1E2859" stroke-width="3" stroke-linecap="round"/>
-                            <path d="M30 14 H110 V76 C110 102, 70 124, 70 124 C70 124, 30 102, 30 76 Z" fill="#FFFFFF" stroke="#E31E24" stroke-width="4.5"/>
-                            <rect x="34" y="18" width="72" height="28" fill="#E31E24"/>
-                            <text x="70" y="33" text-anchor="middle" fill="#FFFFFF" font-size="14" font-weight="900" font-family="Georgia, serif">REGENT</text>
-                            <text x="70" y="42" text-anchor="middle" fill="#FFFFFF" font-size="5.6" font-weight="700" font-family="Inter, sans-serif">INTERNATIONAL SCHOOL</text>
-                            <rect x="34" y="49" width="34" height="26" fill="#1E2859"/>
-                            <path d="M40 70 Q51 74 62 70 M42 66 H60 V57 L51 52 L42 57 Z" fill="none" stroke="#FFFFFF" stroke-width="2"/>
-                            <path d="M35 80 L68 104 M35 88 L68 112 M42 99 L68 118" stroke="#E31E24" stroke-width="3.5"/>
-                            <path d="M72 49 H106 V76 C106 94, 72 114, 72 114 Z" fill="#1E2859"/>
-                            <text x="88" y="88" text-anchor="middle" fill="#FFFFFF" font-size="30" font-weight="900" font-family="Georgia, serif">R</text>
-                        </svg>
-                        <div class="w-px h-14 bg-slate-200"></div>
-                        <!-- RIS Science Department Atom Logo -->
-                        <svg viewBox="0 0 140 140" class="w-16 h-16 shrink-0">
-                            <ellipse cx="70" cy="58" rx="44" ry="17" transform="rotate(-32 70 58)" fill="none" stroke="#E31E24" stroke-width="5.5"/>
-                            <ellipse cx="70" cy="58" rx="44" ry="17" transform="rotate(32 70 58)" fill="none" stroke="#E31E24" stroke-width="5.5"/>
-                            <ellipse cx="70" cy="58" rx="44" ry="17" transform="rotate(90 70 58)" fill="none" stroke="#E31E24" stroke-width="5.5"/>
-                            <path d="M56 12 Q70 7 84 12" fill="none" stroke="#1E2859" stroke-width="2.5" stroke-linecap="round"/>
-                            <path d="M18 52 Q12 65 18 78" fill="none" stroke="#1E2859" stroke-width="2.5" stroke-linecap="round"/>
-                            <path d="M122 52 Q128 65 122 78" fill="none" stroke="#1E2859" stroke-width="2.5" stroke-linecap="round"/>
-                            <circle cx="70" cy="58" r="18" fill="#1E2859"/>
-                            <text x="70" y="64" text-anchor="middle" fill="#FFFFFF" font-size="15" font-weight="900" font-family="Inter, sans-serif">RIS</text>
-                            <circle cx="76" cy="18" r="6.5" fill="#1E2859"/>
-                            <circle cx="32" cy="74" r="6.5" fill="#1E2859"/>
-                            <circle cx="102" cy="84" r="6.5" fill="#1E2859"/>
-                            <text x="70" y="124" text-anchor="middle" fill="#1E2859" font-size="11.5" font-weight="900" font-family="Inter, sans-serif">SCIENCE DEPARTMENT</text>
+                    <div class="bg-white rounded-2xl p-3 shadow-xl border border-slate-100 mb-3.5 transition-transform duration-300 hover:scale-[1.03]">
+                        <svg viewBox="0 0 160 160" class="w-24 h-24 mx-auto" aria-label="Regent International School Official Crest">
+                            <!-- Left Laurel Wreath Branch -->
+                            <path d="M22 14 C14 55, 16 112, 62 146" fill="none" stroke="#1E2859" stroke-width="5" stroke-linecap="round"/>
+                            <path d="M21 24 L11 14 M20 38 L10 28 M19 52 L9 42 M20 66 L10 56 M22 80 L12 70 M26 94 L16 84 M33 108 L23 98" stroke="#1E2859" stroke-width="4" stroke-linecap="round"/>
+                            <path d="M21 24 L29 14 M20 38 L28 28 M19 52 L27 42 M20 66 L28 56 M22 80 L30 70 M26 94 L34 84" stroke="#1E2859" stroke-width="3.5" stroke-linecap="round"/>
+                            <!-- Right Laurel Wreath Branch -->
+                            <path d="M138 14 C146 55, 144 112, 98 146" fill="none" stroke="#1E2859" stroke-width="5" stroke-linecap="round"/>
+                            <path d="M139 24 L149 14 M140 38 L150 28 M141 52 L151 42 M140 66 L150 56 M138 80 L148 70 M134 94 L144 84 M127 108 L137 98" stroke="#1E2859" stroke-width="4" stroke-linecap="round"/>
+                            <path d="M139 24 L131 14 M140 38 L132 28 M141 52 L133 42 M140 66 L132 56 M138 80 L130 70 M134 94 L126 84" stroke="#1E2859" stroke-width="3.5" stroke-linecap="round"/>
+                            <!-- Outer Red & White Shield Outline -->
+                            <path d="M34 14 H126 V86 C126 116, 80 142, 80 142 C80 142, 34 116, 34 86 Z" fill="#FFFFFF" stroke="#E31E24" stroke-width="5.5" stroke-linejoin="round"/>
+                            <!-- Top Red Header Banner -->
+                            <rect x="39" y="19" width="82" height="33" fill="#E31E24"/>
+                            <text x="80" y="37" text-anchor="middle" fill="#FFFFFF" font-size="16.5" font-weight="900" letter-spacing="0.8" font-family="Georgia, serif">REGENT</text>
+                            <text x="80" y="47.5" text-anchor="middle" fill="#FFFFFF" font-size="6.4" font-weight="700" letter-spacing="0.4" font-family="Inter, sans-serif">INTERNATIONAL SCHOOL</text>
+                            <!-- Left Upper Quadrant: Navy Blue with School Building & Open Book -->
+                            <rect x="39" y="56" width="38.5" height="31" fill="#1E2859"/>
+                            <path d="M58.25 60 V64 H63 L58.25 61.5 Z" fill="#FFFFFF"/>
+                            <path d="M47 77 V69 L58.25 64 L69.5 69 V77 H47 Z" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linejoin="round"/>
+                            <rect x="51" y="71" width="3" height="3" fill="#FFFFFF"/>
+                            <rect x="62.5" y="71" width="3" height="3" fill="#FFFFFF"/>
+                            <rect x="56.5" y="72.5" width="3.5" height="4.5" fill="#FFFFFF"/>
+                            <path d="M45 81 Q51.5 79 58.25 82 Q65 79 71.5 81 V84 Q65 82 58.25 85 Q51.5 82 45 84 Z" fill="#FFFFFF"/>
+                            <!-- Left Lower Quadrant: White with 5 Diagonal Red Stripes -->
+                            <defs>
+                                <clipPath id="sb-stripes-clip">
+                                    <path d="M39 90 H77.5 V134 C58 122, 39 105, 39 90 Z"/>
+                                </clipPath>
+                            </defs>
+                            <g clip-path="url(#sb-stripes-clip)">
+                                <rect x="39" y="90" width="38.5" height="45" fill="#FFFFFF"/>
+                                <path d="M36 91 L80 123 M36 99 L80 131 M36 107 L80 139 M36 115 L80 147 M36 123 L80 155" stroke="#E31E24" stroke-width="4.2"/>
+                            </g>
+                            <!-- Right Half: Solid Navy Blue with Bold Serif 'R' -->
+                            <path d="M81.5 56 H121 V86 C121 110, 81.5 134, 81.5 134 Z" fill="#1E2859"/>
+                            <text x="100.5" y="103" text-anchor="middle" fill="#FFFFFF" font-size="38" font-weight="900" font-family="Georgia, serif">R</text>
                         </svg>
                     </div>
-                    <h2 class="text-lg font-black tracking-tight font-display">Regent Science Lab</h2>
-                    <p class="text-xs text-slate-300 font-medium tracking-wide">Regent International School</p>
+                    <h2 class="text-xl font-black tracking-tight font-display">Science Lab</h2>
+                    <p class="text-xs text-slate-200 font-bold tracking-wide mt-0.5">Regent International School</p>
                     <div id="cloud-status-pill" class="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-amber-500/20 text-amber-200 border border-amber-400/30">
                         <span id="cloud-status-dot" class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
                         <span id="cloud-status-text">Connecting to Cloud...</span>
@@ -401,17 +519,17 @@
                 <div class="bg-gradient-to-r from-ris-navy via-ris-navyLight to-ris-navy rounded-3xl p-6 sm:p-7 text-white shadow-xl flex flex-col lg:flex-row lg:items-center justify-between gap-5">
                     <div class="space-y-1.5">
                         <span class="inline-block px-3 py-1 rounded-full text-[11px] font-extrabold bg-ris-red text-white tracking-wide uppercase">RIS Science Department</span>
-                        <h1 class="text-2xl sm:text-3xl font-black font-display tracking-tight">Regent Science Lab</h1>
-                        <p class="text-xs sm:text-sm text-slate-200 max-w-2xl">Regent International School — Real-time laboratory inventory control, cabinet mapping, teacher experiment requisitions, and safety compliance.</p>
+                        <h1 class="text-2xl sm:text-3xl font-black font-display tracking-tight">Science Lab</h1>
+                        <p class="text-xs sm:text-sm text-slate-200 max-w-2xl"><strong class="text-white">Regent International School</strong> — Real-time laboratory inventory control, cabinet mapping, teacher experiment requisitions, and safety compliance.</p>
                     </div>
                     <div class="flex flex-wrap gap-2.5 shrink-0">
-                        <button onclick="openTeacherQRModal()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold shadow transition flex items-center gap-1.5">
+                        <button onclick="openTeacherQRModal()" class="btn-tactile px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold shadow transition flex items-center gap-1.5">
                             <span>📱</span><span>Teacher Portal QR</span>
                         </button>
-                        <button onclick="openItemModal()" class="px-4 py-2.5 rounded-xl bg-ris-red hover:bg-ris-redDark text-white text-xs font-extrabold shadow transition flex items-center gap-1.5">
+                        <button onclick="openItemModal()" class="btn-tactile px-4 py-2.5 rounded-xl bg-ris-red hover:bg-ris-redDark text-white text-xs font-extrabold shadow transition flex items-center gap-1.5">
                             <span>+</span><span>Add Item</span>
                         </button>
-                        <button onclick="openLoanModal()" class="px-4 py-2.5 rounded-xl bg-white text-ris-navy hover:bg-slate-100 text-xs font-extrabold shadow transition flex items-center gap-1.5">
+                        <button onclick="openLoanModal()" class="btn-tactile px-4 py-2.5 rounded-xl bg-white text-ris-navy hover:bg-slate-100 text-xs font-extrabold shadow transition flex items-center gap-1.5">
                             <span>📤</span><span>Issue Loan</span>
                         </button>
                     </div>
@@ -419,35 +537,35 @@
 
                 <!-- 5 Executive KPI Cards -->
                 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-                    <div onclick="switchTab('inventory')" class="cursor-pointer bg-white p-4 rounded-2xl border border-ris-border shadow-xs hover:border-ris-navy transition">
+                    <div onclick="switchTab('inventory')" class="card-hover cursor-pointer bg-white p-4 rounded-2xl border border-ris-border shadow-xs hover:border-ris-navy">
                         <div class="flex items-center justify-between text-xs text-slate-500 font-bold mb-1.5">
                             <span>Total Inventory Items</span><span>📦</span>
                         </div>
                         <div id="kpi-total-items" class="text-2xl font-black text-ris-navy font-display">0</div>
                         <div class="text-[11px] text-slate-500 font-medium mt-0.5">Registered SKUs</div>
                     </div>
-                    <div onclick="switchTab('inventory')" class="cursor-pointer bg-white p-4 rounded-2xl border border-ris-border shadow-xs hover:border-amber-500 transition">
+                    <div onclick="switchTab('inventory')" class="card-hover cursor-pointer bg-white p-4 rounded-2xl border border-ris-border shadow-xs hover:border-amber-500">
                         <div class="flex items-center justify-between text-xs text-slate-500 font-bold mb-1.5">
                             <span>Low Stock Alerts</span><span>⚠️</span>
                         </div>
                         <div id="kpi-low-stock" class="text-2xl font-black text-amber-600 font-display">0</div>
                         <div class="text-[11px] text-amber-700 font-semibold mt-0.5">Below minimum threshold</div>
                     </div>
-                    <div onclick="switchTab('inventory')" class="cursor-pointer bg-white p-4 rounded-2xl border border-ris-border shadow-xs hover:border-ris-red transition">
+                    <div onclick="switchTab('inventory')" class="card-hover cursor-pointer bg-white p-4 rounded-2xl border border-ris-border shadow-xs hover:border-ris-red">
                         <div class="flex items-center justify-between text-xs text-slate-500 font-bold mb-1.5">
                             <span>Expiry & Safety Alerts</span><span>☣️</span>
                         </div>
                         <div id="kpi-expiry" class="text-2xl font-black text-ris-red font-display">0</div>
                         <div class="text-[11px] text-ris-red font-semibold mt-0.5">Expired / Expiring / Maint.</div>
                     </div>
-                    <div onclick="switchTab('loans')" class="cursor-pointer bg-white p-4 rounded-2xl border border-ris-border shadow-xs hover:border-blue-500 transition">
+                    <div onclick="switchTab('loans')" class="card-hover cursor-pointer bg-white p-4 rounded-2xl border border-ris-border shadow-xs hover:border-blue-500">
                         <div class="flex items-center justify-between text-xs text-slate-500 font-bold mb-1.5">
                             <span>Active Teacher Loans</span><span>🔄</span>
                         </div>
                         <div id="kpi-loans" class="text-2xl font-black text-blue-600 font-display">0</div>
-                        <div class="text-[11px] text-blue-700 font-semibold mt-0.5">Currently in classrooms</div>
+                        <div class="text-[11px] text-blue-700 font-semibold mt-0.5">Currently outside lab</div>
                     </div>
-                    <div onclick="switchTab('requests')" class="cursor-pointer bg-white p-4 rounded-2xl border border-ris-border shadow-xs hover:border-emerald-500 transition col-span-2 sm:col-span-1">
+                    <div onclick="switchTab('requests')" class="card-hover cursor-pointer bg-white p-4 rounded-2xl border border-ris-border shadow-xs hover:border-emerald-500 col-span-2 sm:col-span-1">
                         <div class="flex items-center justify-between text-xs text-slate-500 font-bold mb-1.5">
                             <span>Pending Requests</span><span>📩</span>
                         </div>
@@ -513,10 +631,12 @@
 
                 <!-- Filter Bar -->
                 <div class="flex flex-wrap gap-2">
-                    <button onclick="setRequestFilter('all')" id="req-filter-all" class="req-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-ris-navy text-white">All Requests</button>
-                    <button onclick="setRequestFilter('pending')" id="req-filter-pending" class="req-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700">⏳ Pending</button>
-                    <button onclick="setRequestFilter('prepared')" id="req-filter-prepared" class="req-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700">✅ Approved / Prepared</button>
-                    <button onclick="setRequestFilter('loaned')" id="req-filter-loaned" class="req-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700">🔄 Issued as Loan</button>
+                    <button onclick="setRequestFilter('all')" id="req-filter-all" class="btn-tactile req-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-ris-navy text-white">All Requests</button>
+                    <button onclick="setRequestFilter('pending')" id="req-filter-pending" class="btn-tactile req-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700">⏳ Pending</button>
+                    <button onclick="setRequestFilter('in-lab')" id="req-filter-in-lab" class="btn-tactile req-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700">🔬 Inside Lab</button>
+                    <button onclick="setRequestFilter('outside-lab')" id="req-filter-outside-lab" class="btn-tactile req-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700">🏫 Outside Lab</button>
+                    <button onclick="setRequestFilter('prepared')" id="req-filter-prepared" class="btn-tactile req-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700">✅ Prepared</button>
+                    <button onclick="setRequestFilter('loaned')" id="req-filter-loaned" class="btn-tactile req-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700">🔄 Issued as Loan</button>
                 </div>
 
                 <div id="teacher-requests-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
@@ -738,41 +858,11 @@
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">Lab Number / Name *</label>
-                        <input type="text" id="cab-lab" required placeholder="e.g., Lab 1 - Chemistry" value="Lab 1 - Chemistry" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold text-ris-navy">
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Cabinet English Name *</label>
-                        <input type="text" id="cab-name-en" required placeholder="e.g., General Chemicals & Salts" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-semibold">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Arabic / Specialty Tag *</label>
-                        <input type="text" id="cab-name-ar" required placeholder="مثال: دولاب الكيماويات العامة" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-semibold font-ar" dir="rtl">
-                    </div>
-                </div>
-                <div class="grid grid-cols-3 gap-3">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Shelves *</label>
-                        <input type="number" id="cab-shelves" min="1" max="20" value="4" required class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Category *</label>
-                        <select id="cab-specialty" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold">
-                            <option value="General Chemicals">Chemicals</option>
-                            <option value="Acids & Corrosives">Acids & Bases</option>
-                            <option value="Glassware">Glassware</option>
-                            <option value="Equipment & Optics">Equipment</option>
-                            <option value="Biology & Models">Biology</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Color Tag</label>
-                        <select id="cab-color" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold">
-                            <option value="navy">RIS Navy</option>
-                            <option value="red">RIS Crimson</option>
-                            <option value="emerald">Emerald</option>
-                            <option value="amber">Amber</option>
+                        <select id="cab-lab" required class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold text-ris-navy">
+                            <option value="Lab 1">Lab 1</option>
+                            <option value="Lab 2">Lab 2</option>
+                            <option value="Lab 3">Lab 3</option>
+                            <option value="Lab 4">Lab 4</option>
                         </select>
                     </div>
                 </div>
@@ -982,7 +1072,7 @@
             </div>
 
             <div class="p-5 rounded-2xl bg-ris-bg border-2 border-dashed border-ris-navy/30 space-y-3">
-                <div class="text-xs font-black text-ris-navy uppercase tracking-wide">RIS Science Department — Lab Requisition</div>
+                <div class="text-xs font-black text-ris-navy uppercase tracking-wide">Science Lab — Regent International School</div>
                 <div id="teacher-portal-qrcode-box" class="qr-box bg-white p-3 rounded-2xl inline-block shadow-xs border border-slate-200"></div>
                 <p class="text-xs text-slate-600 font-medium">Scan with any smartphone camera to submit an experiment preparation request directly to the Science Lab.</p>
             </div>
@@ -1036,10 +1126,10 @@
 
             return {
                 cabinets: [
-                    { id: 'cab-1', code: 'Cabinet A', lab: 'Lab 1 - Chemistry', nameEn: 'General Chemicals & Salts', nameAr: 'دولاب الكيماويات العامة والأملاح', shelves: 5, specialty: 'General Chemicals', color: 'navy' },
-                    { id: 'cab-2', code: 'Acid Vault', lab: 'Lab 1 - Chemistry', nameEn: 'Corrosive Acids & Bases Vault', nameAr: 'خزانة الأحماض والقلويات المركزة', shelves: 3, specialty: 'Acids & Corrosives', color: 'red' },
-                    { id: 'cab-3', code: 'Cabinet B', lab: 'Lab 2 - Biology', nameEn: 'Glassware & Measuring Apparatus', nameAr: 'دولاب الزجاجيات وأدوات القياس', shelves: 4, specialty: 'Glassware', color: 'emerald' },
-                    { id: 'cab-4', code: 'Cabinet C', lab: 'Lab 3 - Physics', nameEn: 'Microscopes & Physics Instruments', nameAr: 'خزانة المجاهر والأجهزة الفيزيائية', shelves: 4, specialty: 'Equipment & Optics', color: 'amber' }
+                    { id: 'cab-1', code: 'Cabinet A', lab: 'Lab 1', nameEn: 'General Chemicals & Salts', nameAr: 'دولاب الكيماويات العامة والأملاح', shelves: 5, specialty: 'General Chemicals', color: 'navy' },
+                    { id: 'cab-2', code: 'Acid Vault', lab: 'Lab 2', nameEn: 'Corrosive Acids & Bases Vault', nameAr: 'خزانة الأحماض والقلويات المركزة', shelves: 3, specialty: 'Acids & Corrosives', color: 'red' },
+                    { id: 'cab-3', code: 'Cabinet B', lab: 'Lab 3', nameEn: 'Glassware & Measuring Apparatus', nameAr: 'دولاب الزجاجيات وأدوات القياس', shelves: 4, specialty: 'Glassware', color: 'emerald' },
+                    { id: 'cab-4', code: 'Cabinet C', lab: 'Lab 4', nameEn: 'Microscopes & Physics Instruments', nameAr: 'خزانة المجاهر والأجهزة الفيزيائية', shelves: 4, specialty: 'Equipment & Optics', color: 'amber' }
                 ],
                 items: [
                     { id: 'itm-1', type: 'Chemicals', code: 'CHM-101', nameEn: 'Hydrochloric Acid (HCl)', nameAr: 'حمض الهيدروكلوريك', cabinet: 'Acid Vault', shelf: 'Shelf 1', qty: 450, unit: 'ml', minQty: 500, spec: '1.0 M', expiry: nextYearDate, status: 'Corrosive', notes: 'Keep locked in Acid Vault; wear goggles & nitrile gloves.' },
@@ -1066,7 +1156,8 @@
                         dayName: getEnglishDayName(today),
                         session: 'Period 3',
                         experiment: "Food Tests: Benedict's & Biuret Analysis",
-                        location: 'Lab 2 - Biology',
+                        locationMode: 'in-lab',
+                        location: 'Inside Lab (Lab 2)',
                         notes: 'Please prepare 6 workstation trays with test tubes, racks, water bath, and Benedict reagent.',
                         selectedItems: [{ id: 'itm-2', nameEn: "Benedict's Solution", nameAr: 'محلول بندكت', qty: 60, unit: 'ml' }],
                         status: 'pending',
@@ -1220,12 +1311,13 @@
                 : type === 'warning'
                     ? 'bg-amber-600 text-white'
                     : 'bg-ris-navy text-white';
-            el.className = `${colors} px-4 py-3 rounded-2xl shadow-xl text-xs font-extrabold flex items-center gap-2 pointer-events-auto transition-all`;
+            el.className = `${colors} animate-toast-enter px-4 py-3 rounded-2xl shadow-xl text-xs font-extrabold flex items-center gap-2 pointer-events-auto transition-all`;
             el.innerHTML = `<span>${type === 'error' ? '⚠️' : '✅'}</span><span>${msg}</span>`;
             container.appendChild(el);
             setTimeout(() => {
                 el.style.opacity = '0';
-                setTimeout(() => el.remove(), 300);
+                el.style.transform = 'translateX(16px)';
+                setTimeout(() => el.remove(), 280);
             }, 3200);
         }
 
@@ -1235,6 +1327,12 @@
             document.getElementById('confirm-message').textContent = message;
             modal.classList.remove('hidden');
             modal.classList.add('flex');
+            const card = modal.firstElementChild;
+            if (card) {
+                card.classList.remove('animate-modal-enter');
+                void card.offsetWidth;
+                card.classList.add('animate-modal-enter');
+            }
 
             const okBtn = document.getElementById('confirm-ok-btn');
             const cancelBtn = document.getElementById('confirm-cancel-btn');
@@ -1253,6 +1351,12 @@
             if (!el) return;
             el.classList.remove('hidden');
             el.classList.add('flex');
+            const card = el.firstElementChild;
+            if (card) {
+                card.classList.remove('animate-modal-enter');
+                void card.offsetWidth;
+                card.classList.add('animate-modal-enter');
+            }
         }
 
         function closeModal(id) {
@@ -1321,16 +1425,23 @@
         }
 
         function switchTab(tabName) {
-            document.querySelectorAll('.view-section').forEach(sec => sec.classList.add('hidden'));
+            document.querySelectorAll('.view-section').forEach(sec => {
+                sec.classList.add('hidden');
+                sec.classList.remove('animate-view-enter');
+            });
             const target = document.getElementById(`view-${tabName}`);
-            if (target) target.classList.remove('hidden');
+            if (target) {
+                target.classList.remove('hidden');
+                void target.offsetWidth;
+                target.classList.add('animate-view-enter');
+            }
 
             document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.className = 'nav-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-200 hover:bg-white/10 transition';
+                btn.className = 'btn-tactile nav-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-200 hover:bg-white/10';
             });
             const activeBtn = document.getElementById(`nav-${tabName}`);
             if (activeBtn) {
-                activeBtn.className = 'nav-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold bg-ris-red text-white shadow-md transition';
+                activeBtn.className = 'btn-tactile nav-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold bg-ris-red text-white shadow-md';
             }
 
             const sidebar = document.getElementById('app-sidebar');
@@ -1513,10 +1624,10 @@
         function setRequestFilter(filter) {
             currentRequestFilter = filter;
             document.querySelectorAll('.req-filter-btn').forEach(btn => {
-                btn.className = 'req-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700';
+                btn.className = 'btn-tactile req-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700';
             });
             const activeBtn = document.getElementById(`req-filter-${filter}`);
-            if (activeBtn) activeBtn.className = 'req-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-ris-navy text-white';
+            if (activeBtn) activeBtn.className = 'btn-tactile req-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-ris-navy text-white';
             renderTeacherRequests();
         }
 
@@ -1524,7 +1635,11 @@
             const grid = document.getElementById('teacher-requests-grid');
             if (!grid) return;
             let list = [...state.teacherRequests];
-            if (currentRequestFilter !== 'all') {
+            if (currentRequestFilter === 'in-lab') {
+                list = list.filter(r => (r.locationMode || 'in-lab') === 'in-lab');
+            } else if (currentRequestFilter === 'outside-lab') {
+                list = list.filter(r => r.locationMode === 'outside-lab');
+            } else if (currentRequestFilter !== 'all') {
                 list = list.filter(r => r.status === currentRequestFilter);
             }
             if (list.length === 0) {
@@ -1539,40 +1654,58 @@
             };
             grid.innerHTML = list.map(req => {
                 const st = statusMap[req.status] || statusMap.pending;
+                const isOutside = req.locationMode === 'outside-lab';
+                const modeBadge = isOutside
+                    ? `<span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-amber-100 text-amber-900 border border-amber-300">🏫 Outside Lab (Loan)</span>`
+                    : `<span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-blue-100 text-ris-navy border border-blue-200">🔬 Inside Lab</span>`;
                 const cleanPhone = (req.phone || '').replace(/\D/g, '');
                 const waPhone = cleanPhone.startsWith('0') ? '2' + cleanPhone : cleanPhone;
-                const waMsg = encodeURIComponent(`Hello ${req.teacherName}, your lab preparation request for "${req.experiment}" (${req.session}, ${req.dayName} ${req.date}) at Regent Science Lab is ready.`);
+                const waMsg = encodeURIComponent(`Hello ${req.teacherName}, your lab preparation request for "${req.experiment}" (${req.session}, ${req.dayName} ${req.date}) at Science Lab — Regent International School is ready.`);
                 const itemsTags = (req.selectedItems || []).map(si => {
                     const label = si.nameAr ? `${si.nameEn} - ${si.nameAr}` : (si.nameEn || si.name);
                     return `<span class="px-2.5 py-0.5 rounded-md bg-white border border-slate-200 text-ris-navy text-[11px] font-bold">${label} × ${si.qty} ${si.unit || ''}</span>`;
                 }).join('');
                 return `
-                    <div class="bg-white p-5 rounded-3xl border border-ris-border shadow-xs space-y-3 flex flex-col justify-between">
+                    <div class="card-hover bg-white p-5 rounded-3xl border border-ris-border shadow-xs space-y-3 flex flex-col justify-between">
                         <div class="space-y-2.5">
                             <div class="flex items-start justify-between gap-2">
                                 <div>
                                     <div class="font-black text-sm text-ris-navy">👨‍🏫 ${req.teacherName} <span class="text-xs font-semibold text-slate-500">(${req.grade})</span></div>
                                     <div class="text-xs font-bold text-ris-red mt-0.5">📅 ${req.dayName} ${req.date} • ⏰ ${req.session}</div>
                                 </div>
-                                <span class="px-2.5 py-1 rounded-full text-[11px] font-extrabold shrink-0 ${st.cls}">${st.label}</span>
+                                <div class="flex flex-col items-end gap-1 shrink-0">
+                                    <span class="px-2.5 py-1 rounded-full text-[11px] font-extrabold ${st.cls}">${st.label}</span>
+                                    ${modeBadge}
+                                </div>
                             </div>
                             <div class="p-3.5 rounded-2xl bg-ris-bg border border-slate-200 space-y-1.5">
                                 <div class="text-xs font-extrabold text-ris-ink">🔬 Experiment: ${req.experiment}</div>
                                 <div class="text-[11px] text-slate-600 font-semibold">📍 Location: ${req.location}</div>
+                                ${isOutside && (req.returnDate || req.returnSchedule) ? `<div class="text-[11px] font-extrabold text-amber-800 bg-amber-100/80 px-2.5 py-1 rounded-lg inline-block">⏰ Expected Return: ${req.returnSchedule || `${req.returnDate}${req.returnPeriod ? ` (${req.returnPeriod})` : ''}`}</div>` : ''}
                                 <div class="text-xs text-slate-700 pt-1.5 border-t border-slate-200/70">${req.notes}</div>
                                 ${itemsTags ? `<div class="flex flex-wrap gap-1.5 pt-1.5">${itemsTags}</div>` : ''}
                             </div>
                         </div>
                         <div class="flex flex-wrap gap-1.5 pt-3 border-t border-slate-100">
-                            <button onclick="updateRequestStatus('${req.id}', 'prepared')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-[11px] font-bold">✅ Approve / Ready</button>
-                            <button onclick="convertRequestToLoan('${req.id}')" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-[11px] font-bold">🔄 Issue Loan</button>
-                            <button onclick="convertRequestToLog('${req.id}')" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-800 text-white rounded-xl text-[11px] font-bold">📉 Deduct Stock</button>
-                            ${waPhone ? `<a href="https://wa.me/${waPhone}?text=${waMsg}" target="_blank" class="px-3 py-1.5 bg-green-100 hover:bg-green-200 text-green-800 rounded-xl text-[11px] font-bold">💬 WhatsApp</a>` : ''}
-                            <button onclick="deleteTeacherRequest('${req.id}')" class="px-2.5 py-1.5 bg-ris-redLight hover:bg-red-200 text-ris-red rounded-xl text-[11px] font-bold ml-auto" title="Reject / Delete">🗑️</button>
+                            <button onclick="approveTeacherRequest('${req.id}')" class="btn-tactile px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-[11px] font-bold">${isOutside ? '✅ Approve & Issue Loan' : '✅ Approve / Ready'}</button>
+                            <button onclick="convertRequestToLoan('${req.id}')" class="btn-tactile px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-[11px] font-bold">🔄 Issue Loan</button>
+                            <button onclick="convertRequestToLog('${req.id}')" class="btn-tactile px-3 py-1.5 bg-slate-700 hover:bg-slate-800 text-white rounded-xl text-[11px] font-bold">📉 Deduct Stock</button>
+                            ${waPhone ? `<a href="https://wa.me/${waPhone}?text=${waMsg}" target="_blank" class="btn-tactile px-3 py-1.5 bg-green-100 hover:bg-green-200 text-green-800 rounded-xl text-[11px] font-bold">💬 WhatsApp</a>` : ''}
+                            <button onclick="deleteTeacherRequest('${req.id}')" class="btn-tactile px-2.5 py-1.5 bg-ris-redLight hover:bg-red-200 text-ris-red rounded-xl text-[11px] font-bold ml-auto" title="Reject / Delete">🗑️</button>
                         </div>
                     </div>
                 `;
             }).join('');
+        }
+
+        function approveTeacherRequest(reqId) {
+            const req = state.teacherRequests.find(r => r.id === reqId);
+            if (!req) return;
+            if (req.locationMode === 'outside-lab') {
+                convertRequestToLoan(reqId);
+            } else {
+                updateRequestStatus(reqId, 'prepared');
+            }
         }
 
         function updateRequestStatus(reqId, newStatus) {
@@ -1587,6 +1720,8 @@
         function convertRequestToLoan(reqId) {
             const req = state.teacherRequests.find(r => r.id === reqId);
             if (!req) return;
+            const dueText = req.returnSchedule
+                || (req.returnDate ? `${req.returnDate}${req.returnPeriod ? ` — ${req.returnPeriod}` : ''}` : `End of ${req.session}`);
             req.status = 'loaned';
             if (req.selectedItems && req.selectedItems.length > 0) {
                 req.selectedItems.forEach(si => {
@@ -1605,19 +1740,30 @@
                                 teacher: req.teacherName,
                                 className: `${req.grade} — ${req.location}`,
                                 date: req.date,
-                                due: `End of ${req.session}`,
+                                due: dueText,
                                 status: 'active'
+                            });
+                            state.logs.unshift({
+                                id: 'lg-' + Date.now() + Math.random().toString(36).slice(2, 5),
+                                date: new Date().toISOString().split('T')[0],
+                                type: 'consumption',
+                                itemId: item.id,
+                                itemNameEn: item.nameEn,
+                                itemNameAr: item.nameAr,
+                                qty: qty,
+                                unit: item.unit,
+                                reason: `Outside Lab Loan Issued: ${req.teacherName} (${req.location}) — Due: ${dueText}`
                             });
                         }
                     }
                 });
                 persistState();
                 refreshAllViews();
-                showToast('Requested items converted to active Teacher Loan');
+                showToast(`Active Loan created (Due: ${dueText}) & stock updated`);
             } else {
                 persistState();
                 refreshAllViews();
-                openLoanModal(req.teacherName, `${req.grade} — ${req.location}`);
+                openLoanModal(req.teacherName, `${req.grade} — ${req.location}`, dueText);
             }
         }
 
@@ -1679,7 +1825,7 @@
                 const cabItems = state.items.filter(i => i.cabinet === cab.code);
                 const topCls = colorStyles[cab.color] || colorStyles.navy;
                 return `
-                    <div class="bg-white rounded-3xl p-5 border border-ris-border ${topCls} shadow-xs flex flex-col justify-between space-y-4">
+                    <div class="card-hover bg-white rounded-3xl p-5 border border-ris-border ${topCls} shadow-xs flex flex-col justify-between space-y-4">
                         <div class="space-y-2">
                             <div class="flex items-center justify-between gap-2">
                                 <span class="px-3 py-1 rounded-xl bg-ris-navy text-white text-xs font-black">${cab.code}</span>
@@ -1714,7 +1860,12 @@
             const form = document.getElementById('cabinet-form');
             form.reset();
             document.getElementById('cab-id').value = '';
-            document.getElementById('cab-lab').value = 'Lab 1 - Chemistry';
+            const cabLabSel = document.getElementById('cab-lab');
+            const standardLabs = ['Lab 1', 'Lab 2', 'Lab 3', 'Lab 4'];
+            const extraLabs = state.cabinets.map(c => (c.lab || '').trim()).filter(l => l && !standardLabs.includes(l));
+            const allLabs = [...standardLabs, ...new Set(extraLabs)];
+            cabLabSel.innerHTML = allLabs.map(l => `<option value="${l}">${l}</option>`).join('');
+            cabLabSel.value = 'Lab 1';
             document.getElementById('cabinet-modal-title').textContent = '🗄️ Add New Cabinet';
 
             if (cabId) {
@@ -1723,7 +1874,7 @@
                     document.getElementById('cabinet-modal-title').textContent = '✏️ Edit Cabinet Details';
                     document.getElementById('cab-id').value = cab.id;
                     document.getElementById('cab-code').value = cab.code;
-                    document.getElementById('cab-lab').value = cab.lab || 'Lab 1 - Chemistry';
+                    cabLabSel.value = cab.lab || 'Lab 1';
                     document.getElementById('cab-name-en').value = cab.nameEn;
                     document.getElementById('cab-name-ar').value = cab.nameAr;
                     document.getElementById('cab-shelves').value = cab.shelves;
@@ -1823,8 +1974,11 @@
             const printArea = document.getElementById('print-area');
             printArea.innerHTML = `
                 <div style="border: 3px solid #1E2859; border-radius: 18px; padding: 24px; max-width: 380px; margin: 20px auto; text-align: center; font-family: Inter, sans-serif;">
-                    <div style="background: #1E2859; color: white; padding: 6px 12px; border-radius: 8px; font-weight: 800; font-size: 13px;">Regent Science Lab — RIS</div>
-                    <div style="color: #E31E24; font-weight: 900; font-size: 16px; margin-top: 8px;">${cab.lab || 'Lab 1'} • ${cab.code}</div>
+                    <div style="background: #1E2859; color: white; padding: 8px 12px; border-radius: 10px;">
+                        <div style="font-weight: 900; font-size: 15px;">Science Lab</div>
+                        <div style="font-weight: 700; font-size: 11px; color: #E2E8F0;">Regent International School</div>
+                    </div>
+                    <div style="color: #E31E24; font-weight: 900; font-size: 16px; margin-top: 10px;">${cab.lab || 'Lab 1'} • ${cab.code}</div>
                     <div id="print-cab-qr" style="margin: 14px auto; display: flex; justify-content: center;"></div>
                     <div style="font-size: 17px; font-weight: 900; color: #0F172A;">${cab.nameEn}</div>
                     <div style="font-size: 14px; font-weight: 700; color: #475569; margin-top: 4px; font-family: Cairo, sans-serif;">${cab.nameAr}</div>
@@ -1886,7 +2040,7 @@
                 const isLow = Number(item.qty) <= Number(item.minQty);
                 const labName = getCabinetLabLabel(item.cabinet);
                 return `
-                    <div class="bg-white p-5 rounded-3xl border ${isLow ? 'border-amber-400' : 'border-ris-border'} shadow-xs flex flex-col justify-between space-y-3">
+                    <div class="card-hover bg-white p-5 rounded-3xl border ${isLow ? 'border-amber-400' : 'border-ris-border'} shadow-xs flex flex-col justify-between space-y-3">
                         <div class="space-y-2">
                             <div class="flex items-center justify-between gap-2">
                                 <span class="px-2.5 py-0.5 rounded-lg text-[11px] font-extrabold ${tb.cls}">${tb.label}</span>
@@ -2050,13 +2204,13 @@
                 `).join('');
             }
         }
-
-        function openLoanModal(prefillTeacher = '', prefillClass = '') {
+        function openLoanModal(prefillTeacher = '', prefillClass = '', prefillDue = 'End of School Day') {
             const sel = document.getElementById('loan-item-id');
             const available = state.items.filter(i => Number(i.qty) > 0);
             sel.innerHTML = available.map(i => `<option value="${i.id}">${formatBilingualPlain(i)} (Available: ${i.qty} ${i.unit})</option>`).join('');
             document.getElementById('loan-teacher').value = prefillTeacher;
             document.getElementById('loan-class').value = prefillClass;
+            document.getElementById('loan-due').value = prefillDue;
             openModal('loan-modal');
         }
 
@@ -2214,8 +2368,8 @@
             printArea.innerHTML = `
                 <div style="border: 4px solid #1E2859; border-radius: 24px; padding: 36px; max-width: 520px; margin: 20px auto; text-align: center; font-family: Inter, sans-serif;">
                     <div style="display: inline-block; background: #E31E24; color: white; padding: 6px 18px; border-radius: 999px; font-weight: 800; font-size: 13px;">RIS Science Department</div>
-                    <h1 style="color: #1E2859; font-size: 26px; font-weight: 900; margin: 14px 0 4px;">Regent Science Lab</h1>
-                    <p style="color: #64748B; font-size: 13px; font-weight: 700; margin-bottom: 16px;">Regent International School — Teacher Requisition Portal</p>
+                    <h1 style="color: #1E2859; font-size: 28px; font-weight: 900; margin: 14px 0 4px;">Science Lab</h1>
+                    <p style="color: #1E2859; font-size: 15px; font-weight: 800; margin-bottom: 14px;">Regent International School</p>
                     <p style="color: #0F172A; font-size: 14px; font-weight: 600; margin-bottom: 20px;">Scan this QR Code with your mobile camera to request chemicals, glassware, or equipment for your upcoming lab period.</p>
                     <div id="print-teacher-qr-poster-box" style="margin: 0 auto; display: flex; justify-content: center; padding: 14px; border: 2px dashed #1E2859; border-radius: 18px; width: fit-content;"></div>
                     <div style="margin-top: 18px; font-size: 12px; color: #1E2859; font-weight: 800;">${url}</div>
@@ -2231,15 +2385,63 @@
 
         function enterTeacherPortalPreview() {
             document.getElementById('admin-app-shell').classList.add('hidden');
-            document.getElementById('teacher-portal-shell').classList.remove('hidden');
+            const portal = document.getElementById('teacher-portal-shell');
+            portal.classList.remove('hidden');
+            portal.classList.add('animate-view-enter');
             document.getElementById('exit-teacher-preview-btn').classList.remove('hidden');
             resetTeacherPortalForm();
         }
 
         function exitTeacherPortalMode() {
             document.getElementById('teacher-portal-shell').classList.add('hidden');
-            document.getElementById('admin-app-shell').classList.remove('hidden');
+            const adminShell = document.getElementById('admin-app-shell');
+            adminShell.classList.remove('hidden');
+            adminShell.classList.add('animate-view-enter');
             refreshAllViews();
+        }
+
+        function setTeacherLocationMode(mode) {
+            const hiddenInput = document.getElementById('tp-location-mode');
+            const inLabBtn = document.getElementById('tp-mode-inlab-btn');
+            const outsideBtn = document.getElementById('tp-mode-outside-btn');
+            const inLabBox = document.getElementById('tp-inlab-details');
+            const outsideBox = document.getElementById('tp-outsidelab-details');
+            const roomInput = document.getElementById('tp-classroom-input');
+            const returnDateInput = document.getElementById('tp-return-date');
+
+            if (hiddenInput) hiddenInput.value = mode;
+
+            if (mode === 'outside-lab') {
+                inLabBtn.className = 'btn-tactile py-1.5 px-2 rounded-lg text-xs font-bold text-slate-600 hover:text-ris-navy';
+                outsideBtn.className = 'btn-tactile py-1.5 px-2 rounded-lg text-xs font-extrabold bg-ris-red text-white shadow-xs';
+                inLabBox.classList.add('hidden');
+                outsideBox.classList.remove('hidden');
+                if (roomInput) roomInput.required = true;
+                if (returnDateInput) {
+                    returnDateInput.required = true;
+                    if (!returnDateInput.value) {
+                        returnDateInput.value = document.getElementById('tp-date')?.value || new Date().toISOString().split('T')[0];
+                    }
+                }
+            } else {
+                inLabBtn.className = 'btn-tactile py-1.5 px-2 rounded-lg text-xs font-extrabold bg-ris-navy text-white shadow-xs';
+                outsideBtn.className = 'btn-tactile py-1.5 px-2 rounded-lg text-xs font-bold text-slate-600 hover:text-ris-navy';
+                inLabBox.classList.remove('hidden');
+                outsideBox.classList.add('hidden');
+                if (roomInput) roomInput.required = false;
+                if (returnDateInput) returnDateInput.required = false;
+            }
+        }
+
+        function populateTeacherLabRooms() {
+            const sel = document.getElementById('tp-lab-room-select');
+            if (!sel) return;
+            const standardLabs = ['Lab 1', 'Lab 2', 'Lab 3', 'Lab 4'];
+            const extraLabs = state.cabinets
+                .map(c => (c.lab || '').trim())
+                .filter(l => l && !standardLabs.includes(l));
+            const rooms = [...standardLabs, ...new Set(extraLabs)];
+            sel.innerHTML = rooms.map(r => `<option value="${r}">${r}</option>`).join('');
         }
 
         // Privacy rule: Show bilingual item name + unit ONLY (No stock quantities visible to teachers)
@@ -2300,6 +2502,30 @@
         function submitTeacherPortalRequest(e) {
             e.preventDefault();
             const dateVal = document.getElementById('tp-date').value;
+            const locationMode = document.getElementById('tp-location-mode').value || 'in-lab';
+            const labRoom = document.getElementById('tp-lab-room-select')?.value || 'Lab 1';
+            const classroomRoom = (document.getElementById('tp-classroom-input')?.value || '').trim();
+            const returnDate = (document.getElementById('tp-return-date')?.value || '').trim();
+            const returnPeriod = (document.getElementById('tp-return-period')?.value || 'End of School Day').trim();
+
+            if (locationMode === 'outside-lab') {
+                if (!classroomRoom) {
+                    showToast('Please enter the destination classroom / room number.', 'error');
+                    document.getElementById('tp-classroom-input')?.focus();
+                    return;
+                }
+                if (!returnDate) {
+                    showToast('Please select the Expected Return Date for outside lab loans.', 'error');
+                    document.getElementById('tp-return-date')?.focus();
+                    return;
+                }
+            }
+
+            const returnSchedule = locationMode === 'outside-lab' ? `${returnDate} (${returnPeriod})` : '';
+            const formattedLocation = locationMode === 'outside-lab'
+                ? `Outside Lab — ${classroomRoom}`
+                : `Inside Lab — ${labRoom}`;
+
             const newReq = {
                 id: 'req-' + Date.now(),
                 teacherName: document.getElementById('tp-teacher-name').value.trim(),
@@ -2309,7 +2535,11 @@
                 dayName: getEnglishDayName(dateVal),
                 session: document.getElementById('tp-session').value,
                 experiment: document.getElementById('tp-experiment').value.trim(),
-                location: document.getElementById('tp-location').value,
+                locationMode: locationMode,
+                location: formattedLocation,
+                returnDate: returnDate,
+                returnPeriod: returnPeriod,
+                returnSchedule: returnSchedule,
                 notes: document.getElementById('tp-notes').value.trim(),
                 selectedItems: [...tpSelectedItems],
                 status: 'pending',
@@ -2319,8 +2549,10 @@
             state.teacherRequests.unshift(newReq);
             persistState();
             document.getElementById('teacher-portal-form').classList.add('hidden');
-            document.getElementById('teacher-submit-success').classList.remove('hidden');
-            showToast('Requisition sent to Regent Science Lab!');
+            const successBox = document.getElementById('teacher-submit-success');
+            successBox.classList.remove('hidden');
+            successBox.classList.add('animate-view-enter');
+            showToast('Requisition sent to Science Lab!');
         }
 
         function resetTeacherPortalForm() {
@@ -2328,9 +2560,13 @@
             form.reset();
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('tp-date').value = today;
+            const retDateEl = document.getElementById('tp-return-date');
+            if (retDateEl) retDateEl.value = today;
             updateTeacherDayPreview();
             tpSelectedItems = [];
             renderTpSelectedItems();
+            populateTeacherLabRooms();
+            setTeacherLocationMode('in-lab');
             populateTeacherPortalItems();
             form.classList.remove('hidden');
             document.getElementById('teacher-submit-success').classList.add('hidden');
@@ -2359,7 +2595,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `Regent_Science_Lab_Inventory_${new Date().toISOString().split('T')[0]}.csv`;
+            a.download = `Science_Lab_RIS_Inventory_${new Date().toISOString().split('T')[0]}.csv`;
             a.click();
             URL.revokeObjectURL(url);
             showToast('Excel (CSV) inventory exported');
@@ -2370,7 +2606,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `Regent_Science_Lab_Backup_${new Date().toISOString().split('T')[0]}.json`;
+            a.download = `Science_Lab_RIS_Backup_${new Date().toISOString().split('T')[0]}.json`;
             a.click();
             URL.revokeObjectURL(url);
             showToast('JSON backup downloaded');
@@ -2493,35 +2729,34 @@
             printArea.innerHTML = `
                 <div style="font-family: Inter, sans-serif; direction: ltr; color: #0F172A;">
                     <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid #1E2859; padding-bottom:14px; margin-bottom:20px;">
-                        <div style="display:flex; align-items:center; gap:12px;">
-                            <svg viewBox="0 0 140 140" style="width:56px; height:56px;">
-                                <path d="M18 14 C12 45, 14 95, 52 128" fill="none" stroke="#1E2859" stroke-width="4.5" stroke-linecap="round"/>
-                                <path d="M122 14 C128 45, 126 95, 88 128" fill="none" stroke="#1E2859" stroke-width="4.5" stroke-linecap="round"/>
-                                <path d="M30 14 H110 V76 C110 102, 70 124, 70 124 C70 124, 30 102, 30 76 Z" fill="#FFFFFF" stroke="#E31E24" stroke-width="5"/>
-                                <rect x="34" y="18" width="72" height="28" fill="#E31E24"/>
-                                <text x="70" y="34" text-anchor="middle" fill="#FFFFFF" font-size="14" font-weight="900" font-family="Georgia, serif">REGENT</text>
-                                <rect x="34" y="49" width="34" height="26" fill="#1E2859"/>
-                                <path d="M72 49 H106 V76 C106 94, 72 114, 72 114 Z" fill="#1E2859"/>
-                                <text x="88" y="88" text-anchor="middle" fill="#FFFFFF" font-size="30" font-weight="900" font-family="Georgia, serif">R</text>
+                        <div style="display:flex; align-items:center; gap:14px;">
+                            <svg viewBox="0 0 160 160" style="width:64px; height:64px;">
+                                <path d="M22 14 C14 55, 16 112, 62 146" fill="none" stroke="#1E2859" stroke-width="5" stroke-linecap="round"/>
+                                <path d="M21 24 L11 14 M20 38 L10 28 M19 52 L9 42 M20 66 L10 56 M22 80 L12 70 M26 94 L16 84 M33 108 L23 98" stroke="#1E2859" stroke-width="4" stroke-linecap="round"/>
+                                <path d="M21 24 L29 14 M20 38 L28 28 M19 52 L27 42 M20 66 L28 56 M22 80 L30 70 M26 94 L34 84" stroke="#1E2859" stroke-width="3.5" stroke-linecap="round"/>
+                                <path d="M138 14 C146 55, 144 112, 98 146" fill="none" stroke="#1E2859" stroke-width="5" stroke-linecap="round"/>
+                                <path d="M139 24 L149 14 M140 38 L150 28 M141 52 L151 42 M140 66 L150 56 M138 80 L148 70 M134 94 L144 84 M127 108 L137 98" stroke="#1E2859" stroke-width="4" stroke-linecap="round"/>
+                                <path d="M139 24 L131 14 M140 38 L132 28 M141 52 L133 42 M140 66 L132 56 M138 80 L130 70 M134 94 L126 84" stroke="#1E2859" stroke-width="3.5" stroke-linecap="round"/>
+                                <path d="M34 14 H126 V86 C126 116, 80 142, 80 142 C80 142, 34 116, 34 86 Z" fill="#FFFFFF" stroke="#E31E24" stroke-width="5.5" stroke-linejoin="round"/>
+                                <rect x="39" y="19" width="82" height="33" fill="#E31E24"/>
+                                <text x="80" y="37" text-anchor="middle" fill="#FFFFFF" font-size="16.5" font-weight="900" font-family="Georgia, serif">REGENT</text>
+                                <text x="80" y="47.5" text-anchor="middle" fill="#FFFFFF" font-size="6.4" font-weight="700" font-family="Inter, sans-serif">INTERNATIONAL SCHOOL</text>
+                                <rect x="39" y="56" width="38.5" height="31" fill="#1E2859"/>
+                                <path d="M47 77 V69 L58.25 64 L69.5 69 V77 H47 Z" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+                                <path d="M45 81 Q58.25 84 71.5 81" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+                                <path d="M41 96 L76 121 M41 105 L76 130 M46 116 L76 138" stroke="#E31E24" stroke-width="4"/>
+                                <path d="M81.5 56 H121 V86 C121 110, 81.5 134, 81.5 134 Z" fill="#1E2859"/>
+                                <text x="100.5" y="103" text-anchor="middle" fill="#FFFFFF" font-size="38" font-weight="900" font-family="Georgia, serif">R</text>
                             </svg>
                             <div>
-                                <div style="font-size:19px; font-weight:900; color:#1E2859;">Regent Science Lab</div>
-                                <div style="font-size:12px; font-weight:800; color:#E31E24;">Regent International School — Science Department</div>
+                                <div style="font-size:22px; font-weight:900; color:#1E2859; line-height:1.1;">Science Lab</div>
+                                <div style="font-size:13px; font-weight:800; color:#E31E24; margin-top:2px;">Regent International School</div>
+                                <div style="font-size:11px; font-weight:700; color:#64748B;">Science Department</div>
                             </div>
                         </div>
-                        <div style="display:flex; align-items:center; gap:12px;">
-                            <div style="text-align:right; font-size:11px; font-weight:700; color:#475569;">
-                                <div>Report Date: ${today}</div>
-                                <div>Official Department Record</div>
-                            </div>
-                            <svg viewBox="0 0 140 140" style="width:56px; height:56px;">
-                                <ellipse cx="70" cy="58" rx="44" ry="17" transform="rotate(-32 70 58)" fill="none" stroke="#E31E24" stroke-width="5.5"/>
-                                <ellipse cx="70" cy="58" rx="44" ry="17" transform="rotate(32 70 58)" fill="none" stroke="#E31E24" stroke-width="5.5"/>
-                                <ellipse cx="70" cy="58" rx="44" ry="17" transform="rotate(90 70 58)" fill="none" stroke="#E31E24" stroke-width="5.5"/>
-                                <circle cx="70" cy="58" r="18" fill="#1E2859"/>
-                                <text x="70" y="64" text-anchor="middle" fill="#FFFFFF" font-size="15" font-weight="900">RIS</text>
-                                <text x="70" y="124" text-anchor="middle" fill="#1E2859" font-size="11" font-weight="900">SCIENCE DEPT</text>
-                            </svg>
+                        <div style="text-align:right; font-size:11px; font-weight:700; color:#475569;">
+                            <div>Report Date: ${today}</div>
+                            <div>Official Department Record</div>
                         </div>
                     </div>
                     <h2 style="text-align:center; font-size:17px; font-weight:900; color:#1E2859; margin-bottom:16px;">${title}</h2>
@@ -2553,6 +2788,7 @@
             handleDashboardSearch,
             clearDashboardSearch,
             setRequestFilter,
+            approveTeacherRequest,
             updateRequestStatus,
             convertRequestToLoan,
             convertRequestToLog,
@@ -2579,6 +2815,7 @@
             printTeacherQRPoster,
             enterTeacherPortalPreview,
             exitTeacherPortalMode,
+            setTeacherLocationMode,
             updateTeacherDayPreview,
             addSelectedItemToTeacherRequest,
             removeTpSelectedItem,
