@@ -488,6 +488,9 @@
                     <button onclick="switchTab('reports')" id="nav-reports" class="nav-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-200 hover:bg-white/10 transition">
                         <span class="flex items-center gap-2.5"><span>📑</span><span>Official Reports & Backup</span></span>
                     </button>
+                    <button onclick="switchTab('settings')" id="nav-settings" class="nav-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-200 hover:bg-white/10 transition">
+                        <span class="flex items-center gap-2.5"><span>⚙️</span><span>System Settings</span></span>
+                    </button>
                 </nav>
             </div>
 
@@ -523,6 +526,9 @@
                         <p class="text-xs sm:text-sm text-slate-200 max-w-2xl"><strong class="text-white">Regent International School</strong> — Real-time laboratory inventory control, cabinet mapping, teacher experiment requisitions, and safety compliance.</p>
                     </div>
                     <div class="flex flex-wrap gap-2.5 shrink-0">
+                        <button onclick="switchTab('settings')" class="btn-tactile px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 text-white text-xs font-extrabold border border-white/20 transition flex items-center gap-1.5">
+                            <span>⚙️</span><span>System Settings</span>
+                        </button>
                         <button onclick="openTeacherQRModal()" class="btn-tactile px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold shadow transition flex items-center gap-1.5">
                             <span>📱</span><span>Teacher Portal QR</span>
                         </button>
@@ -613,142 +619,116 @@
             <!-- ================================================= -->
             <!-- TAB 2: TEACHER REQUESTS                           -->
             <!-- ================================================= -->
-            <section id="view-requests" class="view-section hidden space-y-5">
+            <section id="view-requests" class="view-section hidden space-y-6">
                 <div class="bg-white p-5 rounded-3xl border border-ris-border shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                         <h2 class="text-xl font-black text-ris-navy font-display">📩 Teacher Experiment Requisitions</h2>
-                        <p class="text-xs text-slate-500 mt-0.5">Live incoming requests submitted via the Teacher QR Code Portal.</p>
+                        <p class="text-xs text-slate-500 mt-0.5">Live experiment setup requests and outside-lab classroom loans submitted via QR Code.</p>
                     </div>
-                    <div class="flex flex-wrap gap-2">
-                        <button onclick="openTeacherQRModal()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow transition">
-                            📱 Show / Print Teacher QR Code
-                        </button>
-                        <button onclick="enterTeacherPortalPreview()" class="px-4 py-2.5 rounded-xl bg-ris-navy hover:bg-ris-navyDark text-white text-xs font-bold transition">
-                            + New Requisition
-                        </button>
+                    <div class="flex flex-wrap gap-1.5">
+                        <button onclick="setRequestFilter('all')" id="req-filter-all" class="btn-tactile req-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-ris-navy text-white">All</button>
+                        <button onclick="setRequestFilter('pending')" id="req-filter-pending" class="btn-tactile req-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700">⏳ Pending</button>
+                        <button onclick="setRequestFilter('in-lab')" id="req-filter-in-lab" class="btn-tactile req-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700">🔬 Inside Lab</button>
+                        <button onclick="setRequestFilter('outside-lab')" id="req-filter-outside-lab" class="btn-tactile req-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700">🏫 Outside Lab</button>
+                        <button onclick="setRequestFilter('prepared')" id="req-filter-prepared" class="btn-tactile req-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700">✅ Ready</button>
                     </div>
                 </div>
-
-                <!-- Filter Bar -->
-                <div class="flex flex-wrap gap-2">
-                    <button onclick="setRequestFilter('all')" id="req-filter-all" class="btn-tactile req-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-ris-navy text-white">All Requests</button>
-                    <button onclick="setRequestFilter('pending')" id="req-filter-pending" class="btn-tactile req-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700">⏳ Pending</button>
-                    <button onclick="setRequestFilter('in-lab')" id="req-filter-in-lab" class="btn-tactile req-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700">🔬 Inside Lab</button>
-                    <button onclick="setRequestFilter('outside-lab')" id="req-filter-outside-lab" class="btn-tactile req-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700">🏫 Outside Lab</button>
-                    <button onclick="setRequestFilter('prepared')" id="req-filter-prepared" class="btn-tactile req-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700">✅ Prepared</button>
-                    <button onclick="setRequestFilter('loaned')" id="req-filter-loaned" class="btn-tactile req-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700">🔄 Issued as Loan</button>
-                </div>
-
                 <div id="teacher-requests-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
             </section>
 
             <!-- ================================================= -->
             <!-- TAB 3: CABINETS & QR LABELS                       -->
             <!-- ================================================= -->
-            <section id="view-cabinets" class="view-section hidden space-y-5">
+            <section id="view-cabinets" class="view-section hidden space-y-6">
                 <div class="bg-white p-5 rounded-3xl border border-ris-border shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                         <h2 class="text-xl font-black text-ris-navy font-display">🗄️ Laboratory Cabinets & QR Labels</h2>
-                        <p class="text-xs text-slate-500 mt-0.5">Manage storage cabinets across Chemistry, Biology, and Physics labs and print scannable door QR tags.</p>
+                        <p class="text-xs text-slate-500 mt-0.5">Organize storage cabinets by lab room and generate printable door QR tags.</p>
                     </div>
-                    <button onclick="openCabinetModal()" class="px-5 py-2.5 rounded-xl bg-ris-navy hover:bg-ris-navyDark text-white text-xs font-extrabold shadow transition">
+                    <button onclick="openCabinetModal()" class="btn-tactile px-4 py-2.5 rounded-xl bg-ris-navy hover:bg-ris-navyDark text-white text-xs font-extrabold shadow">
                         + Add New Cabinet
                     </button>
                 </div>
-
-                <div id="cabinets-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+                <div id="cabinets-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
             </section>
 
             <!-- ================================================= -->
             <!-- TAB 4: INVENTORY & SUPPLIES                       -->
             <!-- ================================================= -->
-            <section id="view-inventory" class="view-section hidden space-y-5">
-                <div class="bg-white p-5 rounded-3xl border border-ris-border shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div>
-                        <h2 class="text-xl font-black text-ris-navy font-display">🧪 Laboratory Inventory & Bilingual Catalog</h2>
-                        <p class="text-xs text-slate-500 mt-0.5">Complete register of chemicals, glassware, equipment, consumables, and safety gear (EN + AR).</p>
+            <section id="view-inventory" class="view-section hidden space-y-6">
+                <div class="bg-white p-5 rounded-3xl border border-ris-border shadow-xs space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h2 class="text-xl font-black text-ris-navy font-display">🧪 Laboratory Inventory & Supplies</h2>
+                            <p class="text-xs text-slate-500 mt-0.5">Bilingual chemical, glassware, and equipment stock tracking.</p>
+                        </div>
+                        <button onclick="openItemModal()" class="btn-tactile px-4 py-2.5 rounded-xl bg-ris-red hover:bg-ris-redDark text-white text-xs font-extrabold shadow">
+                            + Add Inventory Item
+                        </button>
                     </div>
-                    <button onclick="openItemModal()" class="px-5 py-2.5 rounded-xl bg-ris-red hover:bg-ris-redDark text-white text-xs font-extrabold shadow transition">
-                        + Add New Item
-                    </button>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                        <input type="text" id="inv-search" oninput="renderInventory()" placeholder="Search English, Arabic, or SKU..." class="px-3.5 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-semibold">
+                        <select id="inv-type-filter" onchange="renderInventory()" class="px-3.5 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold"></select>
+                        <select id="inv-cabinet-filter" onchange="renderInventory()" class="px-3.5 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold"></select>
+                        <select id="inv-status-filter" onchange="renderInventory()" class="px-3.5 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold">
+                            <option value="all">All Stock & Health Statuses</option>
+                            <option value="low">⚠️ Low Stock Only</option>
+                            <option value="expiry">☣️ Expiring / Expired</option>
+                            <option value="maintenance">🛠️ Needs Calibration / Maint.</option>
+                        </select>
+                    </div>
                 </div>
-
-                <!-- Filters -->
-                <div class="bg-white p-4 rounded-2xl border border-ris-border shadow-xs grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                    <input type="text" id="inv-search" oninput="renderInventory()" placeholder="🔍 Search EN / AR name or Code..." class="px-3.5 py-2 bg-ris-bg border border-slate-300 rounded-xl text-xs font-medium">
-                    <select id="inv-type-filter" onchange="renderInventory()" class="px-3.5 py-2 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold">
-                        <option value="all">All Categories</option>
-                        <option value="Chemicals">🧪 Chemicals</option>
-                        <option value="Glassware">🧫 Glassware</option>
-                        <option value="Equipment">🔬 Equipment</option>
-                        <option value="Consumables">🧻 Consumables</option>
-                        <option value="Safety">🥽 Safety Gear</option>
-                    </select>
-                    <select id="inv-cabinet-filter" onchange="renderInventory()" class="px-3.5 py-2 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold">
-                        <option value="all">All Cabinets & Labs</option>
-                    </select>
-                    <select id="inv-status-filter" onchange="renderInventory()" class="px-3.5 py-2 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold">
-                        <option value="all">All Stock Statuses</option>
-                        <option value="low">⚠️ Low Stock Only</option>
-                        <option value="expiry">☣️ Expiry / Hazard Alerts</option>
-                        <option value="maintenance">🛠️ Needs Calibration / Maint.</option>
-                    </select>
-                </div>
-
-                <div id="inventory-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                <div id="inventory-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
             </section>
 
             <!-- ================================================= -->
             <!-- TAB 5: TEACHER LOANS                              -->
             <!-- ================================================= -->
-            <section id="view-loans" class="view-section hidden space-y-5">
+            <section id="view-loans" class="view-section hidden space-y-6">
                 <div class="bg-white p-5 rounded-3xl border border-ris-border shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                         <h2 class="text-xl font-black text-ris-navy font-display">🔄 Teacher Equipment Loans</h2>
-                        <p class="text-xs text-slate-500 mt-0.5">Track lab apparatus issued to teachers and restore inventory automatically upon return.</p>
+                        <p class="text-xs text-slate-500 mt-0.5">Track equipment issued outside the laboratories and restore balances upon return.</p>
                     </div>
-                    <button onclick="openLoanModal()" class="px-5 py-2.5 rounded-xl bg-ris-navy hover:bg-ris-navyDark text-white text-xs font-extrabold shadow transition">
-                        + Issue Equipment to Teacher
+                    <button onclick="openLoanModal()" class="btn-tactile px-4 py-2.5 rounded-xl bg-ris-navy hover:bg-ris-navyDark text-white text-xs font-extrabold shadow">
+                        + Issue Equipment Loan
                     </button>
                 </div>
-
                 <div class="space-y-3">
-                    <h3 class="text-sm font-black text-ris-navy font-display">📌 Currently Checked Out</h3>
+                    <h3 class="text-sm font-black text-ris-navy">📤 Currently Checked Out</h3>
                     <div id="active-loans-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
                 </div>
-
-                <div class="space-y-3 pt-2">
-                    <h3 class="text-sm font-black text-slate-600 font-display">✅ Returned Loans History</h3>
-                    <div id="returned-loans-list" class="bg-white rounded-2xl border border-ris-border divide-y divide-slate-100"></div>
+                <div class="bg-white rounded-3xl border border-ris-border shadow-xs overflow-hidden">
+                    <div class="p-4 border-b border-slate-100 text-sm font-black text-ris-navy">✅ Returned Loan History</div>
+                    <div id="returned-loans-list" class="divide-y divide-slate-100"></div>
                 </div>
             </section>
 
             <!-- ================================================= -->
             <!-- TAB 6: CONSUMPTION & BREAKAGE LOG                 -->
             <!-- ================================================= -->
-            <section id="view-logs" class="view-section hidden space-y-5">
+            <section id="view-logs" class="view-section hidden space-y-6">
                 <div class="bg-white p-5 rounded-3xl border border-ris-border shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                         <h2 class="text-xl font-black text-ris-navy font-display">📉 Consumption & Breakage Audit Log</h2>
-                        <p class="text-xs text-slate-500 mt-0.5">Record daily chemical usage or glassware breakage with automatic stock deduction.</p>
+                        <p class="text-xs text-slate-500 mt-0.5">Chronological record of chemicals consumed in experiments and glassware breakage.</p>
                     </div>
-                    <button onclick="openLogModal()" class="px-5 py-2.5 rounded-xl bg-ris-red hover:bg-ris-redDark text-white text-xs font-extrabold shadow transition">
+                    <button onclick="openLogModal()" class="btn-tactile px-4 py-2.5 rounded-xl bg-ris-red hover:bg-ris-redDark text-white text-xs font-extrabold shadow">
                         + Log Consumption / Breakage
                     </button>
                 </div>
-
                 <div class="bg-white rounded-3xl border border-ris-border shadow-xs overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
+                    <table class="w-full text-left border-collapse text-xs">
                         <thead>
-                            <tr class="bg-ris-navy text-white text-xs">
+                            <tr class="bg-ris-bg text-ris-navy border-b border-slate-200">
                                 <th class="p-3.5 font-extrabold">Date</th>
                                 <th class="p-3.5 font-extrabold">Event Type</th>
                                 <th class="p-3.5 font-extrabold">Item (EN / AR)</th>
-                                <th class="p-3.5 font-extrabold">Deducted Qty</th>
-                                <th class="p-3.5 font-extrabold">Teacher / Experiment / Reason</th>
+                                <th class="p-3.5 font-extrabold">Quantity</th>
+                                <th class="p-3.5 font-extrabold">Experiment / Reason</th>
                             </tr>
                         </thead>
-                        <tbody id="logs-table-body" class="divide-y divide-slate-100 text-xs"></tbody>
+                        <tbody id="logs-table-body" class="divide-y divide-slate-100"></tbody>
                     </table>
                 </div>
             </section>
@@ -756,81 +736,198 @@
             <!-- ================================================= -->
             <!-- TAB 7: OFFICIAL REPORTS & BACKUP                  -->
             <!-- ================================================= -->
-            <section id="view-reports" class="view-section hidden space-y-5">
-                <div class="bg-white p-5 rounded-3xl border border-ris-border shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div>
-                        <h2 class="text-xl font-black text-ris-navy font-display">📑 Official Reports & Data Backup</h2>
-                        <p class="text-xs text-slate-500 mt-0.5">Print official A4 reports with Regent International School letterhead or export Excel/JSON backups.</p>
+            <section id="view-reports" class="view-section hidden space-y-6">
+                <div class="bg-white p-5 rounded-3xl border border-ris-border shadow-xs">
+                    <h2 class="text-xl font-black text-ris-navy font-display">📑 Official A4 Reports & Cloud Backup</h2>
+                    <p class="text-xs text-slate-500 mt-0.5">Generate formatted Regent International School letterhead audit reports or export data backups.</p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="card-hover bg-white p-5 rounded-3xl border border-ris-border shadow-xs space-y-3">
+                        <div class="text-2xl">📦</div>
+                        <h3 class="text-base font-black text-ris-navy">Full Inventory Audit</h3>
+                        <p class="text-xs text-slate-500">Complete bilingual register of all chemicals, glassware, and equipment by cabinet.</p>
+                        <button onclick="printOfficialReport('inventory')" class="w-full py-2.5 rounded-xl bg-ris-navy text-white text-xs font-extrabold">🖨️ Print A4 Report</button>
                     </div>
-                    <div class="flex flex-wrap gap-2">
-                        <button onclick="exportToCSV()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow transition">
-                            📥 Export Excel (CSV)
-                        </button>
-                        <button onclick="downloadJSONBackup()" class="px-4 py-2.5 rounded-xl bg-ris-navy hover:bg-ris-navyDark text-white text-xs font-bold transition">
-                            💾 Download JSON Backup
-                        </button>
-                        <label class="cursor-pointer px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition">
-                            📂 Restore JSON
+                    <div class="card-hover bg-white p-5 rounded-3xl border border-ris-border shadow-xs space-y-3">
+                        <div class="text-2xl">⚠️</div>
+                        <h3 class="text-base font-black text-ris-navy">Procurement & Shortages</h3>
+                        <p class="text-xs text-slate-500">List of all items below minimum threshold requiring purchase orders.</p>
+                        <button onclick="printOfficialReport('shortages')" class="w-full py-2.5 rounded-xl bg-ris-red text-white text-xs font-extrabold">🖨️ Print Shortages</button>
+                    </div>
+                    <div class="card-hover bg-white p-5 rounded-3xl border border-ris-border shadow-xs space-y-3">
+                        <div class="text-2xl">☣️</div>
+                        <h3 class="text-base font-black text-ris-navy">Expiry & Safety Compliance</h3>
+                        <p class="text-xs text-slate-500">Chemical expiration dates, hazard classifications, and equipment calibration status.</p>
+                        <button onclick="printOfficialReport('expiry')" class="w-full py-2.5 rounded-xl bg-ris-navy text-white text-xs font-extrabold">🖨️ Print Safety Audit</button>
+                    </div>
+                    <div class="card-hover bg-white p-5 rounded-3xl border border-ris-border shadow-xs space-y-3">
+                        <div class="text-2xl">🔄</div>
+                        <h3 class="text-base font-black text-ris-navy">Teacher Custody Loans</h3>
+                        <p class="text-xs text-slate-500">Active and returned equipment loans checked out by faculty members.</p>
+                        <button onclick="printOfficialReport('loans')" class="w-full py-2.5 rounded-xl bg-ris-navy text-white text-xs font-extrabold">🖨️ Print Loans Report</button>
+                    </div>
+                    <div class="card-hover bg-white p-5 rounded-3xl border border-ris-border shadow-xs space-y-3">
+                        <div class="text-2xl">📉</div>
+                        <h3 class="text-base font-black text-ris-navy">Consumption & Breakage</h3>
+                        <p class="text-xs text-slate-500">Audit summary of practical consumption and glassware breakage records.</p>
+                        <button onclick="printOfficialReport('logs')" class="w-full py-2.5 rounded-xl bg-ris-navy text-white text-xs font-extrabold">🖨️ Print Audit Log</button>
+                    </div>
+                    <div class="card-hover bg-white p-5 rounded-3xl border border-ris-border shadow-xs space-y-3">
+                        <div class="text-2xl">💾</div>
+                        <h3 class="text-base font-black text-ris-navy">Excel CSV & JSON Backup</h3>
+                        <p class="text-xs text-slate-500">Download spreadsheet inventory or restore full JSON state archive.</p>
+                        <div class="flex gap-2">
+                            <button onclick="exportToCSV()" class="flex-1 py-2.5 rounded-xl bg-emerald-600 text-white text-xs font-extrabold">📊 Excel CSV</button>
+                            <button onclick="downloadJSONBackup()" class="flex-1 py-2.5 rounded-xl bg-slate-800 text-white text-xs font-extrabold">⬇️ JSON</button>
+                        </div>
+                        <label class="block text-center py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold cursor-pointer">
+                            ⬆️ Restore JSON Backup
                             <input type="file" accept=".json" onchange="restoreJSONBackup(event)" class="hidden">
                         </label>
                     </div>
                 </div>
+            </section>
 
-                <!-- 5 Official Letterhead Report Cards -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <div class="bg-white p-5 rounded-3xl border border-ris-border shadow-xs flex flex-col justify-between gap-4">
+            <!-- ================================================= -->
+            <!-- TAB 8: SYSTEM SETTINGS & CUSTOMIZATION            -->
+            <!-- ================================================= -->
+            <section id="view-settings" class="view-section hidden space-y-6">
+                <div class="bg-white p-5 rounded-3xl border border-ris-border shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-xl font-black text-ris-navy font-display">⚙️ System Settings & Full Customization</h2>
+                        <p class="text-xs text-slate-500 mt-0.5">Configure labs, cabinets, shelves, units, categories, periods, and dropdown variables across the entire platform.</p>
+                    </div>
+                    <button onclick="resetSettingsToDefaults()" class="btn-tactile px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-extrabold transition shrink-0">
+                        ↺ Restore Default Lists
+                    </button>
+                </div>
+
+                <!-- School Branding & Academic Variables -->
+                <div class="bg-white p-5 rounded-3xl border border-ris-border shadow-xs space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <h3 class="text-base font-black text-ris-navy font-display">🏛️ School & Department Branding</h3>
+                        <span class="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full">Synced Live</span>
+                    </div>
+                    <form onsubmit="saveSchoolBrandingSettings(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
                         <div>
-                            <span class="px-2.5 py-1 rounded-lg bg-ris-navy/10 text-ris-navy text-[11px] font-extrabold">Full Audit</span>
-                            <h3 class="text-base font-black text-ris-navy font-display mt-2">📋 Full Inventory Report</h3>
-                            <p class="text-xs text-slate-500 mt-1">Complete register of all lab items (EN & AR), codes, lab rooms, cabinets, and current balances.</p>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Primary Application Title</label>
+                            <input type="text" id="set-app-title" required class="w-full px-3.5 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold text-ris-navy">
                         </div>
-                        <button onclick="printOfficialReport('inventory')" class="w-full py-2.5 rounded-xl bg-ris-navy hover:bg-ris-navyDark text-white text-xs font-extrabold transition">
-                            🖨️ Print Full Inventory
-                        </button>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Institution Subtitle</label>
+                            <input type="text" id="set-school-name" required class="w-full px-3.5 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold text-ris-navy">
+                        </div>
+                        <div class="flex gap-2">
+                            <div class="flex-1">
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Department Badge</label>
+                                <input type="text" id="set-dept-badge" required class="w-full px-3.5 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold text-ris-navy">
+                            </div>
+                            <button type="submit" class="btn-tactile px-5 py-2.5 rounded-xl bg-ris-navy hover:bg-ris-navyDark text-white text-xs font-extrabold shrink-0">
+                                Save
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Row 1: Laboratories Manager + Measurement Units Manager -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Laboratories Manager -->
+                    <div class="bg-white p-5 rounded-3xl border border-ris-border shadow-xs space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                            <div>
+                                <h3 class="text-base font-black text-ris-navy font-display">🔬 Laboratories Manager</h3>
+                                <p class="text-[11px] text-slate-500">Controls lab dropdowns in Teacher Portal, Cabinets, and Filters.</p>
+                            </div>
+                            <span id="settings-labs-count" class="px-2.5 py-0.5 rounded-full text-xs font-black bg-ris-navy text-white">4</span>
+                        </div>
+                        <form onsubmit="addSettingLab(event)" class="flex gap-2">
+                            <input type="text" id="new-lab-name" required placeholder="e.g., Lab 5 - Robotics & STEM" class="flex-1 px-3.5 py-2 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold">
+                            <button type="submit" class="btn-tactile px-4 py-2 rounded-xl bg-ris-red hover:bg-ris-redDark text-white text-xs font-extrabold shrink-0">+ Add Lab</button>
+                        </form>
+                        <div id="settings-labs-list" class="space-y-2 max-h-64 overflow-y-auto pr-1"></div>
                     </div>
 
-                    <div class="bg-white p-5 rounded-3xl border border-ris-border shadow-xs flex flex-col justify-between gap-4">
-                        <div>
-                            <span class="px-2.5 py-1 rounded-lg bg-amber-100 text-amber-800 text-[11px] font-extrabold">Procurement</span>
-                            <h3 class="text-base font-black text-ris-navy font-display mt-2">🛒 Low Stock & Reorder List</h3>
-                            <p class="text-xs text-slate-500 mt-1">Items at or below minimum threshold requiring immediate purchase requisition.</p>
+                    <!-- Measurement Units Manager -->
+                    <div class="bg-white p-5 rounded-3xl border border-ris-border shadow-xs space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                            <div>
+                                <h3 class="text-base font-black text-ris-navy font-display">⚖️ Measurement Units Manager</h3>
+                                <p class="text-[11px] text-slate-500">Controls unit options across Inventory and Teacher Requisitions.</p>
+                            </div>
+                            <span id="settings-units-count" class="px-2.5 py-0.5 rounded-full text-xs font-black bg-ris-navy text-white">5</span>
                         </div>
-                        <button onclick="printOfficialReport('shortages')" class="w-full py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-extrabold transition">
-                            🖨️ Print Reorder List
+                        <form onsubmit="addSettingUnit(event)" class="grid grid-cols-12 gap-2">
+                            <input type="text" id="new-unit-code" required placeholder="Code (box)" class="col-span-3 px-2.5 py-2 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold">
+                            <input type="text" id="new-unit-en" required placeholder="English (Box)" class="col-span-4 px-2.5 py-2 bg-ris-bg border border-slate-300 rounded-xl text-xs font-semibold">
+                            <input type="text" id="new-unit-ar" required placeholder="عربي (علبة)" dir="rtl" class="col-span-3 px-2.5 py-2 bg-ris-bg border border-slate-300 rounded-xl text-xs font-semibold font-ar">
+                            <button type="submit" class="col-span-2 btn-tactile py-2 rounded-xl bg-ris-navy hover:bg-ris-navyDark text-white text-xs font-extrabold">+ Add</button>
+                        </form>
+                        <div id="settings-units-list" class="space-y-2 max-h-64 overflow-y-auto pr-1"></div>
+                    </div>
+                </div>
+
+                <!-- Row 2: Full Cabinets & Shelves Architect -->
+                <div class="bg-white p-5 rounded-3xl border border-ris-border shadow-xs space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                        <div>
+                            <h3 class="text-base font-black text-ris-navy font-display">🗄️ Cabinets & Shelves Architect</h3>
+                            <p class="text-[11px] text-slate-500">Add, rename, reassign lab rooms, or adjust shelf counts (1–20) for every storage cabinet.</p>
+                        </div>
+                        <button onclick="openCabinetModal()" class="btn-tactile px-4 py-2 rounded-xl bg-ris-navy hover:bg-ris-navyDark text-white text-xs font-extrabold shrink-0">
+                            + Create New Cabinet
                         </button>
                     </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-ris-bg text-ris-navy border-b border-slate-200">
+                                    <th class="p-3 font-extrabold">Code</th>
+                                    <th class="p-3 font-extrabold">Assigned Lab</th>
+                                    <th class="p-3 font-extrabold">English Name</th>
+                                    <th class="p-3 font-extrabold">Arabic Name</th>
+                                    <th class="p-3 font-extrabold">Shelves</th>
+                                    <th class="p-3 font-extrabold">Specialty</th>
+                                    <th class="p-3 font-extrabold text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="settings-cabinets-tbody" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
 
-                    <div class="bg-white p-5 rounded-3xl border border-ris-border shadow-xs flex flex-col justify-between gap-4">
-                        <div>
-                            <span class="px-2.5 py-1 rounded-lg bg-ris-redLight text-ris-red text-[11px] font-extrabold">Safety & Compliance</span>
-                            <h3 class="text-base font-black text-ris-navy font-display mt-2">☣️ Expiry & Safety Audit</h3>
-                            <p class="text-xs text-slate-500 mt-1">Chemical expiration dates, hazard classifications, and equipment calibration status.</p>
-                        </div>
-                        <button onclick="printOfficialReport('expiry')" class="w-full py-2.5 rounded-xl bg-ris-red hover:bg-ris-redDark text-white text-xs font-extrabold transition">
-                            🖨️ Print Safety Audit
-                        </button>
+                <!-- Row 3: Categories + Class Periods + Consumption Reasons -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Item Categories Manager -->
+                    <div class="bg-white p-5 rounded-3xl border border-ris-border shadow-xs space-y-3">
+                        <h3 class="text-sm font-black text-ris-navy font-display border-b border-slate-100 pb-2.5">🧪 Item Categories</h3>
+                        <form onsubmit="addSettingCategory(event)" class="space-y-2">
+                            <div class="grid grid-cols-2 gap-1.5">
+                                <input type="text" id="new-cat-en" required placeholder="English (e.g., Optics)" class="px-3 py-2 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold">
+                                <input type="text" id="new-cat-ar" required placeholder="عربي (بصريات)" dir="rtl" class="px-3 py-2 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold font-ar">
+                            </div>
+                            <button type="submit" class="w-full btn-tactile py-2 rounded-xl bg-ris-navy text-white text-xs font-extrabold">+ Add Category</button>
+                        </form>
+                        <div id="settings-categories-list" class="space-y-1.5 max-h-56 overflow-y-auto"></div>
                     </div>
 
-                    <div class="bg-white p-5 rounded-3xl border border-ris-border shadow-xs flex flex-col justify-between gap-4">
-                        <div>
-                            <span class="px-2.5 py-1 rounded-lg bg-blue-100 text-blue-800 text-[11px] font-extrabold">Custody Tracking</span>
-                            <h3 class="text-base font-black text-ris-navy font-display mt-2">🔄 Teacher Loans History</h3>
-                            <p class="text-xs text-slate-500 mt-1">Record of all active and returned equipment loans issued to science teachers.</p>
-                        </div>
-                        <button onclick="printOfficialReport('loans')" class="w-full py-2.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-extrabold transition">
-                            🖨️ Print Loans Report
-                        </button>
+                    <!-- Class Periods & Return Slots Manager -->
+                    <div class="bg-white p-5 rounded-3xl border border-ris-border shadow-xs space-y-3">
+                        <h3 class="text-sm font-black text-ris-navy font-display border-b border-slate-100 pb-2.5">⏰ Class Periods & Return Slots</h3>
+                        <form onsubmit="addSettingPeriod(event)" class="flex gap-1.5">
+                            <input type="text" id="new-period-name" required placeholder="e.g., Period 9 / After School" class="flex-1 px-3 py-2 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold">
+                            <button type="submit" class="btn-tactile px-3.5 py-2 rounded-xl bg-ris-navy text-white text-xs font-extrabold">+ Add</button>
+                        </form>
+                        <div id="settings-periods-list" class="space-y-1.5 max-h-56 overflow-y-auto"></div>
                     </div>
 
-                    <div class="bg-white p-5 rounded-3xl border border-ris-border shadow-xs flex flex-col justify-between gap-4">
-                        <div>
-                            <span class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-800 text-[11px] font-extrabold">Usage & Loss</span>
-                            <h3 class="text-base font-black text-ris-navy font-display mt-2">📉 Consumption & Breakage Log</h3>
-                            <p class="text-xs text-slate-500 mt-1">Detailed log of reagents consumed in experiments and broken glassware.</p>
-                        </div>
-                        <button onclick="printOfficialReport('activity')" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white text-xs font-extrabold transition">
-                            🖨️ Print Consumption Log
-                        </button>
+                    <!-- Consumption & Audit Reasons Manager -->
+                    <div class="bg-white p-5 rounded-3xl border border-ris-border shadow-xs space-y-3">
+                        <h3 class="text-sm font-black text-ris-navy font-display border-b border-slate-100 pb-2.5">📉 Consumption & Loss Reasons</h3>
+                        <form onsubmit="addSettingReason(event)" class="flex gap-1.5">
+                            <input type="text" id="new-reason-name" required placeholder="e.g., Expired Chemical Disposal" class="flex-1 px-3 py-2 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold">
+                            <button type="submit" class="btn-tactile px-3.5 py-2 rounded-xl bg-ris-red text-white text-xs font-extrabold">+ Add</button>
+                        </form>
+                        <div id="settings-reasons-list" class="space-y-1.5 max-h-56 overflow-y-auto"></div>
                     </div>
                 </div>
             </section>
@@ -858,11 +955,35 @@
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">Lab Number / Name *</label>
-                        <select id="cab-lab" required class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold text-ris-navy">
-                            <option value="Lab 1">Lab 1</option>
-                            <option value="Lab 2">Lab 2</option>
-                            <option value="Lab 3">Lab 3</option>
-                            <option value="Lab 4">Lab 4</option>
+                        <select id="cab-lab" required class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold text-ris-navy"></select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Cabinet English Name *</label>
+                        <input type="text" id="cab-name-en" required placeholder="e.g., General Chemicals & Salts" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-semibold">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Cabinet Arabic Name *</label>
+                        <input type="text" id="cab-name-ar" required placeholder="دولاب الكيماويات العامة" dir="rtl" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-semibold font-ar">
+                    </div>
+                </div>
+                <div class="grid grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Shelves Count *</label>
+                        <input type="number" id="cab-shelves" min="1" max="20" required value="4" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Specialty *</label>
+                        <input type="text" id="cab-specialty" required placeholder="e.g., Glassware" value="General" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-semibold">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Accent Color</label>
+                        <select id="cab-color" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold">
+                            <option value="navy">RIS Navy</option>
+                            <option value="red">RIS Crimson</option>
+                            <option value="emerald">Emerald</option>
+                            <option value="amber">Amber</option>
                         </select>
                     </div>
                 </div>
@@ -930,13 +1051,7 @@
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">Standardized Unit *</label>
-                        <select id="item-unit" required class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold text-ris-navy">
-                            <option value="pcs">pcs (Piece / قطعة)</option>
-                            <option value="ml">ml (Milliliter / مللي)</option>
-                            <option value="g">g (Gram / جرام)</option>
-                            <option value="L">L (Liter / لتر)</option>
-                            <option value="kg">kg (Kilogram / كجم)</option>
-                        </select>
+                        <select id="item-unit" required class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold text-ris-navy"></select>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">Min. Stock Threshold *</label>
@@ -1027,10 +1142,7 @@
             <form onsubmit="saveLog(event)" class="space-y-4">
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">Event Type *</label>
-                    <select id="log-type" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold">
-                        <option value="consumption">🧪 Lab Experiment Consumption</option>
-                        <option value="breakage">💥 Glassware Breakage / Damage</option>
-                    </select>
+                    <select id="log-type" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold"></select>
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">Inventory Item *</label>
@@ -1118,6 +1230,46 @@
         const CLOUD_COLLECTION = 'regent_lab_data';
         const CLOUD_DOC_ID = 'main_state';
 
+        function getDefaultSettings() {
+            return {
+                appTitle: 'Science Lab',
+                schoolName: 'Regent International School',
+                deptBadge: 'RIS Science Department',
+                labs: ['Lab 1', 'Lab 2', 'Lab 3', 'Lab 4'],
+                units: [
+                    { code: 'pcs', en: 'Piece', ar: 'قطعة' },
+                    { code: 'ml', en: 'Milliliter', ar: 'مللي' },
+                    { code: 'g', en: 'Gram', ar: 'جرام' },
+                    { code: 'L', en: 'Liter', ar: 'لتر' },
+                    { code: 'kg', en: 'Kilogram', ar: 'كيلو جرام' }
+                ],
+                categories: [
+                    { value: 'Chemicals', en: 'Chemicals', ar: 'كيماويات' },
+                    { value: 'Glassware', en: 'Glassware', ar: 'زجاجيات' },
+                    { value: 'Equipment', en: 'Equipment', ar: 'أجهزة ومعدات' },
+                    { value: 'Consumables', en: 'Consumables', ar: 'مستهلكات' },
+                    { value: 'Safety', en: 'Safety Gear', ar: 'أدوات سلامة' }
+                ],
+                periods: [
+                    'Period 1',
+                    'Period 2',
+                    'Period 3',
+                    'Period 4',
+                    'Period 5',
+                    'Period 6',
+                    'Period 7',
+                    'Period 8',
+                    'End of School Day'
+                ],
+                consumptionReasons: [
+                    { value: 'consumption', label: '🧪 Lab Experiment Consumption' },
+                    { value: 'breakage', label: '💥 Glassware Breakage / Damage' },
+                    { value: 'expired', label: '☣️ Expired Chemical Disposal' },
+                    { value: 'calibration', label: '⚖️ Calibration / Maintenance Loss' }
+                ]
+            };
+        }
+
         // Pre-populated Realistic RIS Science Lab Starter Data
         function getDefaultState() {
             const today = new Date().toISOString().split('T')[0];
@@ -1125,6 +1277,7 @@
             const nextYearDate = new Date(Date.now() + 365 * 86400000).toISOString().split('T')[0];
 
             return {
+                settings: getDefaultSettings(),
                 cabinets: [
                     { id: 'cab-1', code: 'Cabinet A', lab: 'Lab 1', nameEn: 'General Chemicals & Salts', nameAr: 'دولاب الكيماويات العامة والأملاح', shelves: 5, specialty: 'General Chemicals', color: 'navy' },
                     { id: 'cab-2', code: 'Acid Vault', lab: 'Lab 2', nameEn: 'Corrosive Acids & Bases Vault', nameAr: 'خزانة الأحماض والقلويات المركزة', shelves: 3, specialty: 'Acids & Corrosives', color: 'red' },
@@ -1157,7 +1310,7 @@
                         session: 'Period 3',
                         experiment: "Food Tests: Benedict's & Biuret Analysis",
                         locationMode: 'in-lab',
-                        location: 'Inside Lab (Lab 2)',
+                        location: 'Inside Lab — Lab 2',
                         notes: 'Please prepare 6 workstation trays with test tubes, racks, water bath, and Benedict reagent.',
                         selectedItems: [{ id: 'itm-2', nameEn: "Benedict's Solution", nameAr: 'محلول بندكت', qty: 60, unit: 'ml' }],
                         status: 'pending',
@@ -1193,12 +1346,28 @@
         }
 
         // Load initial state from LocalStorage first for instant zero-latency UI
+        function mergeSettingsWithDefaults(raw) {
+            const def = getDefaultSettings();
+            if (!raw) return def;
+            return {
+                appTitle: raw.appTitle || def.appTitle,
+                schoolName: raw.schoolName || def.schoolName,
+                deptBadge: raw.deptBadge || def.deptBadge,
+                labs: Array.isArray(raw.labs) && raw.labs.length ? raw.labs : def.labs,
+                units: Array.isArray(raw.units) && raw.units.length ? raw.units : def.units,
+                categories: Array.isArray(raw.categories) && raw.categories.length ? raw.categories : def.categories,
+                periods: Array.isArray(raw.periods) && raw.periods.length ? raw.periods : def.periods,
+                consumptionReasons: Array.isArray(raw.consumptionReasons) && raw.consumptionReasons.length ? raw.consumptionReasons : def.consumptionReasons
+            };
+        }
+
         let state = (() => {
             try {
                 const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
                 if (saved) {
                     const parsed = JSON.parse(saved);
                     return {
+                        settings: mergeSettingsWithDefaults(parsed.settings),
                         cabinets: parsed.cabinets || getDefaultState().cabinets,
                         items: parsed.items || getDefaultState().items,
                         loans: parsed.loans || [],
@@ -1253,6 +1422,7 @@
             if (cloudDocRef) {
                 try {
                     await setDoc(cloudDocRef, {
+                        settings: state.settings,
                         cabinets: state.cabinets,
                         items: state.items,
                         loans: state.loans,
@@ -1280,6 +1450,7 @@
                     if (snapshot.exists()) {
                         const data = snapshot.data();
                         state = {
+                            settings: mergeSettingsWithDefaults(data.settings || state.settings),
                             cabinets: Array.isArray(data.cabinets) && data.cabinets.length ? data.cabinets : state.cabinets,
                             items: Array.isArray(data.items) && data.items.length ? data.items : state.items,
                             loans: Array.isArray(data.loans) ? data.loans : [],
@@ -1453,6 +1624,7 @@
 
         // ================= REFRESH ALL VIEWS =================
         function refreshAllViews() {
+            applyDynamicSettingsToDOM();
             updateBadgesAndKPIs();
             renderDashboard();
             renderTeacherRequests();
@@ -1462,6 +1634,71 @@
             renderLoans();
             renderLogs();
             populateTeacherPortalItems();
+            renderSettingsPanel();
+        }
+
+        function applyDynamicSettingsToDOM() {
+            const s = state.settings || getDefaultSettings();
+            document.title = `${s.appTitle} — ${s.schoolName}`;
+
+            // Sync all primary headers & subtitles dynamically
+            document.querySelectorAll('#app-sidebar h2, #teacher-portal-shell header h1, #view-dashboard h1').forEach(el => {
+                el.textContent = s.appTitle;
+            });
+            document.querySelectorAll('#app-sidebar p.text-xs.text-slate-200, #teacher-portal-shell header p.text-xs').forEach(el => {
+                el.textContent = s.schoolName;
+            });
+            document.querySelectorAll('#teacher-portal-shell header span.bg-ris-red, #view-dashboard span.bg-ris-red').forEach(el => {
+                el.textContent = s.deptBadge;
+            });
+
+            // Sync Inventory Category Filter & Item Form Category Select
+            const invTypeFilter = document.getElementById('inv-type-filter');
+            if (invTypeFilter) {
+                const cur = invTypeFilter.value;
+                invTypeFilter.innerHTML = `<option value="all">All Categories</option>` +
+                    s.categories.map(c => `<option value="${c.value}">${c.en} — ${c.ar}</option>`).join('');
+                if ([...invTypeFilter.options].some(o => o.value === cur)) invTypeFilter.value = cur;
+            }
+            const itemTypeSel = document.getElementById('item-type');
+            if (itemTypeSel) {
+                const cur = itemTypeSel.value;
+                itemTypeSel.innerHTML = s.categories.map(c => `<option value="${c.value}">${c.en} — ${c.ar}</option>`).join('');
+                if ([...itemTypeSel.options].some(o => o.value === cur)) itemTypeSel.value = cur;
+            }
+
+            // Sync Item Form Units Select
+            const itemUnitSel = document.getElementById('item-unit');
+            if (itemUnitSel) {
+                const cur = itemUnitSel.value;
+                itemUnitSel.innerHTML = s.units.map(u => `<option value="${u.code}">${u.code} (${u.en} / ${u.ar})</option>`).join('');
+                if ([...itemUnitSel.options].some(o => o.value === cur)) itemUnitSel.value = cur;
+            }
+
+            // Sync Teacher Portal Session & Return Period Selects
+            const tpSession = document.getElementById('tp-session');
+            if (tpSession) {
+                const cur = tpSession.value;
+                tpSession.innerHTML = s.periods.filter(p => p !== 'End of School Day').map(p => `<option value="${p}">${p}</option>`).join('');
+                if ([...tpSession.options].some(o => o.value === cur)) tpSession.value = cur;
+            }
+            const tpReturnPeriod = document.getElementById('tp-return-period');
+            if (tpReturnPeriod) {
+                const cur = tpReturnPeriod.value;
+                tpReturnPeriod.innerHTML = `<option value="End of Same Period">End of Same Period</option>` +
+                    s.periods.map(p => `<option value="${p}">${p}</option>`).join('');
+                if ([...tpReturnPeriod.options].some(o => o.value === cur)) tpReturnPeriod.value = cur;
+            }
+
+            // Sync Consumption & Breakage Modal Reasons
+            const logTypeSel = document.getElementById('log-type');
+            if (logTypeSel) {
+                const cur = logTypeSel.value;
+                logTypeSel.innerHTML = s.consumptionReasons.map(r => `<option value="${r.value}">${r.label}</option>`).join('');
+                if ([...logTypeSel.options].some(o => o.value === cur)) logTypeSel.value = cur;
+            }
+
+            populateTeacherLabRooms();
         }
 
         function updateBadgesAndKPIs() {
@@ -1861,11 +2098,11 @@
             form.reset();
             document.getElementById('cab-id').value = '';
             const cabLabSel = document.getElementById('cab-lab');
-            const standardLabs = ['Lab 1', 'Lab 2', 'Lab 3', 'Lab 4'];
-            const extraLabs = state.cabinets.map(c => (c.lab || '').trim()).filter(l => l && !standardLabs.includes(l));
-            const allLabs = [...standardLabs, ...new Set(extraLabs)];
+            const configuredLabs = (state.settings && state.settings.labs) ? state.settings.labs : ['Lab 1', 'Lab 2', 'Lab 3', 'Lab 4'];
+            const extraLabs = state.cabinets.map(c => (c.lab || '').trim()).filter(l => l && !configuredLabs.includes(l));
+            const allLabs = [...configuredLabs, ...new Set(extraLabs)];
             cabLabSel.innerHTML = allLabs.map(l => `<option value="${l}">${l}</option>`).join('');
-            cabLabSel.value = 'Lab 1';
+            cabLabSel.value = allLabs[0] || 'Lab 1';
             document.getElementById('cabinet-modal-title').textContent = '🗄️ Add New Cabinet';
 
             if (cabId) {
@@ -2103,14 +2340,22 @@
                 if (item) {
                     document.getElementById('item-modal-title').textContent = '✏️ Edit Inventory Item';
                     document.getElementById('item-id').value = item.id;
-                    document.getElementById('item-type').value = item.type || 'Chemicals';
+                    const typeSel = document.getElementById('item-type');
+                    if (item.type && ![...typeSel.options].some(o => o.value === item.type)) {
+                        typeSel.innerHTML += `<option value="${item.type}">${item.type}</option>`;
+                    }
+                    typeSel.value = item.type || 'Chemicals';
                     document.getElementById('item-code').value = item.code || '';
                     document.getElementById('item-name-en').value = item.nameEn || '';
                     document.getElementById('item-name-ar').value = item.nameAr || '';
                     document.getElementById('item-cabinet').value = item.cabinet || '';
                     document.getElementById('item-shelf').value = item.shelf || 'Shelf 1';
                     document.getElementById('item-qty').value = item.qty ?? 0;
-                    document.getElementById('item-unit').value = item.unit || 'pcs';
+                    const unitSel = document.getElementById('item-unit');
+                    if (item.unit && ![...unitSel.options].some(o => o.value === item.unit)) {
+                        unitSel.innerHTML += `<option value="${item.unit}">${item.unit}</option>`;
+                    }
+                    unitSel.value = item.unit || 'pcs';
                     document.getElementById('item-min-qty').value = item.minQty ?? 3;
                     document.getElementById('item-expiry').value = item.expiry || '';
                     document.getElementById('item-status').value = item.status || 'Operational / Safe';
@@ -2436,12 +2681,14 @@
         function populateTeacherLabRooms() {
             const sel = document.getElementById('tp-lab-room-select');
             if (!sel) return;
-            const standardLabs = ['Lab 1', 'Lab 2', 'Lab 3', 'Lab 4'];
+            const configuredLabs = (state.settings && state.settings.labs) ? state.settings.labs : ['Lab 1', 'Lab 2', 'Lab 3', 'Lab 4'];
             const extraLabs = state.cabinets
                 .map(c => (c.lab || '').trim())
-                .filter(l => l && !standardLabs.includes(l));
-            const rooms = [...standardLabs, ...new Set(extraLabs)];
+                .filter(l => l && !configuredLabs.includes(l));
+            const rooms = [...configuredLabs, ...new Set(extraLabs)];
+            const cur = sel.value;
             sel.innerHTML = rooms.map(r => `<option value="${r}">${r}</option>`).join('');
+            if (rooms.includes(cur)) sel.value = cur;
         }
 
         // Privacy rule: Show bilingual item name + unit ONLY (No stock quantities visible to teachers)
@@ -2529,16 +2776,16 @@
             const newReq = {
                 id: 'req-' + Date.now(),
                 teacherName: document.getElementById('tp-teacher-name').value.trim(),
-                phone: document.getElementById('tp-phone').value.trim(),
+                phone: (document.getElementById('tp-phone')?.value || '').trim(),
                 grade: document.getElementById('tp-grade').value.trim(),
                 date: dateVal,
                 dayName: getEnglishDayName(dateVal),
                 session: document.getElementById('tp-session').value,
-                experiment: document.getElementById('tp-experiment').value.trim(),
+                experiment: (document.getElementById('tp-experiment')?.value || '').trim() || `Practical Session (${document.getElementById('tp-grade').value.trim()})`,
                 locationMode: locationMode,
                 location: formattedLocation,
-                returnDate: returnDate,
-                returnPeriod: returnPeriod,
+                returnDate: locationMode === 'outside-lab' ? returnDate : '',
+                returnPeriod: locationMode === 'outside-lab' ? returnPeriod : '',
                 returnSchedule: returnSchedule,
                 notes: document.getElementById('tp-notes').value.trim(),
                 selectedItems: [...tpSelectedItems],
@@ -2548,28 +2795,285 @@
 
             state.teacherRequests.unshift(newReq);
             persistState();
+            refreshAllViews();
+
             document.getElementById('teacher-portal-form').classList.add('hidden');
-            const successBox = document.getElementById('teacher-submit-success');
-            successBox.classList.remove('hidden');
-            successBox.classList.add('animate-view-enter');
-            showToast('Requisition sent to Science Lab!');
+            document.getElementById('teacher-submit-success').classList.remove('hidden');
+            showToast('Experiment requisition sent to Science Lab');
         }
 
         function resetTeacherPortalForm() {
             const form = document.getElementById('teacher-portal-form');
-            form.reset();
+            const successBox = document.getElementById('teacher-submit-success');
+            if (form) {
+                form.reset();
+                form.classList.remove('hidden');
+            }
+            if (successBox) successBox.classList.add('hidden');
+
             const today = new Date().toISOString().split('T')[0];
-            document.getElementById('tp-date').value = today;
-            const retDateEl = document.getElementById('tp-return-date');
-            if (retDateEl) retDateEl.value = today;
-            updateTeacherDayPreview();
+            const dateInput = document.getElementById('tp-date');
+            if (dateInput) {
+                dateInput.value = today;
+                updateTeacherDayPreview();
+            }
             tpSelectedItems = [];
             renderTpSelectedItems();
             populateTeacherLabRooms();
-            setTeacherLocationMode('in-lab');
             populateTeacherPortalItems();
-            form.classList.remove('hidden');
-            document.getElementById('teacher-submit-success').classList.add('hidden');
+            setTeacherLocationMode('in-lab');
+        }
+
+        // ================= SYSTEM SETTINGS & CUSTOMIZATION =================
+        function renderSettingsPanel() {
+            const s = state.settings || getDefaultSettings();
+
+            const appTitleInput = document.getElementById('set-app-title');
+            const schoolNameInput = document.getElementById('set-school-name');
+            const deptBadgeInput = document.getElementById('set-dept-badge');
+            if (appTitleInput) appTitleInput.value = s.appTitle;
+            if (schoolNameInput) schoolNameInput.value = s.schoolName;
+            if (deptBadgeInput) deptBadgeInput.value = s.deptBadge;
+
+            // Labs List
+            const labsCount = document.getElementById('settings-labs-count');
+            const labsList = document.getElementById('settings-labs-list');
+            if (labsCount) labsCount.textContent = s.labs.length;
+            if (labsList) {
+                labsList.innerHTML = s.labs.map((lab, idx) => `
+                    <div class="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-ris-bg border border-slate-200">
+                        <input type="text" value="${lab}" onchange="renameSettingLab(${idx}, this.value)" class="flex-1 bg-white px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-extrabold text-ris-navy">
+                        <button type="button" onclick="deleteSettingLab(${idx})" class="px-2.5 py-1.5 rounded-lg bg-ris-redLight hover:bg-red-200 text-ris-red text-xs font-bold" title="Remove Lab">🗑️</button>
+                    </div>
+                `).join('');
+            }
+
+            // Units List
+            const unitsCount = document.getElementById('settings-units-count');
+            const unitsList = document.getElementById('settings-units-list');
+            if (unitsCount) unitsCount.textContent = s.units.length;
+            if (unitsList) {
+                unitsList.innerHTML = s.units.map((u, idx) => `
+                    <div class="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-ris-bg border border-slate-200 text-xs">
+                        <div class="flex items-center gap-2">
+                            <span class="px-2.5 py-0.5 rounded-md bg-ris-navy text-white font-black">${u.code}</span>
+                            <span class="font-bold text-ris-ink">${u.en}</span>
+                            <span class="font-bold text-slate-500 font-ar">— ${u.ar}</span>
+                        </div>
+                        <button type="button" onclick="deleteSettingUnit(${idx})" class="px-2.5 py-1 rounded-lg bg-ris-redLight hover:bg-red-200 text-ris-red text-xs font-bold">🗑️</button>
+                    </div>
+                `).join('');
+            }
+
+            // Cabinets Quick-Edit Table
+            const cabTbody = document.getElementById('settings-cabinets-tbody');
+            if (cabTbody) {
+                cabTbody.innerHTML = state.cabinets.map(cab => `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-2.5 font-black text-ris-navy">${cab.code}</td>
+                        <td class="p-2.5">
+                            <select onchange="quickUpdateCabinetField('${cab.id}', 'lab', this.value)" class="px-2.5 py-1.5 bg-ris-bg border border-slate-300 rounded-lg text-xs font-bold text-ris-navy">
+                                ${s.labs.map(l => `<option value="${l}" ${cab.lab === l ? 'selected' : ''}>${l}</option>`).join('')}
+                            </select>
+                        </td>
+                        <td class="p-2.5">
+                            <input type="text" value="${cab.nameEn}" onchange="quickUpdateCabinetField('${cab.id}', 'nameEn', this.value)" class="w-full min-w-[140px] px-2.5 py-1.5 bg-ris-bg border border-slate-300 rounded-lg text-xs font-semibold">
+                        </td>
+                        <td class="p-2.5">
+                            <input type="text" value="${cab.nameAr}" dir="rtl" onchange="quickUpdateCabinetField('${cab.id}', 'nameAr', this.value)" class="w-full min-w-[140px] px-2.5 py-1.5 bg-ris-bg border border-slate-300 rounded-lg text-xs font-semibold font-ar">
+                        </td>
+                        <td class="p-2.5">
+                            <input type="number" min="1" max="20" value="${cab.shelves}" onchange="quickUpdateCabinetField('${cab.id}', 'shelves', Number(this.value))" class="w-16 px-2 py-1.5 bg-ris-bg border border-slate-300 rounded-lg text-xs font-black text-center">
+                        </td>
+                        <td class="p-2.5">
+                            <input type="text" value="${cab.specialty}" onchange="quickUpdateCabinetField('${cab.id}', 'specialty', this.value)" class="w-32 px-2.5 py-1.5 bg-ris-bg border border-slate-300 rounded-lg text-xs font-semibold">
+                        </td>
+                        <td class="p-2.5 text-right whitespace-nowrap">
+                            <button onclick="openCabinetModal('${cab.id}')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold mr-1">✏️</button>
+                            <button onclick="deleteCabinet('${cab.id}')" class="px-2.5 py-1 rounded-lg bg-ris-redLight hover:bg-red-200 text-ris-red font-bold">🗑️</button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            // Categories List
+            const catList = document.getElementById('settings-categories-list');
+            if (catList) {
+                catList.innerHTML = s.categories.map((c, idx) => `
+                    <div class="flex items-center justify-between gap-2 p-2 rounded-xl bg-ris-bg border border-slate-200 text-xs">
+                        <span class="font-bold text-ris-ink">${c.en} — <span class="font-ar text-slate-600">${c.ar}</span></span>
+                        <button type="button" onclick="deleteSettingCategory(${idx})" class="text-ris-red font-bold px-2">✕</button>
+                    </div>
+                `).join('');
+            }
+
+            // Periods List
+            const perList = document.getElementById('settings-periods-list');
+            if (perList) {
+                perList.innerHTML = s.periods.map((p, idx) => `
+                    <div class="flex items-center justify-between gap-2 p-2 rounded-xl bg-ris-bg border border-slate-200 text-xs">
+                        <span class="font-bold text-ris-navy">${p}</span>
+                        <button type="button" onclick="deleteSettingPeriod(${idx})" class="text-ris-red font-bold px-2">✕</button>
+                    </div>
+                `).join('');
+            }
+
+            // Consumption Reasons List
+            const rsnList = document.getElementById('settings-reasons-list');
+            if (rsnList) {
+                rsnList.innerHTML = s.consumptionReasons.map((r, idx) => `
+                    <div class="flex items-center justify-between gap-2 p-2 rounded-xl bg-ris-bg border border-slate-200 text-xs">
+                        <span class="font-bold text-ris-ink">${r.label}</span>
+                        <button type="button" onclick="deleteSettingReason(${idx})" class="text-ris-red font-bold px-2">✕</button>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function saveSchoolBrandingSettings(e) {
+            e.preventDefault();
+            state.settings.appTitle = document.getElementById('set-app-title').value.trim() || 'Science Lab';
+            state.settings.schoolName = document.getElementById('set-school-name').value.trim() || 'Regent International School';
+            state.settings.deptBadge = document.getElementById('set-dept-badge').value.trim() || 'RIS Science Department';
+            persistState();
+            refreshAllViews();
+            showToast('School & Department branding updated');
+        }
+
+        function addSettingLab(e) {
+            e.preventDefault();
+            const val = document.getElementById('new-lab-name').value.trim();
+            if (!val) return;
+            if (!state.settings.labs.includes(val)) {
+                state.settings.labs.push(val);
+                persistState();
+                refreshAllViews();
+                showToast(`Added "${val}" to laboratories`);
+            }
+            document.getElementById('new-lab-name').value = '';
+        }
+
+        function renameSettingLab(idx, newVal) {
+            const clean = newVal.trim();
+            if (!clean) return;
+            const oldVal = state.settings.labs[idx];
+            state.settings.labs[idx] = clean;
+            state.cabinets.forEach(c => { if (c.lab === oldVal) c.lab = clean; });
+            persistState();
+            refreshAllViews();
+            showToast(`Renamed laboratory to "${clean}"`);
+        }
+
+        function deleteSettingLab(idx) {
+            if (state.settings.labs.length <= 1) {
+                showToast('At least one laboratory must remain configured.', 'error');
+                return;
+            }
+            const removed = state.settings.labs.splice(idx, 1)[0];
+            persistState();
+            refreshAllViews();
+            showToast(`Removed "${removed}"`);
+        }
+
+        function addSettingUnit(e) {
+            e.preventDefault();
+            const code = document.getElementById('new-unit-code').value.trim();
+            const en = document.getElementById('new-unit-en').value.trim();
+            const ar = document.getElementById('new-unit-ar').value.trim();
+            if (!code || !en) return;
+            state.settings.units.push({ code, en, ar: ar || code });
+            persistState();
+            refreshAllViews();
+            showToast(`Added measurement unit "${code}"`);
+            e.target.reset();
+        }
+
+        function deleteSettingUnit(idx) {
+            if (state.settings.units.length <= 1) {
+                showToast('At least one unit must remain configured.', 'error');
+                return;
+            }
+            state.settings.units.splice(idx, 1);
+            persistState();
+            refreshAllViews();
+            showToast('Measurement unit removed');
+        }
+
+        function quickUpdateCabinetField(cabId, field, value) {
+            const cab = state.cabinets.find(c => c.id === cabId);
+            if (!cab) return;
+            cab[field] = value;
+            persistState();
+            refreshAllViews();
+            showToast(`Updated ${cab.code} (${field})`);
+        }
+
+        function addSettingCategory(e) {
+            e.preventDefault();
+            const en = document.getElementById('new-cat-en').value.trim();
+            const ar = document.getElementById('new-cat-ar').value.trim();
+            if (!en) return;
+            state.settings.categories.push({ value: en, en, ar: ar || en });
+            persistState();
+            refreshAllViews();
+            showToast(`Added category "${en}"`);
+            e.target.reset();
+        }
+
+        function deleteSettingCategory(idx) {
+            if (state.settings.categories.length <= 1) return;
+            state.settings.categories.splice(idx, 1);
+            persistState();
+            refreshAllViews();
+            showToast('Category removed');
+        }
+
+        function addSettingPeriod(e) {
+            e.preventDefault();
+            const val = document.getElementById('new-period-name').value.trim();
+            if (!val) return;
+            state.settings.periods.push(val);
+            persistState();
+            refreshAllViews();
+            showToast(`Added period "${val}"`);
+            e.target.reset();
+        }
+
+        function deleteSettingPeriod(idx) {
+            if (state.settings.periods.length <= 1) return;
+            state.settings.periods.splice(idx, 1);
+            persistState();
+            refreshAllViews();
+            showToast('Period removed');
+        }
+
+        function addSettingReason(e) {
+            e.preventDefault();
+            const label = document.getElementById('new-reason-name').value.trim();
+            if (!label) return;
+            const value = label.toLowerCase().includes('break') ? 'breakage' : 'consumption';
+            state.settings.consumptionReasons.push({ value, label });
+            persistState();
+            refreshAllViews();
+            showToast('Added audit reason');
+            e.target.reset();
+        }
+
+        function deleteSettingReason(idx) {
+            if (state.settings.consumptionReasons.length <= 1) return;
+            state.settings.consumptionReasons.splice(idx, 1);
+            persistState();
+            refreshAllViews();
+            showToast('Reason removed');
+        }
+
+        function resetSettingsToDefaults() {
+            askConfirm('Restore Default Settings', 'Reset all labs, units, categories, periods, and reasons back to RIS defaults? Your inventory items and logs will NOT be affected.', () => {
+                state.settings = getDefaultSettings();
+                persistState();
+                refreshAllViews();
+                showToast('System settings restored to defaults');
+            });
         }
 
         // ================= OFFICIAL REPORTS & BACKUP =================
@@ -2621,6 +3125,7 @@
                     const parsed = JSON.parse(e.target.result);
                     if (parsed.cabinets && parsed.items) {
                         state = {
+                            settings: mergeSettingsWithDefaults(parsed.settings || state.settings),
                             cabinets: parsed.cabinets,
                             items: parsed.items,
                             loans: parsed.loans || [],
@@ -2825,6 +3330,20 @@
             downloadJSONBackup,
             restoreJSONBackup,
             printOfficialReport,
+            saveSchoolBrandingSettings,
+            addSettingLab,
+            renameSettingLab,
+            deleteSettingLab,
+            addSettingUnit,
+            deleteSettingUnit,
+            quickUpdateCabinetField,
+            addSettingCategory,
+            deleteSettingCategory,
+            addSettingPeriod,
+            deleteSettingPeriod,
+            addSettingReason,
+            deleteSettingReason,
+            resetSettingsToDefaults,
             closeModal
         });
 
