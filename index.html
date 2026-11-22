@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Science Lab — Regent International School</title>
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://regent-lab-backend.pages.dev/tailwind.js"></script>
     <!-- Google Fonts: Inter & Cairo -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <!-- QRCode.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://regent-lab-backend.pages.dev/qrcode.js"></script>
 
     <script>
         tailwind.config = {
@@ -25,7 +25,7 @@
                         ris: {
                             navy: '#1B2A59',
                             navyDark: '#111B3B',
-                            red: '#D91E2A',
+                            red: '#EC1C25',
                             redDark: '#B31520',
                             bg: '#F4F6FA',
                             border: '#E2E8F0',
@@ -203,7 +203,7 @@
             }
         }
     </style>
-</head>
+<link rel="stylesheet" href="https://regent-lab-backend.pages.dev/assets/brand.css"><link rel="stylesheet" href="https://regent-lab-backend.pages.dev/assets/symbols.css"></head>
 <body class="antialiased selection:bg-ris-navy selection:text-white">
 
     <!-- ================= PRINT STAGE (SINGLE-PAGE A4 OUTPUT) ================= -->
@@ -298,7 +298,7 @@
                     </button>
                     <div class="text-center pt-1">
                         <button type="button" onclick="forceCloudPullNow()" class="text-[11px] font-extrabold text-emerald-700 hover:underline">
-                            🔄 Refresh Teacher List & Passwords
+                            🔄 Refresh Teacher List
                         </button>
                     </div>
                 </form>
@@ -923,7 +923,7 @@
                     </div>
                     <div class="bg-white p-5 rounded-3xl border border-ris-border shadow-xs space-y-3">
                         <h3 class="text-sm font-black text-ris-navy">💾 Full System Backup (JSON)</h3>
-                        <p class="text-xs text-slate-500 font-medium">Export or restore all settings, teacher passwords, schedules, and inventory.</p>
+                        <p class="text-xs text-slate-500 font-medium">Export settings, requests, loans, schedules and inventory. Passwords are never included. Restore replaces the synced dataset; passwords stay protected.</p>
                         <div class="grid grid-cols-2 gap-2">
                             <button type="button" onclick="exportSystemJSON()" class="py-2.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white text-xs font-extrabold">⬇️ Export JSON</button>
                             <label class="py-2.5 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-ris-navy text-xs font-extrabold text-center cursor-pointer">
@@ -952,7 +952,7 @@
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                         <div>
                             <h3 class="text-base font-black text-ris-navy">☁️ Cross-Device Cloud Sync (PC ↔ Phone Real-Time Sync)</h3>
-                            <p class="text-xs text-slate-500 font-medium">Ensures passwords, teacher requests, inventory, and schedules sync automatically between your computer and phones.</p>
+                            <p class="text-xs text-slate-500 font-medium">Authenticated requests, inventory and schedules sync across devices. Passwords stay in the authentication service.</p>
                         </div>
                         <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-extrabold self-start sm:self-center sync-status-label">
                             Live Cloud Sync Active
@@ -960,12 +960,12 @@
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
                         <div class="sm:col-span-2">
-                            <label class="block text-xs font-bold text-slate-700 mb-1">School Sync Channel ID (Shared automatically via QR codes)</label>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">School QR Channel Label (does not switch the backend)</label>
                             <input type="text" id="set-sync-room-id" placeholder="ris-regent-lab-sync-2026" class="w-full px-3.5 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-mono font-bold text-ris-navy">
                         </div>
                         <div class="flex gap-2">
                             <button type="button" onclick="saveCloudSyncSettings()" class="flex-1 py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold">
-                                Save & Push
+                                Save QR Label
                             </button>
                             <button type="button" onclick="forceCloudPullNow()" class="py-2.5 px-3 rounded-xl bg-ris-navy hover:bg-ris-navyDark text-white text-xs font-extrabold">
                                 🔄 Pull Now
@@ -977,12 +977,12 @@
                         <span>Last Cloud Sync: <strong id="sync-last-time-label" class="text-emerald-700">Never</strong></span>
                     </div>
                     <details class="text-xs">
-                        <summary class="cursor-pointer font-extrabold text-ris-navy hover:underline">Optional: Connect Custom Firebase Project Config (JSON)</summary>
+                        <summary class="cursor-pointer font-extrabold text-ris-navy hover:underline">Advanced: Matching Firebase Web Config (JSON)</summary>
                         <div class="mt-3 space-y-2">
-                            <p class="text-[11px] text-slate-500">Paste your Firebase <code class="font-mono">firebaseConfig</code> JSON object for dedicated Firestore database storage:</p>
+                            <p class="text-[11px] text-slate-500">A device configuration must match the secure backend. Switching to another database requires a separate backend deployment:</p>
                             <textarea id="set-custom-firebase-cfg" rows="3" placeholder='{"apiKey":"...","authDomain":"...","projectId":"..."}' class="w-full px-3 py-2 bg-ris-bg border border-slate-300 rounded-xl text-xs font-mono"></textarea>
                             <button type="button" onclick="saveCustomFirebaseConfig()" class="px-4 py-2 rounded-xl bg-ris-navy text-white text-xs font-extrabold">
-                                Connect Firebase & Sync
+                                Verify & Reload
                             </button>
                         </div>
                     </details>
@@ -1003,8 +1003,8 @@
                             <input type="text" id="set-admin-user" class="w-full px-3.5 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Admin Password (leave blank to disable lock)</label>
-                            <input type="text" id="set-admin-pass" class="w-full px-3.5 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold">
+                            <label class="block text-xs font-bold text-slate-700 mb-1">New Admin Password (blank keeps current password)</label>
+                            <input type="password" id="set-admin-pass" minlength="12" autocomplete="new-password" class="w-full px-3.5 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold">
                         </div>
                         <div class="flex gap-2">
                             <button type="button" onclick="saveAdminSecuritySettings()" class="flex-1 py-2.5 px-4 rounded-xl bg-ris-navy hover:bg-ris-navyDark text-white text-xs font-extrabold">
@@ -1047,7 +1047,7 @@
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">Permanent Published Base URL (for Teacher & Cabinet QR Codes)</label>
-                        <input type="url" id="set-public-base-url" placeholder="https://aal-alt.github.io/regent-lab/" class="w-full px-3.5 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-mono font-bold text-ris-navy">
+                        <input type="url" id="set-public-base-url" placeholder="https://aali-alt.github.io/regent-lab/" class="w-full px-3.5 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-mono font-bold text-ris-navy">
                     </div>
                 </div>
 
@@ -1059,12 +1059,12 @@
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
                         <input type="text" id="new-teacher-name" placeholder="Teacher Name (e.g., Ms. Sara Ahmed)" class="px-3.5 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold">
-                        <input type="text" id="new-teacher-pass" placeholder="Individual Password (e.g., 1234)" class="px-3.5 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold">
+                        <input type="password" id="new-teacher-pass" minlength="12" autocomplete="new-password" placeholder="Individual password (12+ characters)" class="px-3.5 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold">
                         <button type="button" onclick="addTeacherAccount()" class="py-2.5 px-4 rounded-xl bg-ris-navy hover:bg-ris-navyDark text-white text-xs font-extrabold">
                             + Add Teacher Account
                         </button>
                     </div>
-                    <div id="settings-teachers-list" class="grid grid-cols-1 md:grid-cols-2 gap-2.5"></div>
+                    <div id="settings-teachers-list" class="grid grid-cols-1 gap-2.5"></div>
                 </div>
 
                 <!-- 4. Subjects, Classes/Grades, Laboratories -->
@@ -1474,10 +1474,41 @@
     </div>
 
     <!-- ================= APPLICATION LOGIC & CROSS-DEVICE SYNC ================= -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    <script type="module">// Only literals originating in this application may be marked as trusted markup.
+class SafeMarkup extends String {}
+const escapeMarkup=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+function safeHTML(parts,...values){
+ let output='';
+ for(let i=0;i<parts.length;i++){
+  output+=parts[i];if(i===values.length)continue;
+  const value=values[i],tail=output.slice(output.lastIndexOf('<'));
+  const attribute=output.lastIndexOf('<')>output.lastIndexOf('>')?tail.match(/\b([a-z][a-z0-9-]*)\s*=\s*"([^"]*)$/i):null;
+  if(attribute?.[1].toLowerCase().startsWith('on')){
+   let singleQuoted=false,escaped=false;
+   for(const ch of attribute[2]){if(escaped){escaped=false;continue;}if(ch==='\\'){escaped=true;continue;}if(ch==="'")singleQuoted=!singleQuoted;}
+   if(singleQuoted){
+    const content=JSON.stringify(String(value??'')).slice(1,-1).replace(/'/g,'\\u0027').replace(/</g,'\\u003c');
+    output+=escapeMarkup(content);
+   }else if(typeof value==='number'&&Number.isFinite(value))output+=String(value);
+   else if(typeof value==='boolean')output+=String(value);
+   else throw new Error('An event argument could not be rendered safely');
+  }else if(attribute?.[1].toLowerCase()==='style'){
+   if(/[;{}]|url\s*\(|expression\s*\(/i.test(String(value)))throw new Error('A style value could not be rendered safely');
+   output+=escapeMarkup(value);
+  }else if(value instanceof SafeMarkup&&!attribute)output+=value.toString();
+  else output+=escapeMarkup(value);
+ }
+ return new SafeMarkup(output);
+}
+safeHTML.raw=value=>new SafeMarkup(value);
+safeHTML.join=values=>new SafeMarkup(values.map(value=>value instanceof SafeMarkup?value.toString():escapeMarkup(value)).join(''));
+safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
+
+
+        import {createSecureClient} from "https://regent-lab-backend.pages.dev/client/secure-client.mjs";
+        const SECURE_BACKEND_URL = "https://regent-lab-backend.pages.dev"; // Set only after approved hosting and staging verification.
+        let secureClient = null; let hadAuthorizedSession = false;
+        const scrubSecrets = value => Array.isArray(value) ? value.map(scrubSecrets) : value && typeof value === "object" ? Object.fromEntries(Object.entries(value).filter(([key]) => !/password|credential|secret|private.?key|auth.?token/i.test(key)).map(([key,val]) => [key,scrubSecrets(val)])) : value;
 
         // Built-in Regent International School Firebase Configuration
         const EMBEDDED_FIREBASE_CONFIG = {
@@ -1492,47 +1523,7 @@
 
         // ================= EXECUTIVE RIS CREST SVG =================
         function getRISCrestSVG(sizeClass = "w-full h-full") {
-            return `
-                <svg viewBox="0 0 220 220" class="${sizeClass}" xmlns="http://www.w3.org/2000/svg" aria-label="Regent International School Crest">
-                    <path d="M32 18 C22 72, 24 142, 86 196" fill="none" stroke="#1B2A59" stroke-width="6" stroke-linecap="round"/>
-                    <path d="M188 18 C198 72, 196 142, 134 196" fill="none" stroke="#1B2A59" stroke-width="6" stroke-linecap="round"/>
-                    <g fill="#1B2A59">
-                        <polygon points="31,26 14,16 16,28 30,36"/>
-                        <polygon points="29,46 12,36 14,48 28,56"/>
-                        <polygon points="28,66 11,56 13,68 27,76"/>
-                        <polygon points="29,86 12,76 14,88 28,96"/>
-                        <polygon points="32,106 15,96 17,108 31,116"/>
-                        <polygon points="38,126 21,116 23,128 37,136"/>
-                    </g>
-                    <g fill="#1B2A59">
-                        <polygon points="189,26 206,16 204,28 190,36"/>
-                        <polygon points="191,46 208,36 206,48 192,56"/>
-                        <polygon points="192,66 209,56 207,68 193,76"/>
-                        <polygon points="191,86 208,76 206,88 192,96"/>
-                        <polygon points="188,106 205,96 203,108 189,116"/>
-                        <polygon points="182,126 199,116 197,128 183,136"/>
-                    </g>
-                    <path d="M44 18 H176 V112 C176 156 134 180 110 198 C86 180 44 156 44 112 Z" fill="#FFFFFF" stroke="#D91E2A" stroke-width="6"/>
-                    <rect x="50" y="24" width="120" height="44" fill="#D91E2A"/>
-                    <text x="110" y="47" text-anchor="middle" fill="#FFFFFF" font-family="Georgia, serif" font-weight="bold" font-size="22" letter-spacing="1.5">REGENT</text>
-                    <text x="110" y="61" text-anchor="middle" fill="#FFFFFF" font-family="Inter, sans-serif" font-weight="800" font-size="7.6" letter-spacing="0.7">INTERNATIONAL SCHOOL</text>
-                    <rect x="50" y="73" width="57" height="54" fill="#1B2A59"/>
-                    <g fill="none" stroke="#FFFFFF" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M64 103 V91 L78.5 82 L93 91 V103"/>
-                        <path d="M78.5 82 V76 L85 78.5 L78.5 81"/>
-                        <rect x="75" y="95" width="7" height="8"/>
-                        <path d="M58 106 Q68 103 78.5 107 Q89 103 99 106 V117 Q89 114 78.5 118 Q68 114 58 117 Z"/>
-                    </g>
-                    <g stroke="#D91E2A" stroke-width="4.5" stroke-linecap="round">
-                        <line x1="56" y1="133" x2="82" y2="159"/>
-                        <line x1="69" y1="133" x2="96" y2="160"/>
-                        <line x1="82" y1="133" x2="105" y2="156"/>
-                        <line x1="95" y1="133" x2="105" y2="143"/>
-                    </g>
-                    <path d="M113 73 H170 V112 C170 150 135 171 113 187 Z" fill="#1B2A59"/>
-                    <text x="141" y="144" text-anchor="middle" fill="#FFFFFF" font-family="Georgia, serif" font-weight="bold" font-size="56">R</text>
-                </svg>
-            `;
+            return safeHTML`<img src="https://regent-lab-backend.pages.dev/assets/regent-crest.png" alt="Regent International School, New Mansoura" class="${sizeClass}" style="object-fit:contain" decoding="async">`;
         }
 
         function injectAllCrests() {
@@ -1542,7 +1533,7 @@
         }
 
         // ================= DEFAULT STATE & PERSISTENCE =================
-        const STORAGE_KEY = 'ris_science_lab_state_v5';
+        const STORAGE_KEY = 'ris_lab_secure_review_v2';
         const CUSTOM_FB_KEY = 'ris_custom_firebase_cfg_v1';
         const CLIENT_INSTANCE_ID = 'client-' + Math.random().toString(36).slice(2, 10);
 
@@ -1556,22 +1547,21 @@
                 appTitle: 'Science Lab',
                 schoolName: 'Regent International School',
                 deptBadge: 'RIS Science Department',
-                publicBaseUrl: 'https://aal-alt.github.io/regent-lab/',
+                publicBaseUrl: 'https://aali-alt.github.io/regent-lab/',
                 syncRoomId: 'ris-regent-lab-sync-2026',
                 adminUsername: 'admin',
-                adminPassword: 'RIS2026',
                 teachers: [
-                    { name: 'Mr. Ahmed Hassan', password: '101' },
-                    { name: 'Ms. Sara Mahmoud', password: '102' },
-                    { name: 'Dr. Omar Khaled', password: '103' },
-                    { name: 'Ms. Nadia Adel', password: '104' }
+                    { name: 'Mr. Ahmed Hassan' },
+                    { name: 'Ms. Sara Mahmoud' },
+                    { name: 'Dr. Omar Khaled' },
+                    { name: 'Ms. Nadia Adel' }
                 ],
                 subjects: ['Chemistry', 'Biology', 'Physics', 'General Science'],
                 grades: ['Grade 7A', 'Grade 7B', 'Grade 8A', 'Grade 9A', 'Grade 10A', 'Grade 11 Chemistry', 'Grade 12 Biology'],
                 labs: ['Lab 1 (Chemistry)', 'Lab 2 (Biology)', 'Lab 3 (Physics)'],
                 cabinetColors: [
                     { name: 'RIS Navy', hex: '#1B2A59' },
-                    { name: 'Crimson Red', hex: '#D91E2A' },
+                    { name: 'Crimson Red', hex: '#EC1C25' },
                     { name: 'Emerald Green', hex: '#059669' },
                     { name: 'Amber Gold', hex: '#D97706' }
                 ],
@@ -1605,7 +1595,7 @@
             },
             cabinets: [
                 { id: 'cab-1', code: 'CAB-01', name: 'Analytical Reagents Cabinet', lab: 'Lab 1 (Chemistry)', specialty: 'General Chemicals', color: '#1B2A59' },
-                { id: 'cab-2', code: 'CAB-02', name: 'Corrosive Acids Vault', lab: 'Lab 1 (Chemistry)', specialty: 'Acids & Corrosives', color: '#D91E2A' },
+                { id: 'cab-2', code: 'CAB-02', name: 'Corrosive Acids Vault', lab: 'Lab 1 (Chemistry)', specialty: 'Acids & Corrosives', color: '#EC1C25' },
                 { id: 'cab-3', code: 'CAB-03', name: 'Borosilicate Glassware', lab: 'Lab 2 (Biology)', specialty: 'Glassware & Volumetric', color: '#059669' }
             ],
             inventory: [
@@ -1624,37 +1614,17 @@
         };
 
         function loadLocalState() {
-            try {
-                const raw = localStorage.getItem(STORAGE_KEY);
-                if (!raw) return structuredClone(DEFAULT_STATE);
-                const parsed = JSON.parse(raw);
-                if (!parsed || typeof parsed !== 'object') return structuredClone(DEFAULT_STATE);
-                return {
-                    ...structuredClone(DEFAULT_STATE),
-                    ...parsed,
-                    meta: {
-                        ...structuredClone(DEFAULT_STATE.meta),
-                        ...(parsed.meta || {})
-                    },
-                    settings: {
-                        ...structuredClone(DEFAULT_STATE.settings),
-                        ...(parsed.settings || {})
-                    }
-                };
-            } catch (e) {
-                console.warn('Fallback to default state:', e);
-                return structuredClone(DEFAULT_STATE);
-            }
+            return structuredClone(DEFAULT_STATE); // Older device caches remain untouched, never used as authorization or cloud truth.
         }
 
-        let state = loadLocalState();
+        let state = scrubSecrets(loadLocalState());
         let db = null;
         let firestoreDocRef = null;
         let isRemoteUpdate = false;
         let syncPollTimer = null;
         let lastAppliedRemoteTs = 0;
         let lastSavedHash = '';
-        let authenticatedTeacherName = sessionStorage.getItem('ris_verified_teacher') || '';
+        let authenticatedTeacherName = '';
         let teacherPortalCart = [];
 
         // Check URL sync room override (?sync=...)
@@ -1663,7 +1633,7 @@
         const urlSyncRoom = urlParamsInit.get('sync') || hashParamsInit.get('sync');
         if (urlSyncRoom && urlSyncRoom.trim()) {
             state.settings.syncRoomId = urlSyncRoom.trim();
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+
         }
 
         function setSyncStatusText(label, engineName = '') {
@@ -1737,7 +1707,7 @@
                 logs: mergeCollectionsById(state.logs, remote.logs, true).slice(0, 200)
             };
 
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+
             setSyncStatusText(`Synced (${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })})`, sourceLabel);
             refreshAllViews();
             checkAdminAuthGate();
@@ -1750,23 +1720,14 @@
         }
 
         async function persistState(markSettingsChanged = false) {
-            const now = Date.now();
-            state.meta = state.meta || {};
-            state.meta.updatedAt = now;
-            state.meta.lastSender = CLIENT_INSTANCE_ID;
-            if (markSettingsChanged) {
-                state.meta.settingsUpdatedAt = now;
-            }
-            try {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-            } catch (e) {
-                console.warn('LocalStorage save warning:', e);
-            }
-            if (!isRemoteUpdate) {
-                if (firestoreDocRef) {
-                    setDoc(firestoreDocRef, JSON.parse(JSON.stringify(state))).catch(() => {});
-                }
-                await pushStateToCloudKV();
+            setSyncStatusText('Saving...', 'Authenticated transaction');
+            try { await secureClient.save(scrubSecrets(state));
+
+                setSyncStatusText('Saved to cloud', 'Authenticated transaction');
+            } catch (err) {
+                if (secureClient?.snapshot) state = structuredClone(secureClient.snapshot);
+                refreshAllViews(); setSyncStatusText('Save not confirmed', 'Refresh before retrying');
+                throw err;
             }
         }
 
@@ -1780,174 +1741,51 @@
         }
 
         function getCloudKVEndpoints() {
-            const key = getCloudBucketKey();
-            return [
-                `https://kvdb.io/A6z9xM2pQ8rT4vW1yB5n/${encodeURIComponent(key)}`,
-                `https://api.keyvalue.xyz/98a1f3c2/${encodeURIComponent(key)}`
-            ];
+            // Third-party whole-state sync is intentionally disabled.
+            return [];
         }
 
         async function pushStateToCloudKV() {
-            const payloadStr = JSON.stringify(state);
-            lastSavedHash = payloadStr.length + ':' + state.meta.updatedAt;
-            const endpoints = getCloudKVEndpoints();
-            let pushed = false;
-
-            for (const url of endpoints) {
-                try {
-                    const res = await fetch(url, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
-                        body: payloadStr
-                    });
-                    if (res.ok) {
-                        pushed = true;
-                        setSyncStatusText(
-                            `Synced (${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })})`,
-                            firestoreDocRef ? 'Firestore + Cloud KV' : 'Cloud KV Sync'
-                        );
-                        break;
-                    }
-                } catch (e) {}
-            }
-            if (!pushed && !firestoreDocRef) {
-                setSyncStatusText('Retrying Cloud Sync...', 'Local + Retry Queue');
-            }
+            // Kept as a no-op for compatibility with older callers.
+            return false;
         }
 
         async function pullStateFromCloudKV() {
-            const endpoints = getCloudKVEndpoints();
-            for (const url of endpoints) {
-                try {
-                    const res = await fetch(`${url}?_t=${Date.now()}`, {
-                        method: 'GET',
-                        cache: 'no-store'
-                    });
-                    if (!res.ok) continue;
-                    const text = await res.text();
-                    if (!text || !text.trim().startsWith('{')) continue;
-                    const parsed = JSON.parse(text);
-                    if (parsed && parsed.settings && parsed.meta) {
-                        return parsed;
-                    }
-                } catch (e) {}
-            }
             return null;
         }
 
         async function forceCloudPullNow(silent = false) {
-            try {
-                if (!silent) setSyncStatusText('Syncing...');
-
-                // 1. Check Firestore if active
-                if (firestoreDocRef) {
-                    try {
-                        const snap = await getDoc(firestoreDocRef);
-                        if (snap.exists()) {
-                            applyIncomingRemoteState(snap.data(), 'Firebase Firestore');
-                        }
-                    } catch (e) {}
-                }
-
-                // 2. Check Cloud KV Store
-                const remoteState = await pullStateFromCloudKV();
-                const remoteTs = Number(remoteState?.meta?.updatedAt || 0);
-                const localTs = Number(state.meta?.updatedAt || 0);
-
-                if (remoteState && remoteTs > localTs) {
-                    applyIncomingRemoteState(remoteState, firestoreDocRef ? 'Firestore + Cloud KV' : 'Cloud KV Sync');
-                    if (!silent) showToast('✅ Synced latest updates from other devices');
-                } else {
-                    // If local has newer changes that haven't reached cloud yet, push them now
-                    if (localTs > remoteTs) {
-                        await pushStateToCloudKV();
-                    }
-                    setSyncStatusText(
-                        `Synced (${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })})`,
-                        firestoreDocRef ? 'Firestore + Cloud KV' : 'Cloud KV Sync'
-                    );
-                    if (!silent) showToast('✅ All devices are synchronized');
-                }
-            } catch (e) {
-                setSyncStatusText('Local Storage Mode', 'Offline');
-                if (!silent) showToast('Could not reach cloud — saved locally', 'error');
-            }
+            try { const refreshed = await secureClient?.refresh();
+                if (!refreshed && !silent) showToast('Sign in before refreshing cloud data', 'error'); return !!refreshed;
+            } catch (err) { setSyncStatusText('Refresh failed', 'Changes not confirmed'); if (!silent) showToast(err.message, 'error'); return false; }
         }
 
         function startRealtimeCloudPolling() {
-            if (syncPollTimer) {
-                clearInterval(syncPollTimer);
-                syncPollTimer = null;
-            }
-            // Poll every 4 seconds so requests sent from Phone appear on PC automatically
-            syncPollTimer = setInterval(() => {
-                if (document.visibilityState === 'visible') {
-                    forceCloudPullNow(true);
-                }
-            }, 4000);
+            if (syncPollTimer) clearInterval(syncPollTimer);
+            syncPollTimer = null;
+            // Firestore's listener handles updates. No third-party polling.
         }
 
         async function initCloudSync() {
-            // 1. Connect directly to Regent International School Firebase Firestore first
-            try {
-                let cfg = EMBEDDED_FIREBASE_CONFIG;
-                if (typeof __firebase_config !== 'undefined') {
-                    cfg = JSON.parse(__firebase_config);
-                } else {
-                    const savedCustom = localStorage.getItem(CUSTOM_FB_KEY);
-                    if (savedCustom) cfg = JSON.parse(savedCustom);
-                }
-
-                if (cfg && cfg.apiKey) {
-                    const app = initializeApp(cfg);
-                    const auth = getAuth(app);
-
-                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                        await signInWithCustomToken(auth, __initial_auth_token);
-                    } else {
-                        await signInAnonymously(auth);
+            if (secureClient) return;
+            secureClient = createSecureClient({firebaseConfig: (() => { const raw = localStorage.getItem(CUSTOM_FB_KEY); if (!raw) return EMBEDDED_FIREBASE_CONFIG; try { return validatePublicFirebaseConfig(JSON.parse(raw)); } catch { return EMBEDDED_FIREBASE_CONFIG; } })(), backendUrl: SECURE_BACKEND_URL,
+                testEmulators: false,
+                onState(next) { state = scrubSecrets(next); refreshAllViews(); configureTeacherPortalAuthGate(); checkAdminAuthGate(); },
+                onDirectory(accounts) { state.settings.teachers = accounts.filter(a => a.role === 'teacher'); refreshAllViews(); },
+                onAccount(account) {
+                    authenticatedTeacherName = account?.role === 'teacher' ? account.name : '';
+                    if (!account) {
+                        state = scrubSecrets(structuredClone(DEFAULT_STATE)); state.settings.teachers = (secureClient?.directory || []).filter(entry => entry.role === 'teacher');
+                        teacherPortalCart = []; window.__pendingRegentRequest = null;
+                        if (hadAuthorizedSession) document.querySelectorAll('input[type=password]').forEach(input => { input.value = ''; });
+                        refreshAllViews();
                     }
-
-                    db = getFirestore(app);
-                    const appId = typeof __app_id !== 'undefined' ? __app_id : 'regent-science-lab';
-                    const roomSlug = (state.settings.syncRoomId || 'ris-regent-lab-sync-2026').replace(/[^a-zA-Z0-9_-]/g, '_');
-                    firestoreDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'regent_lab_rooms', roomSlug);
-
-                    // Fetch initial snapshot immediately so login credentials & requests are ready
-                    try {
-                        const initialSnap = await getDoc(firestoreDocRef);
-                        if (initialSnap.exists()) {
-                            applyIncomingRemoteState(initialSnap.data(), 'Firebase Firestore (regent-lab)');
-                        } else {
-                            await setDoc(firestoreDocRef, JSON.parse(JSON.stringify(state)));
-                        }
-                    } catch (readErr) {
-                        console.warn('Firestore initial read warning:', readErr);
-                    }
-
-                    // Subscribe to real-time updates (PC <-> Phone instant push)
-                    onSnapshot(
-                        firestoreDocRef,
-                        (snap) => {
-                            setSyncStatusText('Live Firebase Sync Active', 'Firebase Firestore (regent-lab)');
-                            if (snap.exists()) {
-                                applyIncomingRemoteState(snap.data(), 'Firebase Firestore (regent-lab)');
-                            }
-                        },
-                        (snapErr) => {
-                            console.warn('Firestore listener fallback:', snapErr);
-                            firestoreDocRef = null;
-                        }
-                    );
-                }
-            } catch (e) {
-                console.warn('Firebase init fallback:', e);
-                firestoreDocRef = null;
-            }
-
-            // 2. Also keep Cloud KV backup polling active as a secondary fallback
-            await forceCloudPullNow(true);
-            startRealtimeCloudPolling();
+                    hadAuthorizedSession = !!account;
+                    configureTeacherPortalAuthGate(); checkAdminAuthGate();
+                },
+                onStatus(label) { setSyncStatusText(label, 'Authenticated Firebase'); }
+            });
+            window.secureClient = secureClient;
         }
 
         // ================= UTILITIES =================
@@ -1958,7 +1796,7 @@
                 if (btn.textContent.trim().length <= 3) {
                     btn.textContent = isDark ? '☀️' : '🌙';
                 } else {
-                    btn.innerHTML = isDark ? '<span>☀️ Switch to Light Mode</span>' : '<span>🌙 Switch to Dark Mode</span>';
+                    btn.innerHTML = isDark ? safeHTML.raw('<span>☀️ Switch to Light Mode</span>') : safeHTML.raw('<span>🌙 Switch to Dark Mode</span>');
                 }
             });
         }
@@ -1970,12 +1808,12 @@
             showToast(next ? 'Dark mode enabled' : 'Light mode enabled');
         }
 
-        function showToast(msg, type = 'success') {
+        function showToast(msg, type = 'success') { const holder=document.getElementById('toast-container'); while(holder&&holder.children.length>=2)holder.firstElementChild.remove();
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             const bg = type === 'error' ? 'bg-ris-red text-white' : 'bg-ris-navy text-white';
             toast.className = `${bg} px-4 py-3 rounded-2xl shadow-xl text-xs font-extrabold flex items-center gap-2 transition-all duration-300`;
-            toast.innerHTML = `<span>${type === 'error' ? '⚠️' : '✅'}</span><span>${msg}</span>`;
+            toast.innerHTML = safeHTML`<span>${type === 'error' ? '⚠️' : '✅'}</span><span>${msg}</span>`;
             container.appendChild(toast);
             setTimeout(() => {
                 toast.style.opacity = '0';
@@ -1984,7 +1822,10 @@
         }
 
         function getBaseCleanURL() {
-            const configured = (state.settings.publicBaseUrl || '').trim();
+            let configured = (state.settings.publicBaseUrl || '').trim();
+            if (/^https?:\/\/aal-alt\.github\.io\/regent-lab\/?$/i.test(configured)) {
+                configured = 'https://aali-alt.github.io/regent-lab/';
+            }
             if (configured && /^https?:\/\//i.test(configured)) {
                 try {
                     const u = new URL(configured);
@@ -1999,7 +1840,7 @@
                 url.hash = '';
                 return url.toString();
             }
-            return 'https://aal-alt.github.io/regent-lab/';
+            return 'https://aali-alt.github.io/regent-lab/';
         }
 
         function buildTeacherPortalURL() {
@@ -2031,7 +1872,7 @@
             if (!container) return;
             container.innerHTML = '';
             if (typeof QRCode === 'undefined') {
-                container.innerHTML = `<div class="p-4 text-xs font-bold text-ris-red">QR Library Unavailable</div>`;
+                container.innerHTML = safeHTML`<div class="p-4 text-xs font-bold text-ris-red">QR Library Unavailable</div>`;
                 return;
             }
             new QRCode(container, {
@@ -2064,7 +1905,16 @@
             showToast('Link copied to clipboard');
         }
 
+        const editModalKinds = {'inventory-modal':['inventory','inv-edit-id'],'cabinet-modal':['cabinets','cab-edit-id'],'schedule-slot-modal':['scheduleSlots','slot-edit-id']};
+        function modalEditContext(modalId,begin) { const entry=editModalKinds[modalId]; if(!entry)return; const recordId=document.getElementById(entry[1])?.value; if(begin)secureClient?.beginEdit(entry[0],recordId); else secureClient?.endEdit(entry[0],recordId); }
+        document.addEventListener('focusin',event=>{if(event.target.closest('#tab-settings')&&['INPUT','TEXTAREA','SELECT'].includes(event.target.tagName))secureClient?.beginEdit('settings','main',{ifAbsent:true});});
+        function validatePublicFirebaseConfig(value) {
+            const fields=new Set(['apiKey','authDomain','projectId','storageBucket','messagingSenderId','appId','measurementId','databaseURL']);
+            if(!value||typeof value!=='object'||Array.isArray(value)||Object.keys(value).some(key=>!fields.has(key))||Object.values(value).some(item=>typeof item!=='string'||item.length>2000)||!value.apiKey||!value.projectId||!value.authDomain)throw new Error('Use only the public Firebase web configuration. Never paste a service account, private key or server credential here.');
+            return Object.fromEntries(Object.entries(value));
+        }
         function openModal(id) {
+            modalEditContext(id,true);
             const el = document.getElementById(id);
             if (el) {
                 el.classList.remove('hidden');
@@ -2076,13 +1926,14 @@
                 }
             }
             if (id === 'loan-modal') {
-                const todayStr = new Date().toISOString().split('T')[0];
+                const todayStr = formatLocalDate(new Date());
                 const d = document.getElementById('loan-due-date');
                 if (d && !d.value) d.value = todayStr;
             }
         }
 
         function closeModal(id) {
+            modalEditContext(id,false);
             const el = document.getElementById(id);
             if (el) el.classList.add('hidden');
         }
@@ -2102,47 +1953,21 @@
         // ================= DUAL-LAYER AUTHENTICATION =================
         function checkAdminAuthGate() {
             if (!document.getElementById('teacher-portal-shell').classList.contains('hidden')) return;
-            if (!document.getElementById('cabinet-audit-shell').classList.contains('hidden')) return;
-
-            const requiredPass = (state.settings.adminPassword || '').trim();
-            const isUnlocked = sessionStorage.getItem('ris_admin_unlocked') === 'true';
-            const gate = document.getElementById('admin-login-gate');
-            if (requiredPass && !isUnlocked) {
-                gate.classList.remove('hidden');
-            } else {
-                gate.classList.add('hidden');
-            }
+            document.getElementById('admin-login-gate').classList.toggle('hidden', secureClient?.account?.role === 'admin' && secureClient?.ready);
         }
 
         async function handleAdminLogin(e) {
             e.preventDefault();
-            // Pull latest password from cloud before validating so PC changes reflect immediately on Phone
-            await forceCloudPullNow(true);
-
-            const user = document.getElementById('admin-login-user').value.trim();
-            const pass = document.getElementById('admin-login-pass').value.trim();
-            const expectedUser = (state.settings.adminUsername || 'admin').trim();
-            const expectedPass = (state.settings.adminPassword || '').trim();
-
-            if (user.toLowerCase() === expectedUser.toLowerCase() && pass === expectedPass) {
-                sessionStorage.setItem('ris_admin_unlocked', 'true');
+            try {
+                await secureClient.login(document.getElementById('admin-login-user').value.trim(), document.getElementById('admin-login-pass').value, 'admin');
+                document.getElementById('admin-login-pass').value = '';
                 document.getElementById('admin-login-error').classList.add('hidden');
-                document.getElementById('admin-login-gate').classList.add('hidden');
-                showToast('Welcome back to Science Lab Control');
-            } else {
-                document.getElementById('admin-login-error').classList.remove('hidden');
-            }
+                checkAdminAuthGate(); showToast('Secure administrator sign-in complete');
+            } catch (err) { document.getElementById('admin-login-error').classList.remove('hidden'); showToast(err.message, 'error'); }
         }
 
-        function lockAdminSession() {
-            if (!(state.settings.adminPassword || '').trim()) {
-                showToast('Set an Admin Password in System Settings first', 'error');
-                switchTab('settings');
-                return;
-            }
-            sessionStorage.removeItem('ris_admin_unlocked');
-            document.getElementById('admin-login-pass').value = '';
-            checkAdminAuthGate();
+        async function lockAdminSession() {
+            await secureClient.logout(); document.getElementById('admin-login-pass').value = ''; checkAdminAuthGate();
         }
 
         // ================= TEACHER PORTAL AUTH & WORKFLOW =================
@@ -2159,7 +1984,7 @@
                 sessionStorage.removeItem('ris_verified_teacher');
             }
 
-            if (authenticatedTeacherName) {
+            if (authenticatedTeacherName && secureClient?.ready) {
                 gate.classList.add('hidden');
                 main.classList.remove('hidden');
                 logoutBtn.classList.remove('hidden');
@@ -2174,27 +1999,16 @@
 
         async function handleTeacherPortalLogin(e) {
             e.preventDefault();
-            await forceCloudPullNow(true);
-            const selectedName = document.getElementById('tp-login-teacher-select').value;
-            const enteredPass = document.getElementById('tp-login-password').value.trim();
-            const teacherObj = (state.settings.teachers || []).find(t => t.name === selectedName);
-
-            if (teacherObj && enteredPass === String(teacherObj.password || '').trim()) {
-                authenticatedTeacherName = teacherObj.name;
-                sessionStorage.setItem('ris_verified_teacher', authenticatedTeacherName);
-                document.getElementById('tp-auth-error').classList.add('hidden');
+            try {
+                await secureClient.login(document.getElementById('tp-login-teacher-select').value, document.getElementById('tp-login-password').value, 'teacher');
                 document.getElementById('tp-login-password').value = '';
-                configureTeacherPortalAuthGate();
-                showToast(`Verified as ${authenticatedTeacherName}`);
-            } else {
-                document.getElementById('tp-auth-error').classList.remove('hidden');
-            }
+                document.getElementById('tp-auth-error').classList.add('hidden');
+                configureTeacherPortalAuthGate(); showToast('Secure teacher sign-in complete');
+            } catch (err) { document.getElementById('tp-auth-error').classList.remove('hidden'); showToast(err.message, 'error'); }
         }
 
-        function logoutTeacherPortal() {
-            authenticatedTeacherName = '';
-            sessionStorage.removeItem('ris_verified_teacher');
-            configureTeacherPortalAuthGate();
+        async function logoutTeacherPortal() {
+            await secureClient.logout(); authenticatedTeacherName = ''; configureTeacherPortalAuthGate();
         }
 
         function launchTeacherPortalPreview() {
@@ -2236,7 +2050,7 @@
         }
 
         function syncTeacherDefaultReturnDate() {
-            const sessionDate = document.getElementById('tp-date')?.value || new Date().toISOString().split('T')[0];
+            const sessionDate = document.getElementById('tp-date')?.value || formatLocalDate(new Date());
             const retDateEl = document.getElementById('tp-return-date');
             if (retDateEl && (!retDateEl.value || retDateEl.value < sessionDate)) {
                 retDateEl.value = sessionDate;
@@ -2323,10 +2137,10 @@
             const list = document.getElementById('tp-cart-list');
             if (!list) return;
             if (!teacherPortalCart.length) {
-                list.innerHTML = `<div class="p-3 rounded-xl bg-slate-50 border border-dashed border-slate-300 text-center text-xs font-bold text-slate-400">No items added yet. Select items above and click "+ Add Item".</div>`;
+                list.innerHTML = safeHTML`<div class="p-3 rounded-xl bg-slate-50 border border-dashed border-slate-300 text-center text-xs font-bold text-slate-400">No items added yet. Select items above and click "+ Add Item".</div>`;
                 return;
             }
-            list.innerHTML = teacherPortalCart.map((c, idx) => `
+            list.innerHTML = safeHTML.join(teacherPortalCart.map((c, idx) => safeHTML`
                 <div class="flex items-center justify-between p-2.5 rounded-xl bg-blue-50/70 border border-blue-200 text-xs">
                     <div>
                         <span class="font-extrabold text-ris-navy">${c.nameEn}</span>
@@ -2334,7 +2148,7 @@
                     </div>
                     <button type="button" onclick="removeTeacherPortalItem(${idx})" class="text-ris-red font-extrabold px-2">✕</button>
                 </div>
-            `).join('');
+            `));
         }
 
         function renderTeacherOwnRequests() {
@@ -2342,16 +2156,16 @@
             if (!box || !authenticatedTeacherName) return;
             const mine = (state.requests || []).filter(r => r.teacherName === authenticatedTeacherName);
             if (!mine.length) {
-                box.innerHTML = `<div class="p-3 rounded-xl bg-ris-bg text-center text-xs font-bold text-slate-400">No requisitions submitted yet under ${authenticatedTeacherName}.</div>`;
+                box.innerHTML = safeHTML`<div class="p-3 rounded-xl bg-ris-bg text-center text-xs font-bold text-slate-400">No requisitions submitted yet under ${authenticatedTeacherName}.</div>`;
                 return;
             }
-            box.innerHTML = mine.slice(0, 8).map(r => {
+            box.innerHTML = safeHTML.join(mine.slice(0, 8).map(r => {
                 const badge = r.status === 'approved'
-                    ? `<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black">✅ Approved by Lab</span>`
+                    ? safeHTML`<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black">✅ Approved by Lab</span>`
                     : r.status === 'rejected'
-                        ? `<span class="px-2 py-0.5 rounded-full bg-red-100 text-ris-red text-[10px] font-black">✕ Declined</span>`
-                        : `<span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 text-[10px] font-black">⏳ Pending Setup</span>`;
-                return `
+                        ? safeHTML`<span class="px-2 py-0.5 rounded-full bg-red-100 text-ris-red text-[10px] font-black">✕ Declined</span>`
+                        : safeHTML`<span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 text-[10px] font-black">⏳ Pending Setup</span>`;
+                return safeHTML`
                     <div class="p-3 rounded-2xl bg-ris-bg border border-slate-200 flex items-center justify-between gap-2 text-xs">
                         <div>
                             <div class="font-black text-ris-navy">${r.experiment}</div>
@@ -2360,10 +2174,10 @@
                         ${badge}
                     </div>
                 `;
-            }).join('');
+            }));
         }
 
-        function submitTeacherRequisition(e) {
+        async function submitTeacherRequisition(e) {
             e.preventDefault();
             if (!authenticatedTeacherName) {
                 showToast('Please verify your teacher account first', 'error');
@@ -2395,10 +2209,11 @@
                 updatedAt: Date.now()
             };
 
-            state.requests.unshift(req);
-            addLogEntry(req.experiment, `${req.items.length} items`, `New Requisition by ${req.teacherName} (${req.grade})`);
-            persistState();
-
+            const signature = JSON.stringify(req, (key,value) => ['id','submittedAt','updatedAt'].includes(key) ? undefined : value);
+            if (!window.__pendingRegentRequest || window.__pendingRegentRequest.signature !== signature) window.__pendingRegentRequest = {signature, commandId:crypto.randomUUID(), id:req.id};
+            req.id = window.__pendingRegentRequest.id;
+            await secureClient.submitRequest(req, window.__pendingRegentRequest.commandId);
+            window.__pendingRegentRequest = null;
             document.getElementById('teacher-portal-form').classList.add('hidden');
             document.getElementById('teacher-submit-success').classList.remove('hidden');
             renderTeacherOwnRequests();
@@ -2411,7 +2226,7 @@
             teacherPortalCart = [];
             renderTeacherPortalCart();
 
-            const todayStr = new Date().toISOString().split('T')[0];
+            const todayStr = formatLocalDate(new Date());
             const dateEl = document.getElementById('tp-date');
             if (dateEl) dateEl.value = todayStr;
             const retDateEl = document.getElementById('tp-return-date');
@@ -2543,9 +2358,9 @@
                 ];
 
                 if (!combined.length) {
-                    todaySessionsEl.innerHTML = `<div class="p-4 rounded-2xl bg-ris-bg text-center text-xs font-bold text-slate-400">No laboratory practicals or bookings scheduled for today (${todayDayName}).</div>`;
+                    todaySessionsEl.innerHTML = safeHTML`<div class="p-4 rounded-2xl bg-ris-bg text-center text-xs font-bold text-slate-400">No laboratory practicals or bookings scheduled for today (${todayDayName}).</div>`;
                 } else {
-                    todaySessionsEl.innerHTML = combined.map(item => `
+                    todaySessionsEl.innerHTML = safeHTML.join(combined.map(item => safeHTML`
                         <div class="p-3 rounded-2xl bg-ris-bg border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
                             <div>
                                 <div class="flex flex-wrap items-center gap-1.5">
@@ -2556,7 +2371,7 @@
                                 <div class="font-bold text-slate-700 mt-1">👩‍🏫 ${item.teacher} • ${item.title}</div>
                             </div>
                         </div>
-                    `).join('');
+                    `));
                 }
             }
 
@@ -2566,10 +2381,10 @@
             if (catBarsEl) {
                 const cats = state.settings.categories || [];
                 const totalSkus = Math.max(1, state.inventory.length);
-                catBarsEl.innerHTML = cats.map(cat => {
+                catBarsEl.innerHTML = safeHTML.join(cats.map(cat => {
                     const count = state.inventory.filter(i => i.category === cat).length;
                     const pct = Math.round((count / totalSkus) * 100);
-                    return `
+                    return safeHTML`
                         <div class="space-y-1">
                             <div class="flex items-center justify-between text-[11px] font-extrabold">
                                 <span class="text-slate-700">${cat}</span>
@@ -2580,13 +2395,13 @@
                             </div>
                         </div>
                     `;
-                }).join('');
+                }));
             }
 
             const recentLogsEl = document.getElementById('dash-recent-logs');
             if (recentLogsEl) {
                 const topLogs = (state.logs || []).slice(0, 6);
-                recentLogsEl.innerHTML = topLogs.map(l => `
+                recentLogsEl.innerHTML = safeHTML.join(topLogs.map(l => safeHTML`
                     <div class="p-2.5 rounded-2xl bg-ris-bg border border-slate-200 flex items-center justify-between gap-2 text-xs">
                         <div class="min-w-0">
                             <div class="font-black text-ris-navy truncate">${l.item}</div>
@@ -2594,7 +2409,7 @@
                         </div>
                         <span class="px-2 py-0.5 rounded-lg bg-white border border-slate-200 font-black text-ris-navy text-[10px] shrink-0">${l.delta}</span>
                     </div>
-                `).join('');
+                `));
             }
 
             const alerts = [
@@ -2618,13 +2433,13 @@
             document.getElementById('urgent-alerts-count').textContent = alerts.length;
             const feed = document.getElementById('urgent-alerts-list');
             if (!alerts.length) {
-                feed.innerHTML = `<div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs font-extrabold text-emerald-800 text-center">✅ All inventory levels, reagents, and equipment loans are compliant.</div>`;
+                feed.innerHTML = safeHTML`<div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs font-extrabold text-emerald-800 text-center">✅ All inventory levels, reagents, and equipment loans are compliant.</div>`;
             } else {
-                feed.innerHTML = alerts.map(a => `
+                feed.innerHTML = safeHTML.join(alerts.map(a => safeHTML`
                     <div class="p-3 rounded-2xl border ${a.color} flex items-center justify-between gap-2 text-xs font-bold">
                         <span><strong>[${a.badge}]</strong> ${a.text}</span>
                     </div>
-                `).join('');
+                `));
             }
         }
 
@@ -2645,42 +2460,42 @@
             );
             box.classList.remove('hidden');
             if (!matches.length) {
-                box.innerHTML = `<div class="p-3 rounded-xl bg-slate-50 text-xs font-bold text-slate-400">No matching items found.</div>`;
+                box.innerHTML = safeHTML`<div class="p-3 rounded-xl bg-slate-50 text-xs font-bold text-slate-400">No matching items found.</div>`;
                 return;
             }
-            box.innerHTML = matches.map(i => `
+            box.innerHTML = safeHTML.join(matches.map(i => safeHTML`
                 <div class="p-3 rounded-xl bg-ris-bg border border-slate-200 flex items-center justify-between gap-2 text-xs">
                     <div class="min-w-0">
                         <span class="font-black text-ris-navy">${i.nameEn}</span>
-                        ${i.nameAr ? `<span class="font-ar text-slate-500 ml-2">${i.nameAr}</span>` : ''}
+                        ${i.nameAr ? safeHTML`<span class="font-ar text-slate-500 ml-2">${i.nameAr}</span>` : ''}
                         <div class="text-[11px] font-bold text-slate-500 mt-0.5">Code: ${i.code} • Location: ${i.cabinetCode} (${i.shelf})</div>
                     </div>
                     <span class="px-2.5 py-1 rounded-full bg-white border border-slate-300 font-black text-ris-navy shrink-0">${i.qty} ${i.unit.split('/')[0]}</span>
                 </div>
-            `).join('');
+            `));
         }
 
         function renderRequestsList() {
             const container = document.getElementById('requests-list-container');
             if (!container) return;
             if (!state.requests.length) {
-                container.innerHTML = `<div class="bg-white p-8 rounded-3xl border border-ris-border text-center text-xs font-bold text-slate-400">No teacher requisitions submitted yet. Share the Teacher Portal QR Code to start receiving requests.</div>`;
+                container.innerHTML = safeHTML`<div class="bg-white p-8 rounded-3xl border border-ris-border text-center text-xs font-bold text-slate-400">No teacher requisitions submitted yet. Share the Teacher Portal QR Code to start receiving requests.</div>`;
                 return;
             }
             const sorted = [...state.requests].sort((a, b) => Number(b.updatedAt || 0) - Number(a.updatedAt || 0));
-            container.innerHTML = sorted.map(req => {
+            container.innerHTML = safeHTML.join(sorted.map(req => {
                 const isPending = req.status === 'pending';
                 const statusBadge = req.status === 'approved'
-                    ? `<span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black">✅ Approved</span>`
+                    ? safeHTML`<span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black">✅ Approved</span>`
                     : req.status === 'rejected'
-                        ? `<span class="px-2.5 py-0.5 rounded-full bg-red-100 text-ris-red text-[10px] font-black">✕ Declined</span>`
-                        : `<span class="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 text-[10px] font-black">⏳ Pending Setup</span>`;
+                        ? safeHTML`<span class="px-2.5 py-0.5 rounded-full bg-red-100 text-ris-red text-[10px] font-black">✕ Declined</span>`
+                        : safeHTML`<span class="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 text-[10px] font-black">⏳ Pending Setup</span>`;
 
-                const itemsHTML = (req.items || []).map(it =>
-                    `<span class="inline-block px-2.5 py-1 rounded-lg bg-slate-100 text-ris-navy text-[11px] font-extrabold mr-1.5 mb-1">${it.nameEn} (${it.qty} ${it.unit})</span>`
-                ).join('');
+                const itemsHTML = safeHTML.join((req.items || []).map(it =>
+                    safeHTML`<span class="inline-block px-2.5 py-1 rounded-lg bg-slate-100 text-ris-navy text-[11px] font-extrabold mr-1.5 mb-1">${it.nameEn} (${it.qty} ${it.unit})</span>`
+                ));
 
-                return `
+                return safeHTML`
                     <div class="bg-white p-5 rounded-3xl border border-ris-border shadow-xs space-y-3">
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                             <div>
@@ -2693,10 +2508,10 @@
                                 </div>
                                 <div class="text-xs font-bold text-slate-500 mt-1">
                                     👩‍🏫 ${req.teacherName} • ${req.subject} (${req.grade}) • ${req.groups} Groups • 📅 ${req.date} (${req.period})
-                                    ${req.usageMode === 'outside-lab' ? ` • <span class="text-ris-red">Return Due: ${req.returnDate} (${req.returnPeriod})</span>` : ''}
+                                    ${req.usageMode === 'outside-lab' ? safeHTML` • <span class="text-ris-red">Return Due: ${req.returnDate} (${req.returnPeriod})</span>` : ''}
                                 </div>
                             </div>
-                            ${isPending ? `
+                            ${isPending ? safeHTML`
                                 <div class="flex items-center gap-2 shrink-0">
                                     <button type="button" onclick="approveRequisition('${req.id}')" class="flex-1 sm:flex-none px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold">
                                         ✅ Approve & Fulfill
@@ -2708,59 +2523,18 @@
                             ` : ''}
                         </div>
                         <div>${itemsHTML}</div>
-                        ${req.notes ? `<div class="p-2.5 rounded-xl bg-amber-50/70 border border-amber-200 text-xs font-semibold text-amber-950">📝 ${req.notes}</div>` : ''}
+                        ${req.notes ? safeHTML`<div class="p-2.5 rounded-xl bg-amber-50/70 border border-amber-200 text-xs font-semibold text-amber-950">📝 ${req.notes}</div>` : ''}
                     </div>
                 `;
-            }).join('');
+            }));
         }
 
-        function approveRequisition(reqId) {
-            const req = state.requests.find(r => r.id === reqId);
-            if (!req || req.status !== 'pending') return;
-            req.status = 'approved';
-            req.updatedAt = Date.now();
-
-            (req.items || []).forEach(reqItem => {
-                const invItem = state.inventory.find(i => i.id === reqItem.itemId);
-                if (!invItem) return;
-                const qtyNum = Number(reqItem.qty) || 1;
-                invItem.qty = Math.max(0, Number(invItem.qty) - qtyNum);
-                invItem.updatedAt = Date.now();
-
-                if (req.usageMode === 'outside-lab') {
-                    state.loans.unshift({
-                        id: 'loan-' + Date.now() + '-' + Math.random().toString(36).slice(2, 5),
-                        teacherName: req.teacherName,
-                        classRoom: req.grade,
-                        itemId: invItem.id,
-                        itemName: invItem.nameEn,
-                        qty: qtyNum,
-                        unit: invItem.unit,
-                        dueDate: req.returnDate || req.date,
-                        duePeriod: req.returnPeriod || 'End of Day',
-                        issuedAt: new Date().toLocaleString(),
-                        status: 'active',
-                        updatedAt: Date.now()
-                    });
-                    addLogEntry(invItem.nameEn, `-${qtyNum} ${invItem.unit}`, `Classroom Loan to ${req.teacherName} (${req.grade}) — Due ${req.returnDate || req.date}`);
-                } else {
-                    addLogEntry(invItem.nameEn, `-${qtyNum} ${invItem.unit}`, `Lab Session: ${req.experiment} (${req.teacherName})`);
-                }
-            });
-
-            persistState();
-            refreshAllViews();
-            showToast('Requisition approved & synced to Teacher Portal');
+        async function approveRequisition(reqId) {
+            await secureClient.decideRequest(reqId, 'approved'); showToast('Requisition approved and stock updated');
         }
 
-        function rejectRequisition(reqId) {
-            const req = state.requests.find(r => r.id === reqId);
-            if (!req) return;
-            req.status = 'rejected';
-            req.updatedAt = Date.now();
-            persistState();
-            refreshAllViews();
-            showToast('Requisition declined');
+        async function rejectRequisition(reqId) {
+            await secureClient.decideRequest(reqId, 'rejected'); showToast('Requisition declined');
         }
 
         function refreshAllViews() {
@@ -2785,18 +2559,26 @@
         }
 
         // ================= WEEKLY LAB OCCUPANCY SCHEDULE =================
+        // Calendar inputs use local dates, never UTC timestamps.
+        function formatLocalDate(date = new Date()) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
         function shiftScheduleWeek(deltaDays) {
             const inp = document.getElementById('schedule-week-date');
             if (!inp) return;
             const base = inp.value ? new Date(inp.value + 'T00:00:00') : new Date();
             base.setDate(base.getDate() + deltaDays);
-            inp.value = base.toISOString().split('T')[0];
+            inp.value = formatLocalDate(base);
             renderWeeklySchedule();
         }
 
         function jumpScheduleToday() {
             const inp = document.getElementById('schedule-week-date');
-            if (inp) inp.value = new Date().toISOString().split('T')[0];
+            if (inp) inp.value = formatLocalDate(new Date());
             renderWeeklySchedule();
         }
 
@@ -2809,7 +2591,7 @@
             return days.map((name, idx) => {
                 const cur = new Date(sunday);
                 cur.setDate(sunday.getDate() + idx);
-                const iso = cur.toISOString().split('T')[0];
+                const iso = formatLocalDate(cur);
                 const label = cur.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
                 return { name, iso, label };
             });
@@ -2825,25 +2607,25 @@
             if (!tbody || !theadRow) return;
 
             if (dateInp && !dateInp.value) {
-                dateInp.value = new Date().toISOString().split('T')[0];
+                dateInp.value = formatLocalDate(new Date());
             }
             const weekDays = getWeekDatesMap(dateInp?.value);
-            const todayIso = new Date().toISOString().split('T')[0];
+            const todayIso = formatLocalDate(new Date());
 
-            theadRow.innerHTML = `<th class="p-3.5 font-extrabold w-44">Period / Time</th>` + weekDays.map(wd => `
+            theadRow.innerHTML = safeHTML`<th class="p-3.5 font-extrabold w-44">Period / Time</th>` + safeHTML.join(weekDays.map(wd => safeHTML`
                 <th class="p-3.5 font-extrabold ${wd.iso === todayIso ? 'bg-ris-red text-white' : ''}">
                     <div>${wd.name}</div>
                     <div class="text-[10px] font-semibold opacity-80">${wd.label} ${wd.iso === todayIso ? '• TODAY' : ''}</div>
                 </th>
-            `).join('');
+            `));
 
             const periods = state.settings.periods || [];
             const labsCount = labFilter === 'ALL' ? Math.max(1, (state.settings.labs || []).length) : 1;
             const totalCapacity = periods.length * weekDays.length * labsCount;
             let bookedCount = 0;
 
-            tbody.innerHTML = periods.map(period => {
-                const cells = weekDays.map(wd => {
+            tbody.innerHTML = safeHTML.join(periods.map(period => {
+                const cells = safeHTML.join(weekDays.map(wd => {
                     const manualBookings = (state.scheduleSlots || []).filter(s =>
                         (labFilter === 'ALL' || s.lab === labFilter) &&
                         s.day === wd.name &&
@@ -2862,23 +2644,23 @@
 
                     bookedCount += manualBookings.length + reqBookings.length;
 
-                    const manualHTML = manualBookings.map(b => `
+                    const manualHTML = safeHTML.join(manualBookings.map(b => safeHTML`
                         <div class="p-2 rounded-xl bg-blue-50 border border-blue-200 space-y-1 mb-1.5">
                             <div class="flex items-center justify-between gap-1">
                                 <span class="px-1.5 py-0.5 rounded bg-ris-navy text-white text-[9px] font-black">${b.lab}</span>
                                 <div class="flex items-center gap-1 no-print">
                                     <button type="button" onclick="openScheduleSlotModal('${wd.name}', '${period}', '${wd.iso}', '${b.id}')" class="text-[10px] font-black text-ris-navy hover:underline" title="Edit">✎</button>
-                                    ${b.recurrence === 'weekly' ? `<button type="button" onclick="skipRecurringSlotDate('${b.id}', '${wd.iso}')" class="text-[10px] font-black text-amber-700 hover:underline" title="Skip this week only">Skip</button>` : ''}
+                                    ${b.recurrence === 'weekly' ? safeHTML`<button type="button" onclick="skipRecurringSlotDate('${b.id}', '${wd.iso}')" class="text-[10px] font-black text-amber-700 hover:underline" title="Skip this week only">Skip</button>` : ''}
                                     <button type="button" onclick="deleteScheduleSlot('${b.id}')" class="text-[10px] font-black text-ris-red hover:underline" title="Delete">✕</button>
                                 </div>
                             </div>
                             <div class="font-black text-ris-navy text-[11px] leading-tight">${b.teacherName}</div>
                             <div class="text-[10px] font-bold text-slate-600">${b.subject} • ${b.grade}</div>
-                            ${b.topic ? `<div class="text-[10px] font-semibold text-blue-800 italic">${b.topic}</div>` : ''}
+                            ${b.topic ? safeHTML`<div class="text-[10px] font-semibold text-blue-800 italic">${b.topic}</div>` : ''}
                         </div>
-                    `).join('');
+                    `));
 
-                    const reqHTML = reqBookings.map(r => `
+                    const reqHTML = safeHTML.join(reqBookings.map(r => safeHTML`
                         <div class="p-2 rounded-xl bg-emerald-50 border border-emerald-200 space-y-0.5 mb-1.5">
                             <div class="flex items-center justify-between">
                                 <span class="px-1.5 py-0.5 rounded bg-emerald-700 text-white text-[9px] font-black">${r.lab} • QR</span>
@@ -2887,31 +2669,31 @@
                             <div class="font-black text-emerald-950 text-[11px] leading-tight">${r.teacherName}</div>
                             <div class="text-[10px] font-bold text-emerald-800">${r.experiment} (${r.grade})</div>
                         </div>
-                    `).join('');
+                    `));
 
                     const canAddMore = labFilter === 'ALL'
                         ? (manualBookings.length + reqBookings.length) < labsCount
                         : (manualBookings.length + reqBookings.length) === 0;
 
-                    return `
+                    return safeHTML`
                         <td class="p-2 align-top border-l border-slate-100 ${wd.iso === todayIso ? 'bg-red-50/20' : ''}">
                             ${manualHTML}
                             ${reqHTML}
-                            ${canAddMore ? `
+                            ${canAddMore ? safeHTML`
                                 <button type="button" onclick="openScheduleSlotModal('${wd.name}', '${period}', '${wd.iso}', '')" class="no-print w-full py-1.5 px-2 rounded-xl border border-dashed border-slate-300 hover:border-ris-navy hover:bg-blue-50/50 text-[10px] font-extrabold text-slate-400 hover:text-ris-navy transition">
                                     + Book Slot
                                 </button>
                             ` : ''}
                         </td>
                     `;
-                }).join('');
+                }));
 
-                return `<tr><td class="p-3 font-extrabold text-ris-navy bg-slate-50/70 align-top">${period}</td>${cells}</tr>`;
-            }).join('');
+                return safeHTML`<tr><td class="p-3 font-extrabold text-ris-navy bg-slate-50/70 align-top">${period}</td>${cells}</tr>`;
+            }));
 
             // Mobile Day-by-Day Cards (< md)
             if (mobileCards) {
-                mobileCards.innerHTML = weekDays.map(wd => {
+                mobileCards.innerHTML = safeHTML.join(weekDays.map(wd => {
                     const dayItems = [];
                     periods.forEach(period => {
                         (state.scheduleSlots || []).filter(s =>
@@ -2931,19 +2713,19 @@
                         ).forEach(r => dayItems.push({ type: 'req', period, data: r }));
                     });
 
-                    return `
+                    return safeHTML`
                         <div class="bg-white rounded-3xl border ${wd.iso === todayIso ? 'border-ris-red' : 'border-ris-border'} p-4 space-y-2.5 shadow-xs">
                             <div class="flex items-center justify-between">
                                 <div>
                                     <span class="text-sm font-black text-ris-navy">${wd.name}</span>
                                     <span class="text-xs font-bold text-slate-400 ml-1.5">${wd.label}</span>
-                                    ${wd.iso === todayIso ? '<span class="ml-1.5 px-2 py-0.5 rounded-full bg-ris-red text-white text-[9px] font-black">TODAY</span>' : ''}
+                                    ${wd.iso === todayIso ? safeHTML.raw('<span class="ml-1.5 px-2 py-0.5 rounded-full bg-ris-red text-white text-[9px] font-black">TODAY</span>') : ''}
                                 </div>
                                 <button type="button" onclick="openScheduleSlotModal('${wd.name}', '${periods[0] || ''}', '${wd.iso}', '')" class="px-3 py-1 rounded-xl bg-ris-navy text-white text-[11px] font-extrabold">
                                     + Book
                                 </button>
                             </div>
-                            ${dayItems.length ? dayItems.map(it => it.type === 'slot' ? `
+                            ${dayItems.length ? safeHTML.join(dayItems.map(it => it.type === 'slot' ? safeHTML`
                                 <div class="p-3 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-between gap-2 text-xs">
                                     <div>
                                         <div class="font-black text-ris-navy">${it.period} • ${it.data.lab}</div>
@@ -2951,21 +2733,21 @@
                                     </div>
                                     <button type="button" onclick="openScheduleSlotModal('${wd.name}', '${it.period}', '${wd.iso}', '${it.data.id}')" class="px-2.5 py-1.5 rounded-lg bg-white text-ris-navy font-black">✎</button>
                                 </div>
-                            ` : `
+                            ` : safeHTML`
                                 <div class="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs">
                                     <div class="font-black text-emerald-900">${it.period} • ${it.data.lab} (QR)</div>
                                     <div class="font-bold text-emerald-800">👩‍🏫 ${it.data.teacherName} — ${it.data.experiment}</div>
                                 </div>
-                            `).join('') : `<div class="text-xs font-bold text-slate-400 py-1">No sessions booked for ${wd.name}.</div>`}
+                            `)) : safeHTML`<div class="text-xs font-bold text-slate-400 py-1">No sessions booked for ${wd.name}.</div>`}
                         </div>
                     `;
-                }).join('');
+                }));
             }
 
             if (statsBar) {
                 const openCount = Math.max(0, totalCapacity - bookedCount);
                 const pct = totalCapacity ? Math.round((bookedCount / totalCapacity) * 100) : 0;
-                statsBar.innerHTML = `
+                statsBar.innerHTML = safeHTML`
                     <div class="p-3 rounded-2xl bg-ris-bg"><div class="text-[10px] font-bold text-slate-500">Booked Sessions</div><div class="text-lg font-black text-ris-navy">${bookedCount}</div></div>
                     <div class="p-3 rounded-2xl bg-ris-bg"><div class="text-[10px] font-bold text-slate-500">Available Slots</div><div class="text-lg font-black text-emerald-700">${openCount}</div></div>
                     <div class="p-3 rounded-2xl bg-ris-bg"><div class="text-[10px] font-bold text-slate-500">Utilization Rate</div><div class="text-lg font-black text-blue-700">${pct}%</div></div>
@@ -3005,7 +2787,7 @@
             openModal('schedule-slot-modal');
         }
 
-        function saveScheduleSlot(e) {
+        async function saveScheduleSlot(e) {
             e.preventDefault();
             const editId = document.getElementById('slot-edit-id').value;
             const day = document.getElementById('slot-day').value;
@@ -3034,7 +2816,7 @@
             if (editId) {
                 const slot = state.scheduleSlots.find(s => s.id === editId);
                 if (slot) {
-                    Object.assign(slot, { lab, teacherName, subject, grade, topic, recurrence, weekDate: targetDate, updatedAt: Date.now() });
+                    Object.assign(slot, { lab, day, period, teacherName, subject, grade, topic, recurrence, weekDate: targetDate, updatedAt: Date.now() });
                 }
             } else {
                 state.scheduleSlots.push({
@@ -3052,26 +2834,26 @@
                     updatedAt: Date.now()
                 });
             }
-            persistState();
+            await persistState();
             closeModal('schedule-slot-modal');
             renderWeeklySchedule();
             showToast('Lab schedule updated & synced');
         }
 
-        function skipRecurringSlotDate(slotId, dateIso) {
+        async function skipRecurringSlotDate(slotId, dateIso) {
             const slot = state.scheduleSlots.find(s => s.id === slotId);
             if (!slot) return;
             slot.skippedDates = slot.skippedDates || [];
             if (!slot.skippedDates.includes(dateIso)) slot.skippedDates.push(dateIso);
             slot.updatedAt = Date.now();
-            persistState();
+            await persistState();
             renderWeeklySchedule();
             showToast(`Skipped ${dateIso} for this recurring slot`);
         }
 
-        function deleteScheduleSlot(slotId) {
+        async function deleteScheduleSlot(slotId) {
             state.scheduleSlots = state.scheduleSlots.filter(s => s.id !== slotId);
-            persistState();
+            await persistState();
             renderWeeklySchedule();
             showToast('Booking removed');
         }
@@ -3086,12 +2868,12 @@
         // ================= INVENTORY, LOSS REGISTER & TEACHER LOANS =================
         function getHazardBadgeHTML(hazard) {
             const h = hazard || '🟢 Safe / Standard';
-            if (h.includes('Corrosive')) return `<span class="px-2 py-0.5 rounded bg-red-100 text-ris-red text-[10px] font-black">${h}</span>`;
-            if (h.includes('Flammable')) return `<span class="px-2 py-0.5 rounded bg-orange-100 text-orange-800 text-[10px] font-black">${h}</span>`;
-            if (h.includes('Toxic') || h.includes('Biohazard') || h.includes('Radioactive')) return `<span class="px-2 py-0.5 rounded bg-purple-100 text-purple-900 text-[10px] font-black">${h}</span>`;
-            if (h.includes('Fragile')) return `<span class="px-2 py-0.5 rounded bg-blue-100 text-ris-navy text-[10px] font-black">${h}</span>`;
-            if (h.includes('Safe') || h.includes('Standard')) return `<span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 text-[10px] font-black">${h}</span>`;
-            return `<span class="px-2 py-0.5 rounded bg-slate-100 text-slate-800 text-[10px] font-black">${h}</span>`;
+            if (h.includes('Corrosive')) return safeHTML`<span class="px-2 py-0.5 rounded bg-red-100 text-ris-red text-[10px] font-black">${h}</span>`;
+            if (h.includes('Flammable')) return safeHTML`<span class="px-2 py-0.5 rounded bg-orange-100 text-orange-800 text-[10px] font-black">${h}</span>`;
+            if (h.includes('Toxic') || h.includes('Biohazard') || h.includes('Radioactive')) return safeHTML`<span class="px-2 py-0.5 rounded bg-purple-100 text-purple-900 text-[10px] font-black">${h}</span>`;
+            if (h.includes('Fragile')) return safeHTML`<span class="px-2 py-0.5 rounded bg-blue-100 text-ris-navy text-[10px] font-black">${h}</span>`;
+            if (h.includes('Safe') || h.includes('Standard')) return safeHTML`<span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 text-[10px] font-black">${h}</span>`;
+            return safeHTML`<span class="px-2 py-0.5 rounded bg-slate-100 text-slate-800 text-[10px] font-black">${h}</span>`;
         }
 
         function renderInventoryTable() {
@@ -3105,7 +2887,7 @@
             const cab = document.getElementById('inv-filter-cab')?.value || 'ALL';
             const statusFilter = document.getElementById('inv-filter-status')?.value || 'ALL';
 
-            const today = new Date().toISOString().split('T')[0];
+            const today = formatLocalDate(new Date());
             const soonDate = new Date(Date.now() + 60 * 86400000).toISOString().split('T')[0];
 
             const lowCount = state.inventory.filter(i => Number(i.qty) <= Number(i.minQty)).length;
@@ -3114,7 +2896,7 @@
             const totalLost = (state.lossRecords || []).reduce((s, r) => s + (Number(r.qty) || 0), 0);
 
             if (summaryStrip) {
-                summaryStrip.innerHTML = `
+                summaryStrip.innerHTML = safeHTML`
                     <div class="bg-white p-3.5 rounded-2xl border border-ris-border"><div class="text-[10px] font-bold text-slate-500">Registered SKUs</div><div class="text-xl font-black text-ris-navy">${state.inventory.length} <span class="text-xs font-bold text-slate-400">(${totalUnits} units)</span></div></div>
                     <div class="bg-white p-3.5 rounded-2xl border border-ris-border"><div class="text-[10px] font-bold text-slate-500">Low Stock Items</div><div class="text-xl font-black text-amber-600">${lowCount}</div></div>
                     <div class="bg-white p-3.5 rounded-2xl border border-ris-border"><div class="text-[10px] font-bold text-slate-500">Expired / Due ≤60d</div><div class="text-xl font-black text-ris-red">${expCount}</div></div>
@@ -3144,16 +2926,16 @@
             });
 
             if (!filtered.length) {
-                tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-xs font-bold text-slate-400">No inventory items match your filter criteria.</td></tr>`;
-                if (mobileCards) mobileCards.innerHTML = `<div class="bg-white p-6 rounded-3xl border border-ris-border text-center text-xs font-bold text-slate-400">No inventory items match your filter criteria.</div>`;
+                tbody.innerHTML = safeHTML`<tr><td colspan="7" class="p-6 text-center text-xs font-bold text-slate-400">No inventory items match your filter criteria.</td></tr>`;
+                if (mobileCards) mobileCards.innerHTML = safeHTML`<div class="bg-white p-6 rounded-3xl border border-ris-border text-center text-xs font-bold text-slate-400">No inventory items match your filter criteria.</div>`;
                 renderLossRegister();
                 return;
             }
 
             if (mobileCards) {
-                mobileCards.innerHTML = filtered.map(i => {
+                mobileCards.innerHTML = safeHTML.join(filtered.map(i => {
                     const isLow = Number(i.qty) <= Number(i.minQty);
-                    return `
+                    return safeHTML`
                         <div class="bg-white p-4 rounded-3xl border border-ris-border shadow-xs space-y-2.5">
                             <div class="flex items-start justify-between gap-2">
                                 <div>
@@ -3162,7 +2944,7 @@
                                         ${getHazardBadgeHTML(i.hazard)}
                                     </div>
                                     <div class="text-sm font-black text-slate-800 mt-1">${i.nameEn}</div>
-                                    ${i.nameAr ? `<div class="font-ar text-xs font-bold text-slate-500">${i.nameAr}</div>` : ''}
+                                    ${i.nameAr ? safeHTML`<div class="font-ar text-xs font-bold text-slate-500">${i.nameAr}</div>` : ''}
                                 </div>
                                 <div class="inline-flex items-center gap-1 bg-ris-bg border border-slate-200 rounded-xl p-1 shrink-0">
                                     <button type="button" onclick="quickAdjustInventoryStock('${i.id}', -1)" class="w-7 h-7 rounded-lg bg-white text-ris-red font-black">−</button>
@@ -3180,14 +2962,14 @@
                             </div>
                         </div>
                     `;
-                }).join('');
+                }));
             }
 
-            tbody.innerHTML = filtered.map(i => {
+            tbody.innerHTML = safeHTML.join(filtered.map(i => {
                 const isLow = Number(i.qty) <= Number(i.minQty);
                 const isExpired = i.expiry && i.expiry < today;
                 const isSoon = !isExpired && i.expiry && i.expiry <= soonDate;
-                return `
+                return safeHTML`
                     <tr class="hover:bg-slate-50">
                         <td class="p-3.5">
                             <div class="font-black text-ris-navy">${i.code}</div>
@@ -3195,8 +2977,8 @@
                         </td>
                         <td class="p-3.5">
                             <div class="font-extrabold text-slate-800">${i.nameEn}</div>
-                            ${i.nameAr ? `<div class="font-ar text-[11px] font-bold text-slate-500">${i.nameAr}</div>` : ''}
-                            ${i.spec ? `<div class="text-[10px] font-bold text-blue-700 mt-0.5">${i.spec}</div>` : ''}
+                            ${i.nameAr ? safeHTML`<div class="font-ar text-[11px] font-bold text-slate-500">${i.nameAr}</div>` : ''}
+                            ${i.spec ? safeHTML`<div class="text-[10px] font-bold text-blue-700 mt-0.5">${i.spec}</div>` : ''}
                         </td>
                         <td class="p-3.5 font-bold text-slate-600">${i.category}</td>
                         <td class="p-3.5 font-extrabold text-ris-navy">${i.cabinetCode} <span class="text-slate-400 font-semibold">(${i.shelf})</span></td>
@@ -3211,7 +2993,7 @@
                         </td>
                         <td class="p-3.5 font-bold ${isExpired ? 'text-ris-red' : isSoon ? 'text-amber-600' : 'text-slate-500'}">
                             ${i.expiry || '—'}
-                            ${isExpired ? '<div class="text-[9px] font-black uppercase">EXPIRED</div>' : isSoon ? '<div class="text-[9px] font-black uppercase">EXPIRING SOON</div>' : ''}
+                            ${isExpired ? safeHTML.raw('<div class="text-[9px] font-black uppercase">EXPIRED</div>') : isSoon ? safeHTML.raw('<div class="text-[9px] font-black uppercase">EXPIRING SOON</div>') : ''}
                         </td>
                         <td class="p-3.5 text-right space-x-1 whitespace-nowrap">
                             <button type="button" onclick="openLossModal('${i.id}')" class="px-2.5 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-900 font-extrabold" title="Record Loss or Breakage">⚠️ Loss</button>
@@ -3220,18 +3002,18 @@
                         </td>
                     </tr>
                 `;
-            }).join('');
+            }));
 
             renderLossRegister();
         }
 
-        function quickAdjustInventoryStock(id, delta) {
+        async function quickAdjustInventoryStock(id, delta) {
             const it = state.inventory.find(i => i.id === id);
             if (!it) return;
             it.qty = Math.max(0, Number(it.qty) + delta);
             it.updatedAt = Date.now();
             addLogEntry(it.nameEn, delta > 0 ? `+${delta}` : `${delta}`, 'Quick inventory adjustment');
-            persistState();
+            await persistState();
             refreshAllViews();
         }
 
@@ -3271,7 +3053,7 @@
             openModal('inventory-modal');
         }
 
-        function saveInventoryItem(e) {
+        async function saveInventoryItem(e) {
             e.preventDefault();
             const editId = document.getElementById('inv-edit-id').value;
             const payload = {
@@ -3297,15 +3079,15 @@
                 state.inventory.unshift({ id: 'inv-' + Date.now(), ...payload });
                 addLogEntry(payload.nameEn, `+${payload.qty} ${payload.unit}`, 'Added new inventory item');
             }
-            persistState();
+            await persistState();
             closeModal('inventory-modal');
             refreshAllViews();
             showToast('Inventory record saved & synced');
         }
 
-        function deleteInventoryItem(id) {
+        async function deleteInventoryItem(id) {
             state.inventory = state.inventory.filter(i => i.id !== id);
-            persistState();
+            await persistState();
             refreshAllViews();
             showToast('Inventory item deleted');
         }
@@ -3327,55 +3109,12 @@
             openModal('loss-modal');
         }
 
-        function submitLossRecord(e) {
+        async function submitLossRecord(e) {
             e.preventDefault();
-            const itemId = document.getElementById('loss-item-select').value;
-            const qty = Math.max(0.1, parseFloat(document.getElementById('loss-qty').value) || 1);
-            const reason = document.getElementById('loss-reason').value;
-            const person = document.getElementById('loss-person').value.trim();
-            const notes = document.getElementById('loss-notes').value.trim();
-            const linkedLoanId = document.getElementById('loss-linked-loan-id').value;
-
-            const item = state.inventory.find(i => i.id === itemId);
-            if (!item) return;
-
-            if (linkedLoanId) {
-                const loan = state.loans.find(l => l.id === linkedLoanId);
-                if (loan && loan.status === 'active') {
-                    const lostCount = Math.min(Number(loan.qty), qty);
-                    const returnedGood = Math.max(0, Number(loan.qty) - lostCount);
-                    loan.status = 'returned';
-                    loan.updatedAt = Date.now();
-                    item.qty = Number(item.qty) + returnedGood;
-                    item.updatedAt = Date.now();
-                    addLogEntry(item.nameEn, `+${returnedGood} / -${lostCount} lost`, `Partial custody return by ${loan.teacherName} (${lostCount} lost/broken)`);
-                }
-            } else {
-                item.qty = Math.max(0, Number(item.qty) - qty);
-                item.updatedAt = Date.now();
-                addLogEntry(item.nameEn, `-${qty} ${item.unit}`, `${reason}${person ? ' — ' + person : ''}`);
-            }
-
-            state.lossRecords = state.lossRecords || [];
-            state.lossRecords.unshift({
-                id: 'loss-' + Date.now(),
-                itemId: item.id,
-                itemCode: item.code,
-                itemName: item.nameEn,
-                qty,
-                unit: item.unit,
-                reason,
-                person: person || 'Lab Technician',
-                notes,
-                date: new Date().toLocaleDateString('en-GB'),
-                time: new Date().toLocaleString(),
-                updatedAt: Date.now()
-            });
-
-            persistState();
-            closeModal('loss-modal');
-            refreshAllViews();
-            showToast('Loss / Breakage recorded and synced');
+            await secureClient.recordLoss({itemId:document.getElementById('loss-item-select').value, qty:Number(document.getElementById('loss-qty').value),
+                date:formatLocalDate(new Date()), reason:document.getElementById('loss-reason').value, person:document.getElementById('loss-person').value.trim(),
+                notes:document.getElementById('loss-notes').value.trim(), linkedLoanId:document.getElementById('loss-linked-loan-id').value});
+            closeModal('loss-modal'); showToast('Loss / Breakage recorded and stock updated');
         }
 
         function renderLossRegister() {
@@ -3383,10 +3122,10 @@
             if (!container) return;
             const records = state.lossRecords || [];
             if (!records.length) {
-                container.innerHTML = `<div class="p-4 rounded-2xl bg-slate-50 border border-dashed border-slate-200 text-center text-xs font-bold text-slate-400">No breakage, lost custody items, or chemical disposals recorded.</div>`;
+                container.innerHTML = safeHTML`<div class="p-4 rounded-2xl bg-slate-50 border border-dashed border-slate-200 text-center text-xs font-bold text-slate-400">No breakage, lost custody items, or chemical disposals recorded.</div>`;
                 return;
             }
-            container.innerHTML = records.slice(0, 5).map(r => `
+            container.innerHTML = safeHTML.join(records.slice(0, 5).map(r => safeHTML`
                 <div class="p-3.5 rounded-2xl bg-red-50/40 border border-red-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
                     <div>
                         <div class="flex flex-wrap items-center gap-2">
@@ -3399,7 +3138,7 @@
                         </div>
                     </div>
                 </div>
-            `).join('');
+            `));
         }
 
         function renderDamagedTab() {
@@ -3412,7 +3151,7 @@
             const glasswareCount = records.filter(r => (r.reason || '').includes('Glassware')).length;
 
             if (stripEl) {
-                stripEl.innerHTML = `
+                stripEl.innerHTML = safeHTML`
                     <div class="bg-white p-4 rounded-2xl border border-ris-border"><div class="text-[11px] font-bold text-slate-500">Total Logged Incidents</div><div class="text-2xl font-black text-ris-red">${records.length}</div></div>
                     <div class="bg-white p-4 rounded-2xl border border-ris-border"><div class="text-[11px] font-bold text-slate-500">Total Damaged / Lost Units</div><div class="text-2xl font-black text-ris-navy">${totalQty}</div></div>
                     <div class="bg-white p-4 rounded-2xl border border-ris-border"><div class="text-[11px] font-bold text-slate-500">Glassware Breakage Cases</div><div class="text-2xl font-black text-amber-600">${glasswareCount}</div></div>
@@ -3433,11 +3172,11 @@
             });
 
             if (!filtered.length) {
-                listEl.innerHTML = `<div class="bg-white p-8 rounded-3xl border border-ris-border text-center text-xs font-bold text-slate-400">No damaged, breakage, or disposal records match your filter.</div>`;
+                listEl.innerHTML = safeHTML`<div class="bg-white p-8 rounded-3xl border border-ris-border text-center text-xs font-bold text-slate-400">No damaged, breakage, or disposal records match your filter.</div>`;
                 return;
             }
 
-            listEl.innerHTML = filtered.map(r => `
+            listEl.innerHTML = safeHTML.join(filtered.map(r => safeHTML`
                 <div class="bg-white p-4 rounded-3xl border border-red-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
                     <div class="space-y-1">
                         <div class="flex flex-wrap items-center gap-2">
@@ -3448,24 +3187,24 @@
                         <div class="text-xs font-bold text-slate-500">
                             👤 Responsible: <span class="text-ris-navy">${r.person}</span> • 📅 ${r.time}
                         </div>
-                        ${r.notes ? `<div class="p-2 rounded-xl bg-ris-bg text-[11px] font-semibold text-slate-600">📝 ${r.notes}</div>` : ''}
+                        ${r.notes ? safeHTML`<div class="p-2 rounded-xl bg-ris-bg text-[11px] font-semibold text-slate-600">📝 ${r.notes}</div>` : ''}
                     </div>
                 </div>
-            `).join('');
+            `));
         }
 
         function renderLoansList() {
             const container = document.getElementById('loans-list-container');
             if (!container) return;
-            const today = new Date().toISOString().split('T')[0];
+            const today = formatLocalDate(new Date());
             if (!state.loans.length) {
-                container.innerHTML = `<div class="bg-white p-8 rounded-3xl border border-ris-border text-center text-xs font-bold text-slate-400">No active or historical equipment custody loans recorded.</div>`;
+                container.innerHTML = safeHTML`<div class="bg-white p-8 rounded-3xl border border-ris-border text-center text-xs font-bold text-slate-400">No active or historical equipment custody loans recorded.</div>`;
                 return;
             }
-            container.innerHTML = state.loans.map(loan => {
+            container.innerHTML = safeHTML.join(state.loans.map(loan => {
                 const isActive = loan.status === 'active';
                 const isOverdue = isActive && loan.dueDate && loan.dueDate < today;
-                return `
+                return safeHTML`
                     <div class="bg-white p-5 rounded-3xl border ${isOverdue ? 'border-ris-red bg-red-50/30' : 'border-ris-border'} shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div>
                             <div class="flex flex-wrap items-center gap-2">
@@ -3478,7 +3217,7 @@
                                 👩‍🏫 ${loan.teacherName} • ${loan.classRoom} • Expected Return: <span class="${isOverdue ? 'text-ris-red font-black' : 'text-ris-navy'}">${loan.dueDate || 'Today'} (${loan.duePeriod})</span>
                             </div>
                         </div>
-                        ${isActive ? `
+                        ${isActive ? safeHTML`
                             <div class="flex flex-wrap items-center gap-2 shrink-0">
                                 <button type="button" onclick="openLossModal('${loan.itemId}', '${loan.id}', '${loan.teacherName} (${loan.classRoom})', 1)" class="px-3 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 text-xs font-extrabold">
                                     ⚠️ Return w/ Loss
@@ -3490,63 +3229,25 @@
                         ` : ''}
                     </div>
                 `;
-            }).join('');
+            }));
         }
 
-        function submitManualLoan(e) {
+        async function submitManualLoan(e) {
             e.preventDefault();
-            const teacherName = document.getElementById('loan-teacher').value;
-            const classRoom = document.getElementById('loan-class').value;
-            const dueDate = document.getElementById('loan-due-date').value || new Date().toISOString().split('T')[0];
-            const duePeriod = document.getElementById('loan-due').value;
-            const itemId = document.getElementById('loan-item-select').value;
-            const qty = Math.max(1, parseInt(document.getElementById('loan-qty').value, 10) || 1);
-            const item = state.inventory.find(i => i.id === itemId);
-            if (!item) return;
-
-            item.qty = Math.max(0, Number(item.qty) - qty);
-            item.updatedAt = Date.now();
-            state.loans.unshift({
-                id: 'loan-' + Date.now(),
-                teacherName,
-                classRoom,
-                itemId: item.id,
-                itemName: item.nameEn,
-                qty,
-                unit: item.unit,
-                dueDate,
-                duePeriod,
-                issuedAt: new Date().toLocaleString(),
-                status: 'active',
-                updatedAt: Date.now()
-            });
-            addLogEntry(item.nameEn, `-${qty} ${item.unit}`, `Manual Loan to ${teacherName} (${classRoom}) — Due ${dueDate}`);
-            persistState();
-            closeModal('loan-modal');
-            refreshAllViews();
-            showToast('Equipment custody loan recorded');
+            await secureClient.issueLoan({teacherName:document.getElementById('loan-teacher').value, classRoom:document.getElementById('loan-class').value,
+                dueDate:document.getElementById('loan-due-date').value || formatLocalDate(new Date()), duePeriod:document.getElementById('loan-due').value,
+                itemId:document.getElementById('loan-item-select').value, qty:Number(document.getElementById('loan-qty').value)});
+            closeModal('loan-modal'); showToast('Equipment custody loan recorded');
         }
 
-        function returnTeacherLoan(loanId) {
-            const loan = state.loans.find(l => l.id === loanId);
-            if (!loan || loan.status !== 'active') return;
-            loan.status = 'returned';
-            loan.updatedAt = Date.now();
-            const item = state.inventory.find(i => i.id === loan.itemId);
-            if (item) {
-                item.qty = Number(item.qty) + Number(loan.qty);
-                item.updatedAt = Date.now();
-            }
-            addLogEntry(loan.itemName, `+${loan.qty} ${loan.unit}`, `Returned by ${loan.teacherName}`);
-            persistState();
-            refreshAllViews();
-            showToast('Equipment returned & restocked');
+        async function returnTeacherLoan(loanId) {
+            await secureClient.returnLoan(loanId); showToast('Equipment returned and restocked');
         }
 
         function renderLogsList() {
             const container = document.getElementById('logs-list-container');
             if (!container) return;
-            container.innerHTML = state.logs.map(l => `
+            container.innerHTML = safeHTML.join(state.logs.map(l => safeHTML`
                 <div class="bg-white p-3.5 rounded-2xl border border-ris-border flex items-center justify-between gap-3 text-xs">
                     <div>
                         <span class="font-black text-ris-navy">${l.item}</span>
@@ -3557,14 +3258,14 @@
                         <div class="text-[10px] text-slate-400 font-bold mt-0.5">${l.time}</div>
                     </div>
                 </div>
-            `).join('');
+            `));
         }
 
         // ================= OFFICIAL SINGLE-PAGE A4 PRINTING & EXPORTS =================
         function triggerSinglePagePrint(innerHTML) {
             const stage = document.getElementById('print-stage');
             if (!stage) return;
-            stage.innerHTML = `
+            stage.innerHTML = safeHTML`
                 <div class="print-card-avoid-break p-4 space-y-4">
                     <div class="flex items-center justify-between border-b-2 border-ris-navy pb-3">
                         <div class="flex items-center gap-3">
@@ -3589,7 +3290,7 @@
 
         function printTeacherPortalPoster() {
             const url = buildTeacherPortalURL();
-            triggerSinglePagePrint(`
+            triggerSinglePagePrint(safeHTML`
                 <div class="text-center py-6 space-y-4">
                     <h2 class="text-2xl font-black text-ris-navy">Science Lab Teacher Requisition Portal</h2>
                     <p class="text-sm font-bold text-slate-600">Scan this QR code with your smartphone camera to submit lab sessions & equipment requests.</p>
@@ -3604,7 +3305,7 @@
             const cab = state.cabinets.find(c => c.code === cabCode);
             if (!cab) return;
             const url = buildCabinetAuditURL(cab.code);
-            triggerSinglePagePrint(`
+            triggerSinglePagePrint(safeHTML`
                 <div class="border-4 border-ris-navy rounded-3xl p-8 text-center space-y-4 max-w-md mx-auto">
                     <div class="inline-block px-4 py-1 rounded-full bg-ris-red text-white text-sm font-black">${cab.code}</div>
                     <h2 class="text-2xl font-black text-ris-navy">${cab.name}</h2>
@@ -3617,7 +3318,7 @@
         }
 
         function printFullInventoryReport() {
-            const rows = state.inventory.map(i => `
+            const rows = safeHTML.join(state.inventory.map(i => safeHTML`
                 <tr class="border-b border-slate-200 text-[11px]">
                     <td class="p-2 font-bold">${i.code}</td>
                     <td class="p-2 font-bold">${i.nameEn} ${i.nameAr ? '(' + i.nameAr + ')' : ''}</td>
@@ -3625,8 +3326,8 @@
                     <td class="p-2 font-bold">${i.qty} ${i.unit}</td>
                     <td class="p-2">${i.expiry || '—'}</td>
                 </tr>
-            `).join('');
-            triggerSinglePagePrint(`
+            `));
+            triggerSinglePagePrint(safeHTML`
                 <h2 class="text-base font-black text-ris-navy">Complete Laboratory Inventory Register</h2>
                 <table class="w-full text-left border-collapse">
                     <thead><tr class="bg-slate-100 text-[11px] font-black"><th class="p-2">Code</th><th class="p-2">Item</th><th class="p-2">Location</th><th class="p-2">Stock</th><th class="p-2">Expiry</th></tr></thead>
@@ -3636,28 +3337,28 @@
         }
 
         function printAlertsReport() {
-            const today = new Date().toISOString().split('T')[0];
+            const today = formatLocalDate(new Date());
             const items = state.inventory.filter(i => Number(i.qty) <= Number(i.minQty) || (i.expiry && i.expiry < today));
-            const rows = items.map(i => `
+            const rows = safeHTML.join(items.map(i => safeHTML`
                 <tr class="border-b border-slate-200 text-[11px]">
                     <td class="p-2 font-bold">${i.code}</td>
                     <td class="p-2 font-bold">${i.nameEn}</td>
                     <td class="p-2 font-bold text-ris-red">${i.qty} / Min ${i.minQty}</td>
                     <td class="p-2">${i.expiry || '—'}</td>
                 </tr>
-            `).join('');
-            triggerSinglePagePrint(`
+            `));
+            triggerSinglePagePrint(safeHTML`
                 <h2 class="text-base font-black text-ris-red">Low Stock & Expired Reagents Procurement Sheet</h2>
                 <table class="w-full text-left border-collapse">
                     <thead><tr class="bg-slate-100 text-[11px] font-black"><th class="p-2">Code</th><th class="p-2">Item</th><th class="p-2">Current / Min</th><th class="p-2">Expiry</th></tr></thead>
-                    <tbody>${rows || '<tr><td colspan="4" class="p-3 text-center text-xs">No alerts currently active.</td></tr>'}</tbody>
+                    <tbody>${rows || safeHTML.raw('<tr><td colspan="4" class="p-3 text-center text-xs">No alerts currently active.</td></tr>')}</tbody>
                 </table>
             `);
         }
 
         function printLossBreakageReport() {
             const records = state.lossRecords || [];
-            const rows = records.map(r => `
+            const rows = safeHTML.join(records.map(r => safeHTML`
                 <tr class="border-b border-slate-200 text-[11px]">
                     <td class="p-2 font-bold">${r.date}</td>
                     <td class="p-2 font-bold">${r.itemName} (${r.itemCode})</td>
@@ -3665,19 +3366,19 @@
                     <td class="p-2">${r.reason}</td>
                     <td class="p-2">${r.person}</td>
                 </tr>
-            `).join('');
-            triggerSinglePagePrint(`
+            `));
+            triggerSinglePagePrint(safeHTML`
                 <h2 class="text-base font-black text-ris-red">Official Loss, Breakage & Chemical Disposal Register</h2>
                 <table class="w-full text-left border-collapse">
                     <thead><tr class="bg-slate-100 text-[11px] font-black"><th class="p-2">Date</th><th class="p-2">Item</th><th class="p-2">Qty Lost</th><th class="p-2">Reason</th><th class="p-2">Responsible</th></tr></thead>
-                    <tbody>${rows || '<tr><td colspan="5" class="p-3 text-center text-xs">No loss or breakage records logged.</td></tr>'}</tbody>
+                    <tbody>${rows || safeHTML.raw('<tr><td colspan="5" class="p-3 text-center text-xs">No loss or breakage records logged.</td></tr>')}</tbody>
                 </table>
             `);
         }
 
         function printWeeklyScheduleA4() {
             const tableClone = document.querySelector('#tab-schedule table')?.outerHTML || '';
-            triggerSinglePagePrint(`
+            triggerSinglePagePrint(safeHTML`
                 <h2 class="text-base font-black text-ris-navy">Weekly Science Laboratory Timetable</h2>
                 ${tableClone}
             `);
@@ -3690,7 +3391,7 @@
             const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
-            a.download = `RIS_Science_Lab_Inventory_${new Date().toISOString().split('T')[0]}.csv`;
+            a.download = `RIS_Science_Lab_Inventory_${formatLocalDate(new Date())}.csv`;
             a.click();
         }
 
@@ -3698,39 +3399,32 @@
             const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
-            a.download = `RIS_Science_Lab_Backup_${new Date().toISOString().split('T')[0]}.json`;
+            a.download = `RIS_Science_Lab_Backup_${formatLocalDate(new Date())}.json`;
             a.click();
             showToast('System JSON backup downloaded');
         }
 
-        function importSystemJSON(event) {
-            const file = event.target.files?.[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                try {
-                    const parsed = JSON.parse(ev.target.result);
-                    if (!parsed || typeof parsed !== 'object' || !parsed.settings || !Array.isArray(parsed.inventory)) {
-                        showToast('Invalid backup file format', 'error');
-                        return;
-                    }
-                    state = {
-                        ...structuredClone(DEFAULT_STATE),
-                        ...parsed,
-                        settings: {
-                            ...structuredClone(DEFAULT_STATE.settings),
-                            ...(parsed.settings || {})
-                        }
-                    };
-                    persistState(true);
-                    refreshAllViews();
-                    showToast('System backup restored & synced');
-                } catch (err) {
-                    showToast('Failed to parse JSON backup file', 'error');
-                }
-                event.target.value = '';
-            };
-            reader.readAsText(file);
+        async function importSystemJSON(event) {
+            const file = event.target.files?.[0]; event.target.value = ''; if (!file || !secureClient?.ready || secureClient.account?.role !== 'admin') { showToast('Sign in as administrator and wait for cloud sync before restoring.', 'error'); return; }
+            try {
+                const parsed = JSON.parse(await file.text());
+                if (!parsed || !parsed.settings || !['inventory','cabinets','requests','scheduleSlots','loans','lossRecords','logs'].every(kind => Array.isArray(parsed[kind]))) throw new Error('The backup must include settings and every dataset, including requests and loans.');
+                const confirmed = await new Promise(resolve => {
+                    const dialog=document.createElement('dialog'); dialog.setAttribute('aria-label','Confirm complete backup restore'); dialog.style.cssText='max-width:520px;padding:28px;border:1px solid #cbd5e1;border-radius:18px;color:#18324c;background:white;box-shadow:0 20px 80px #0005';
+                    const title=document.createElement('h2');title.textContent='Restore this complete backup?';title.style.cssText='font-size:22px;font-weight:bold;margin-bottom:14px';
+                    const details=document.createElement('p');details.textContent='This replaces the synced lab dataset with '+parsed.inventory.length+' inventory records, '+parsed.requests.length+' requests and '+parsed.loans.length+' loans. Passwords and existing audit history stay protected.';
+                    const cancel=document.createElement('button');cancel.type='button';cancel.textContent='Cancel restore';cancel.style.cssText='padding:12px;margin:20px 12px 0 0;border:1px solid #cbd5e1;border-radius:8px';
+                    const accept=document.createElement('button');accept.type='button';accept.textContent='Restore backup';accept.style.cssText='padding:12px;margin-top:20px;background:#1b2a59;color:white;border-radius:8px';
+                    const done=value=>{dialog.close();dialog.remove();resolve(value);};cancel.addEventListener('click',()=>done(false));accept.addEventListener('click',()=>done(true));dialog.addEventListener('cancel',event=>{event.preventDefault();done(false);});
+                    dialog.append(title,details,cancel,accept);document.body.append(dialog);dialog.showModal();cancel.focus();
+                });
+                if (!confirmed) return;
+                const result = await secureClient.restore(parsed);
+                for (const modalId of ['inventory-modal','cabinet-modal','loan-modal','schedule-slot-modal','loss-modal','teacher-qr-modal','cabinet-qr-modal']) { const modal=document.getElementById(modalId); if (modal && !modal.classList.contains('hidden')) closeModal(modalId); }
+                document.querySelectorAll('input[type=password]').forEach(input => { input.value = ''; });
+                window.__pendingRegentRequest = null;
+                showToast('Backup restored: '+result.counts.requests+' requests, '+result.counts.loans+' loans, '+result.counts.inventory+' inventory records. Accounts kept.');
+            } catch (err) { showToast(err.message || 'Restore was not saved.', 'error'); }
         }
 
         // ================= SYSTEM SETTINGS & NON-DESTRUCTIVE DROPDOWN SYNC =================
@@ -3741,9 +3435,9 @@
                 if (!el || document.activeElement === el) return;
                 const prev = el.value;
                 const opts = [];
-                if (includeAllLabel) opts.push(`<option value="ALL">${includeAllLabel}</option>`);
-                arr.forEach(v => opts.push(`<option value="${v}">${v}</option>`));
-                el.innerHTML = opts.join('');
+                if (includeAllLabel) opts.push(safeHTML`<option value="ALL">${includeAllLabel}</option>`);
+                arr.forEach(v => opts.push(safeHTML`<option value="${v}">${v}</option>`));
+                el.innerHTML = safeHTML.join(opts);
                 if (prev && [...el.options].some(o => o.value === prev)) el.value = prev;
             };
 
@@ -3755,7 +3449,7 @@
             const personDatalist = document.getElementById('loss-person-suggestions');
             if (personDatalist) {
                 const suggestions = [...teacherNames, ...(s.grades || [])];
-                personDatalist.innerHTML = suggestions.map(v => `<option value="${v}">`).join('');
+                personDatalist.innerHTML = safeHTML.join(suggestions.map(v => safeHTML`<option value="${v}">`));
             }
 
             fill('tp-subject', s.subjects || []);
@@ -3788,10 +3482,10 @@
 
             const cabColorSel = document.getElementById('cab-color');
             if (cabColorSel && document.activeElement !== cabColorSel) {
-                cabColorSel.innerHTML = (s.cabinetColors || []).map(c => `<option value="${c.hex}">${c.name}</option>`).join('');
+                cabColorSel.innerHTML = safeHTML.join((s.cabinetColors || []).map(c => safeHTML`<option value="${c.hex}">${c.name}</option>`));
             }
 
-            const itemOpts = (state.inventory || []).map(i => `<option value="${i.id}">${i.nameEn} (${i.code}) — [${i.qty} left]</option>`).join('');
+            const itemOpts = safeHTML.join((state.inventory || []).map(i => safeHTML`<option value="${i.id}">${i.nameEn} (${i.code}) — [${i.qty} left]</option>`));
             ['tp-item-select', 'loan-item-select', 'loss-item-select'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el && document.activeElement !== el) {
@@ -3807,12 +3501,12 @@
             const grid = document.getElementById('cabinets-grid');
             if (!grid) return;
             if (!state.cabinets.length) {
-                grid.innerHTML = `<div class="col-span-full bg-white p-8 rounded-3xl border border-ris-border text-center text-xs font-bold text-slate-400">No storage cabinets configured yet. Click "+ Add Storage Cabinet" to create one.</div>`;
+                grid.innerHTML = safeHTML`<div class="col-span-full bg-white p-8 rounded-3xl border border-ris-border text-center text-xs font-bold text-slate-400">No storage cabinets configured yet. Click "+ Add Storage Cabinet" to create one.</div>`;
                 return;
             }
-            grid.innerHTML = state.cabinets.map(cab => {
+            grid.innerHTML = safeHTML.join(state.cabinets.map(cab => {
                 const itemsInside = state.inventory.filter(i => i.cabinetCode === cab.code);
-                return `
+                return safeHTML`
                     <div class="bg-white rounded-3xl border border-ris-border shadow-xs overflow-hidden flex flex-col justify-between">
                         <div>
                             <div class="h-2.5 w-full" style="background:${cab.color || '#1B2A59'}"></div>
@@ -3842,7 +3536,7 @@
                         </div>
                     </div>
                 `;
-            }).join('');
+            }));
         }
 
         function openCabinetModal(editId = '') {
@@ -3866,7 +3560,7 @@
             openModal('cabinet-modal');
         }
 
-        function saveCabinet(e) {
+        async function saveCabinet(e) {
             e.preventDefault();
             const editId = document.getElementById('cab-edit-id').value;
             const payload = {
@@ -3883,15 +3577,15 @@
             } else {
                 state.cabinets.push({ id: 'cab-' + Date.now(), ...payload });
             }
-            persistState();
+            await persistState();
             closeModal('cabinet-modal');
             refreshAllViews();
             showToast('Storage cabinet saved & synced');
         }
 
-        function deleteCabinet(id) {
+        async function deleteCabinet(id) {
             state.cabinets = state.cabinets.filter(c => c.id !== id);
-            persistState();
+            await persistState();
             refreshAllViews();
             showToast('Storage cabinet removed');
         }
@@ -3933,7 +3627,7 @@
             if (!cab) {
                 titleEl.textContent = `Cabinet ${cabCode}`;
                 subEl.textContent = 'Cabinet Not Found';
-                content.innerHTML = `<div class="bg-white p-6 rounded-3xl border border-ris-border text-center text-xs font-bold text-ris-red">No cabinet found with code "${cabCode}".</div>`;
+                content.innerHTML = safeHTML`<div class="bg-white p-6 rounded-3xl border border-ris-border text-center text-xs font-bold text-ris-red">No cabinet found with code "${cabCode}".</div>`;
                 return;
             }
 
@@ -3942,15 +3636,15 @@
 
             const items = state.inventory.filter(i => i.cabinetCode === cab.code);
             if (!items.length) {
-                content.innerHTML = `<div class="bg-white p-6 rounded-3xl border border-ris-border text-center text-xs font-bold text-slate-400">No items currently assigned to ${cab.code}.</div>`;
+                content.innerHTML = safeHTML`<div class="bg-white p-6 rounded-3xl border border-ris-border text-center text-xs font-bold text-slate-400">No items currently assigned to ${cab.code}.</div>`;
                 return;
             }
 
-            content.innerHTML = items.map(item => `
+            content.innerHTML = safeHTML.join(items.map(item => safeHTML`
                 <div class="bg-white p-4 rounded-2xl border border-ris-border shadow-xs flex items-center justify-between gap-3">
                     <div>
                         <div class="text-sm font-black text-ris-navy">${item.nameEn}</div>
-                        ${item.nameAr ? `<div class="font-ar text-xs font-bold text-slate-500">${item.nameAr}</div>` : ''}
+                        ${item.nameAr ? safeHTML`<div class="font-ar text-xs font-bold text-slate-500">${item.nameAr}</div>` : ''}
                         <div class="text-[11px] font-bold text-slate-400 mt-0.5">${item.code} • ${item.shelf}</div>
                     </div>
                     <div class="flex items-center gap-2">
@@ -3959,7 +3653,7 @@
                         <button type="button" onclick="adjustAuditItemQty('${item.id}', 1, '${cab.code}')" class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-700 font-black text-base">+</button>
                     </div>
                 </div>
-            `).join('');
+            `));
         }
 
         function exitCabinetAuditToAdmin() {
@@ -3969,13 +3663,13 @@
             refreshAllViews();
         }
 
-        function adjustAuditItemQty(itemId, delta, cabCode) {
+        async function adjustAuditItemQty(itemId, delta, cabCode) {
             const item = state.inventory.find(i => i.id === itemId);
             if (!item) return;
             item.qty = Math.max(0, Number(item.qty) + delta);
             item.updatedAt = Date.now();
             addLogEntry(item.nameEn, delta > 0 ? `+${delta}` : `${delta}`, `QR Cabinet Audit (${cabCode})`);
-            persistState();
+            await persistState();
             launchCabinetAuditMode(cabCode);
             showToast(`Updated ${item.nameEn}: ${item.qty}`);
         }
@@ -3989,34 +3683,35 @@
             setVal('set-sync-room-id', s.syncRoomId || 'ris-regent-lab-sync-2026');
             setVal('set-custom-firebase-cfg', localStorage.getItem(CUSTOM_FB_KEY) || '');
             setVal('set-admin-user', s.adminUsername);
-            setVal('set-admin-pass', s.adminPassword);
+            setVal('set-admin-pass', '');
             setVal('set-app-title', s.appTitle);
             setVal('set-school-name', s.schoolName);
             setVal('set-dept-badge', s.deptBadge);
             setVal('set-public-base-url', s.publicBaseUrl || getBaseCleanURL());
 
             const teachersList = document.getElementById('settings-teachers-list');
-            if (teachersList) {
-                teachersList.innerHTML = (s.teachers || []).map((t, idx) => `
-                    <div class="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-ris-bg border border-slate-200 text-xs">
-                        <span class="font-extrabold text-ris-navy">👩‍🏫 ${t.name}</span>
-                        <div class="flex items-center gap-1.5">
-                            <input type="text" value="${t.password}" onchange="updateTeacherPassword(${idx}, this.value)" class="w-20 px-2 py-1 bg-white border border-slate-300 rounded-lg text-center font-black text-ris-navy" title="Teacher Password">
-                            <button type="button" onclick="removeTeacherAccount(${idx})" class="px-2 py-1 rounded-lg bg-red-50 text-ris-red font-black">✕</button>
+            if (teachersList && !teachersList.contains(document.activeElement)) {
+                teachersList.innerHTML = safeHTML.join((s.teachers || []).map((t, idx) => safeHTML`
+                    <div data-teacher-uid="${t.uid}" class="flex flex-col sm:flex-row sm:items-center gap-3 p-3 rounded-xl bg-ris-bg border border-slate-200 text-xs">
+                        <span class="font-extrabold text-ris-navy sm:w-44">👩‍🏫 ${t.name}</span>
+                        <div class="flex flex-1 items-center gap-2 min-w-0">
+                            <input type="password" value="" placeholder="New password (12+ characters)" minlength="12" maxlength="128" autocomplete="new-password" aria-label="New password for ${t.name}" class="w-full min-w-0 px-3 py-2 bg-white border border-slate-300 rounded-lg font-bold text-ris-navy" title="Set a new password. Existing passwords are never displayed.">
+                            <button type="button" onclick="updateTeacherPassword(this.closest('[data-teacher-uid]').dataset.teacherUid)" class="px-3 py-2 rounded-lg bg-ris-navy text-white font-extrabold whitespace-nowrap">Save password</button>
+                            <button type="button" onclick="removeTeacherAccount(this.closest('[data-teacher-uid]').dataset.teacherUid)" aria-label="Disable ${t.name}" class="px-3 py-2 rounded-lg bg-red-50 text-ris-red font-black">✕</button>
                         </div>
                     </div>
-                `).join('');
+                `));
             }
 
             const renderSimpleList = (listId, key) => {
                 const el = document.getElementById(listId);
                 if (!el) return;
-                el.innerHTML = (s[key] || []).map((val, idx) => `
+                el.innerHTML = safeHTML.join((s[key] || []).map((val, idx) => safeHTML`
                     <div class="flex items-center justify-between px-3 py-1.5 rounded-xl bg-ris-bg border border-slate-200 text-xs font-bold">
                         <span>${val}</span>
                         <button type="button" onclick="removeSimpleSettingItem('${key}', ${idx})" class="text-ris-red font-black">✕</button>
                     </div>
-                `).join('');
+                `));
             };
 
             renderSimpleList('settings-subjects-list', 'subjects');
@@ -4031,130 +3726,118 @@
 
             const colorsEl = document.getElementById('settings-cab-colors-list');
             if (colorsEl) {
-                colorsEl.innerHTML = (s.cabinetColors || []).map((c, idx) => `
+                colorsEl.innerHTML = safeHTML.join((s.cabinetColors || []).map((c, idx) => safeHTML`
                     <div class="flex items-center justify-between px-3 py-1.5 rounded-xl bg-ris-bg border border-slate-200 text-xs font-bold">
                         <span class="flex items-center gap-2"><span class="w-3.5 h-3.5 rounded-full inline-block" style="background:${c.hex}"></span>${c.name} (${c.hex})</span>
                         <button type="button" onclick="removeCabinetColor(${idx})" class="text-ris-red font-black">✕</button>
                     </div>
-                `).join('');
+                `));
             }
         }
 
-        function saveCloudSyncSettings() {
+        async function saveCloudSyncSettings() {
             const room = document.getElementById('set-sync-room-id').value.trim();
-            if (!room) {
-                showToast('Please enter a valid Sync Channel ID', 'error');
-                return;
-            }
+            if (!/^[a-zA-Z0-9_-]{1,120}$/.test(room)) throw new Error('Use 1 to 120 letters, digits, hyphens or underscores for the QR label.');
             state.settings.syncRoomId = room;
-            persistState(true);
-            initCloudSync();
-            showToast('Sync Channel saved & pushed to cloud');
+            await persistState(true); refreshAllViews();
+            showToast('School QR label saved. The configured secure backend and permissions have not changed.');
         }
 
-        function saveCustomFirebaseConfig() {
+        async function saveCustomFirebaseConfig() {
             const raw = document.getElementById('set-custom-firebase-cfg').value.trim();
-            if (!raw) {
-                localStorage.removeItem(CUSTOM_FB_KEY);
-                showToast('Custom Firebase config cleared');
-                return;
-            }
-            try {
-                const parsed = JSON.parse(raw);
-                if (!parsed.apiKey) throw new Error('Missing apiKey');
-                localStorage.setItem(CUSTOM_FB_KEY, JSON.stringify(parsed));
-                initCloudSync();
-                showToast('Firebase connected & synced');
-            } catch (e) {
-                showToast('Invalid Firebase JSON config', 'error');
-            }
+            let candidate;try{candidate=validatePublicFirebaseConfig(raw ? JSON.parse(raw) : EMBEDDED_FIREBASE_CONFIG);}catch(err){document.getElementById('set-custom-firebase-cfg').value='';throw err;}
+            if (!candidate || typeof candidate !== 'object' || !candidate.apiKey || !candidate.projectId || !candidate.authDomain) throw new Error('Enter a complete Firebase web configuration.');
+            const info = await secureClient.backendInfo();
+            if (candidate.projectId !== info.projectId) throw new Error('This Firebase project does not match the secure backend. Nothing was switched. Backend deployment must be changed separately.');
+            if (!confirm('Use this matching Firebase configuration on this device and reload? No data will be moved.')) return;
+            if (raw) localStorage.setItem(CUSTOM_FB_KEY, JSON.stringify(candidate)); else localStorage.removeItem(CUSTOM_FB_KEY);
+            location.reload();
         }
 
-        function saveAdminSecuritySettings() {
-            state.settings.adminUsername = document.getElementById('set-admin-user').value.trim() || 'admin';
-            state.settings.adminPassword = document.getElementById('set-admin-pass').value.trim();
-            persistState(true);
-            showToast('Admin credentials saved & synced to all devices');
+        async function saveAdminSecuritySettings() {
+            const name = document.getElementById('set-admin-user').value.trim();
+            const password = document.getElementById('set-admin-pass').value;
+            const result = await secureClient.updateAdmin(name, password);
+            document.getElementById('set-admin-pass').value = '';
+            showToast(result.signInAgain ? 'Administrator password changed. Sign in with the new password.' : 'Administrator username updated');
+            checkAdminAuthGate();
         }
 
-        function saveBrandingSettings() {
+        async function saveBrandingSettings() {
             state.settings.appTitle = document.getElementById('set-app-title').value.trim() || 'Science Lab';
             state.settings.schoolName = document.getElementById('set-school-name').value.trim() || 'Regent International School';
             state.settings.deptBadge = document.getElementById('set-dept-badge').value.trim() || 'RIS Science Department';
             const rawUrl = (document.getElementById('set-public-base-url')?.value || '').trim();
             if (rawUrl) {
-                state.settings.publicBaseUrl = rawUrl;
+                const candidateUrl=new URL(rawUrl); if(!['https:','http:'].includes(candidateUrl.protocol))throw new Error('Use an HTTP or HTTPS address for the school QR link.'); state.settings.publicBaseUrl = candidateUrl.href;
             }
-            persistState(true);
+            await persistState(true);
             refreshAllViews();
             showToast('Branding & permanent QR Base URL updated');
         }
 
-        function addTeacherAccount() {
+        async function addTeacherAccount() {
             const name = document.getElementById('new-teacher-name').value.trim();
-            const password = document.getElementById('new-teacher-pass').value.trim();
-            if (!name || !password) {
-                showToast('Enter both teacher name and password', 'error');
-                return;
-            }
-            state.settings.teachers.push({ name, password });
-            document.getElementById('new-teacher-name').value = '';
-            document.getElementById('new-teacher-pass').value = '';
-            persistState(true);
-            refreshAllViews();
-            showToast(`Added & synced teacher account for ${name}`);
+            const password = document.getElementById('new-teacher-pass').value;
+            await secureClient.createTeacher(name, password);
+            document.getElementById('new-teacher-name').value = ''; document.getElementById('new-teacher-pass').value = '';
+            showToast('Teacher account created securely');
         }
 
-        function updateTeacherPassword(idx, newPass) {
-            if (!newPass.trim()) return;
-            state.settings.teachers[idx].password = newPass.trim();
-            persistState(true);
-            showToast('Teacher password updated & synced');
+        async function updateTeacherPassword(uid) {
+            const teacher = state.settings.teachers.find(entry => entry.uid === uid);
+            if (!teacher) throw new Error('This teacher list changed. Reopen settings before changing an account.');
+            const row = [...document.querySelectorAll('[data-teacher-uid]')].find(row => row.dataset.teacherUid === uid);
+            const input = row?.querySelector('input[type=password]'), button = row?.querySelector('button');
+            if (!input || input.value.length < 12 || input.value.length > 128) { showToast('Use a new password of 12 to 128 characters.', 'error'); return; }
+            button.disabled = true;
+            try { await secureClient.resetTeacher(uid, input.value); input.value = ''; showToast('Teacher password changed. Previous sessions revoked.'); }
+            finally { button.disabled = false; }
         }
 
-        function removeTeacherAccount(idx) {
-            state.settings.teachers.splice(idx, 1);
-            persistState(true);
-            refreshAllViews();
+        async function removeTeacherAccount(uid) {
+            const teacher = state.settings.teachers.find(entry => entry.uid === uid); if (!teacher) throw new Error('This teacher list changed. Reopen settings before changing an account.');
+            if (!confirm('Disable this teacher account? Existing requests will be kept.')) return;
+            await secureClient.disableTeacher(teacher.uid); showToast('Teacher account disabled. Existing requests kept.');
         }
 
-        function addSimpleSettingItem(key, inputId) {
+        async function addSimpleSettingItem(key, inputId) {
             const inp = document.getElementById(inputId);
             const val = (inp?.value || '').trim();
             if (!val) return;
             state.settings[key].push(val);
             inp.value = '';
-            persistState(true);
+            await persistState(true);
             refreshAllViews();
             showToast('Setting item added & synced');
         }
 
-        function removeSimpleSettingItem(key, idx) {
+        async function removeSimpleSettingItem(key, idx) {
             state.settings[key].splice(idx, 1);
-            persistState(true);
+            await persistState(true);
             refreshAllViews();
         }
 
-        function addCabinetColor() {
+        async function addCabinetColor() {
             const name = document.getElementById('new-cab-color-name').value.trim();
             const hex = document.getElementById('new-cab-color-hex').value;
             if (!name) return;
             state.settings.cabinetColors.push({ name, hex });
             document.getElementById('new-cab-color-name').value = '';
-            persistState(true);
+            await persistState(true);
             refreshAllViews();
             showToast('Cabinet color added & synced');
         }
 
-        function removeCabinetColor(idx) {
+        async function removeCabinetColor(idx) {
             state.settings.cabinetColors.splice(idx, 1);
-            persistState(true);
+            await persistState(true);
             refreshAllViews();
         }
 
-        function resetDefaultSettings() {
+        async function resetDefaultSettings() {
             state.settings = structuredClone(DEFAULT_STATE.settings);
-            persistState(true);
+            await persistState(true);
             refreshAllViews();
             showToast('Default lists restored');
         }
@@ -4234,6 +3917,13 @@
             resetDefaultSettings
         });
 
+        for (const key of Object.keys(window)) {
+            const handler = window[key];
+            if (typeof handler === 'function' && handler.constructor.name === 'AsyncFunction') {
+                window[key] = (...args) => handler(...args).catch(err => { showToast(err.message || 'Action not confirmed saved. Refresh before retrying.', 'error'); });
+            }
+        }
+
         window.addEventListener('DOMContentLoaded', async () => {
             applySavedTheme();
             injectAllCrests();
@@ -4280,4 +3970,4 @@
         });
     </script>
 </body>
-</html>
+    </html>
