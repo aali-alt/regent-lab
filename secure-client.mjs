@@ -1,5 +1,5 @@
 import {initializeApp} from 'https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js';
-import {getAuth,signInWithEmailAndPassword,signOut,onAuthStateChanged,setPersistence,browserSessionPersistence,connectAuthEmulator} from 'https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js';
+import {getAuth,signInWithCustomToken,signOut,onAuthStateChanged,setPersistence,browserSessionPersistence,connectAuthEmulator} from 'https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js';
 import {getFirestore,collection,doc,query,where,onSnapshot,getDoc,getDocs,connectFirestoreEmulator} from 'https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js';
 const kinds=['inventory','cabinets','requests','scheduleSlots','loans','lossRecords','logs'];
 export function applyServerRows(rows,snapshot,account){
@@ -25,7 +25,7 @@ export function createSecureClient({firebaseConfig,backendUrl,onState,onAccount,
     connectAuthEmulator(auth,'http://127.0.0.1:9099',{disableWarnings:true});connectFirestoreEmulator(db,'127.0.0.1',8081);
   }
   let resolveDirectory;const directoryLoaded=new Promise(resolve=>{resolveDirectory=resolve;});
-  let account=null,directory=[],unsubscribers=[],snapshot=null,ready=false,paused=0,loginWaiters=[],epoch=0,refreshTimer=null;
+  let account=null,directory=[],publicDirectory=[],unsubscribers=[],snapshot=null,ready=false,paused=0,loginWaiters=[],epoch=0,refreshTimer=null;
   const endpoint=backendUrl?new URL(backendUrl):null;
   if(endpoint&&endpoint.protocol!=='https:'&&!(testEmulators&&endpoint.hostname==='127.0.0.1'))throw Error('Secure backend requires HTTPS');
   async function call(path,value,commandId=crypto.randomUUID()){
@@ -48,8 +48,13 @@ export function createSecureClient({firebaseConfig,backendUrl,onState,onAccount,
   const publish=()=>{if(ready&&!paused)onState(withDirectory(structuredClone(snapshot)));};
   const unsubscribe=()=>{unsubscribers.forEach(fn=>fn());unsubscribers=[];ready=false;snapshot=null;};
   const rejectLogin=err=>{for(const waiter of loginWaiters)waiter.reject(err);loginWaiters=[];};
+  async function refreshDirectory(){
+    if(account?.role==='admin'){const expectedAccount=account,result=await call('/admin/directory');if(account!==expectedAccount||account?.role!=='admin')return;directory=result.accounts;}
+    else directory=structuredClone(publicDirectory);
+    onDirectory(directory);publish();
+  }
   function watchSession(profile){
-    unsubscribe();account=profile;onAccount(profile);
+    unsubscribe();account=profile;onAccount(profile);refreshDirectory().catch(()=>onStatus('Account list could not refresh'));
     const watched=profile.role==='admin'?kinds:['inventory','cabinets','requests','scheduleSlots','loans'];
     const pending=new Set([...watched,'settings']);snapshot=Object.fromEntries(kinds.map(k=>[k,[]]));snapshot.settings={};snapshot.meta={};
     const receive=kind=>snap=>{
@@ -68,13 +73,19 @@ export function createSecureClient({firebaseConfig,backendUrl,onState,onAccount,
       unsubscribers.push(onSnapshot(ref,receive(kind),failed));
     }
     unsubscribers.push(onSnapshot(doc(db,'regent_v2_settings','main'),receive('settings'),failed));
+    if(profile.role==='admin')unsubscribers.push(onSnapshot(collection(db,'regent_v2_directory'),()=>refreshDirectory().catch(()=>onStatus('Account list could not refresh')),failed));
   }
-  const directoryStop=onSnapshot(query(collection(db,'regent_v2_directory'),where('disabled','==',false)),snap=>{
-    directory=snap.docs.map(d=>strip(d.data()));resolveDirectory();onDirectory(directory);publish();
-  },()=>onStatus('Secure sign-in setup required'));
+  let disposed=false;
+  const directoryStop=()=>{disposed=true;};
+  async function loadPublicDirectory(){
+    const result=await call('/directory');if(disposed)return;
+    publicDirectory=result.accounts.map(row=>({name:row.name,selector:row.selector,role:'teacher'}));
+    resolveDirectory();await refreshDirectory();
+  }
+  loadPublicDirectory().catch(()=>onStatus('Secure sign-in setup required'));
   const authStop=onAuthStateChanged(auth,async user=>{
-    unsubscribe();account=null;pendingIntents.clear();editVersions.clear();onAccount(null);
-    if(!user){onStatus('Sign in for secure cloud access');return;}
+    unsubscribe();account=null;pendingIntents.clear();editVersions.clear();onAccount(null);directory=structuredClone(publicDirectory);onDirectory(directory);
+    if(!user){loadPublicDirectory().catch(()=>onStatus('Account list could not refresh'));onStatus('Sign in for secure cloud access');return;}
     try{const {account:profile}=await call('/me');watchSession(profile);}catch(err){onStatus(err.message);rejectLogin(err);await signOut(auth);}
   });
   return {
@@ -82,18 +93,18 @@ export function createSecureClient({firebaseConfig,backendUrl,onState,onAccount,
     async login(name,password,role){
       if(!endpoint)throw Error('Secure sign-in is not configured on this review build yet.');
       await Promise.race([directoryLoaded,new Promise((_,reject)=>setTimeout(()=>reject(Error('Account list is not available yet. Please retry.')),10000))]);
-      const entry=directory.find(a=>a.role===role&&(a.name===name||a.login.toLowerCase()===name.toLowerCase()));
-      if(!entry)throw Error('Choose an enabled account and check the password.');
+      const entry=publicDirectory.find(a=>a.name===name);
+      if(role==='teacher'&&!entry)throw Error('Choose an enabled account and check the password.');
       await setPersistence(auth,browserSessionPersistence);
       const completion=new Promise((resolve,reject)=>{const waiter={resolve,reject};loginWaiters.push(waiter);setTimeout(()=>{const index=loginWaiters.indexOf(waiter);if(index>=0){loginWaiters.splice(index,1);reject(Error('Cloud sign-in setup did not finish. Please retry.'));}},25000);});
-      try{await signInWithEmailAndPassword(auth,entry.login,password);}catch(err){rejectLogin(Error('Sign-in failed. Check the account and password.'));}
+      try{const result=await call('/auth/login',{name,password,role,...(role==='teacher'?{selector:entry.selector}:{})});await signInWithCustomToken(auth,result.token);}catch(err){rejectLogin(Error(err.code==='SIGN_IN_LIMIT'?err.message:'Sign-in failed. Check the account and password.'));}
       return completion;
     },
     async logout(){unsubscribe();account=null;pendingIntents.clear();editVersions.clear();onAccount(null);await signOut(auth);},
     beginEdit(kind,id,{ifAbsent=false}={}){if(!ready||!id)return;const key=kind+'/'+id;if(ifAbsent&&editVersions.has(key))return;const value=kind==='settings'?snapshot.settings:snapshot[kind]?.find(row=>row.id===id);editVersions.set(key,value?.version||0);},
     endEdit(kind,id){editVersions.delete(kind+'/'+id);},
     async backendInfo(){return call('/info');},
-    async refresh(){if(!auth.currentUser||!account)return false;const {account:profile}=await call('/me');watchSession(profile);return true;},
+    async refresh(){if(!auth.currentUser||!account){await loadPublicDirectory();return true;}const {account:profile}=await call('/me');watchSession(profile);return true;},
     async save(desired){
       if(!ready||account?.role!=='admin')throw Error('An active administrator session is required to save.');
       const base=structuredClone(snapshot),changes=[];
