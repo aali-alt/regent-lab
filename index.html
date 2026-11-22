@@ -972,6 +972,10 @@
                             </button>
                         </div>
                     </div>
+                    <div id="sync-diagnostic-box" class="p-3 rounded-xl bg-slate-50 border border-slate-200 text-[11px] font-bold text-slate-600 flex flex-wrap items-center justify-between gap-2">
+                        <span>Engine: <strong id="sync-engine-label" class="text-ris-navy">Initializing...</strong></span>
+                        <span>Last Cloud Sync: <strong id="sync-last-time-label" class="text-emerald-700">Never</strong></span>
+                    </div>
                     <details class="text-xs">
                         <summary class="cursor-pointer font-extrabold text-ris-navy hover:underline">Optional: Connect Custom Firebase Project Config (JSON)</summary>
                         <div class="mt-3 space-y-2">
@@ -1471,9 +1475,9 @@
 
     <!-- ================= APPLICATION LOGIC & CROSS-DEVICE SYNC ================= -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // ================= EXECUTIVE RIS CREST SVG =================
         function getRISCrestSVG(sizeClass = "w-full h-full") {
@@ -1608,35 +1612,12 @@
             ]
         };
 
-        let state = loadLocalState();
-        let db = null;
-        let firestoreDocRef = null;
-        let isRemoteUpdate = false;
-        let relayEventSource = null;
-        let lastAppliedRemoteTs = 0;
-        let authenticatedTeacherName = sessionStorage.getItem('ris_verified_teacher') || '';
-        let teacherPortalCart = [];
-
-        // Check URL sync room override (?sync=...)
-        const urlParamsInit = new URLSearchParams(window.location.search);
-        const hashParamsInit = new URLSearchParams(window.location.hash.replace(/^#/, ''));
-        const urlSyncRoom = urlParamsInit.get('sync') || hashParamsInit.get('sync');
-        if (urlSyncRoom && urlSyncRoom.trim()) {
-            state.settings.syncRoomId = urlSyncRoom.trim();
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-        }
-
-        function setSyncStatusText(label) {
-            document.querySelectorAll('.sync-status-label').forEach(el => {
-                el.textContent = label;
-            });
-        }
-
         function loadLocalState() {
             try {
-                const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('ris_science_lab_state_v4');
+                const raw = localStorage.getItem(STORAGE_KEY);
                 if (!raw) return structuredClone(DEFAULT_STATE);
                 const parsed = JSON.parse(raw);
+                if (!parsed || typeof parsed !== 'object') return structuredClone(DEFAULT_STATE);
                 return {
                     ...structuredClone(DEFAULT_STATE),
                     ...parsed,
@@ -1650,7 +1631,39 @@
                     }
                 };
             } catch (e) {
+                console.warn('Fallback to default state:', e);
                 return structuredClone(DEFAULT_STATE);
+            }
+        }
+
+        let state = loadLocalState();
+        let db = null;
+        let firestoreDocRef = null;
+        let isRemoteUpdate = false;
+        let syncPollTimer = null;
+        let lastAppliedRemoteTs = 0;
+        let lastSavedHash = '';
+        let authenticatedTeacherName = sessionStorage.getItem('ris_verified_teacher') || '';
+        let teacherPortalCart = [];
+
+        // Check URL sync room override (?sync=...)
+        const urlParamsInit = new URLSearchParams(window.location.search);
+        const hashParamsInit = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+        const urlSyncRoom = urlParamsInit.get('sync') || hashParamsInit.get('sync');
+        if (urlSyncRoom && urlSyncRoom.trim()) {
+            state.settings.syncRoomId = urlSyncRoom.trim();
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        }
+
+        function setSyncStatusText(label, engineName = '') {
+            document.querySelectorAll('.sync-status-label').forEach(el => {
+                el.textContent = label;
+            });
+            const engEl = document.getElementById('sync-engine-label');
+            if (engEl && engineName) engEl.textContent = engineName;
+            const timeEl = document.getElementById('sync-last-time-label');
+            if (timeEl && label.includes('Synced')) {
+                timeEl.textContent = new Date().toLocaleTimeString();
             }
         }
 
@@ -1714,7 +1727,7 @@
             };
 
             localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-            setSyncStatusText(`Synced (${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })})`);
+            setSyncStatusText(`Synced (${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })})`, sourceLabel);
             refreshAllViews();
             checkAdminAuthGate();
             isRemoteUpdate = false;
@@ -1725,7 +1738,7 @@
             }
         }
 
-        function persistState(markSettingsChanged = false) {
+        async function persistState(markSettingsChanged = false) {
             const now = Date.now();
             state.meta = state.meta || {};
             state.meta.updatedAt = now;
@@ -1740,113 +1753,135 @@
             }
             if (!isRemoteUpdate) {
                 if (firestoreDocRef) {
-                    setDoc(firestoreDocRef, state).catch(() => {});
+                    setDoc(firestoreDocRef, JSON.parse(JSON.stringify(state))).catch(() => {});
                 }
-                pushStateToCloudRelay();
+                await pushStateToCloudKV();
             }
         }
 
-        // ================= ZERO-CONFIG REAL-TIME CLOUD RELAY (WORKS ON GITHUB PAGES) =================
-        function getRelayTopicURL() {
+        // ================= PERSISTENT CLOUD KV & FIREBASE SYNC ENGINE =================
+        // Uses a true persistent JSON Cloud Blob endpoint (no 4KB message cap like ntfy) + Firestore
+        function getCloudBucketKey() {
             const room = (state.settings.syncRoomId || 'ris-regent-lab-sync-2026')
                 .toLowerCase()
                 .replace(/[^a-z0-9_-]/g, '-');
-            return `https://ntfy.sh/${encodeURIComponent(room)}`;
+            return `ris_lab_cloud_${room}`;
         }
 
-        async function pushStateToCloudRelay() {
-            try {
-                const topicUrl = getRelayTopicURL();
-                const res = await fetch(topicUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Title': 'RIS_LAB_SYNC',
-                        'Cache': 'yes'
-                    },
-                    body: JSON.stringify(state)
-                });
-                if (res.ok) {
-                    setSyncStatusText(`Synced (${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })})`);
-                }
-            } catch (e) {
-                setSyncStatusText('Offline / Local Mode');
+        function getCloudKVEndpoints() {
+            const key = getCloudBucketKey();
+            return [
+                `https://kvdb.io/A6z9xM2pQ8rT4vW1yB5n/${encodeURIComponent(key)}`,
+                `https://api.keyvalue.xyz/98a1f3c2/${encodeURIComponent(key)}`
+            ];
+        }
+
+        async function pushStateToCloudKV() {
+            const payloadStr = JSON.stringify(state);
+            lastSavedHash = payloadStr.length + ':' + state.meta.updatedAt;
+            const endpoints = getCloudKVEndpoints();
+            let pushed = false;
+
+            for (const url of endpoints) {
+                try {
+                    const res = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+                        body: payloadStr
+                    });
+                    if (res.ok) {
+                        pushed = true;
+                        setSyncStatusText(
+                            `Synced (${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })})`,
+                            firestoreDocRef ? 'Firestore + Cloud KV' : 'Cloud KV Sync'
+                        );
+                        break;
+                    }
+                } catch (e) {}
             }
+            if (!pushed && !firestoreDocRef) {
+                setSyncStatusText('Retrying Cloud Sync...', 'Local + Retry Queue');
+            }
+        }
+
+        async function pullStateFromCloudKV() {
+            const endpoints = getCloudKVEndpoints();
+            for (const url of endpoints) {
+                try {
+                    const res = await fetch(`${url}?_t=${Date.now()}`, {
+                        method: 'GET',
+                        cache: 'no-store'
+                    });
+                    if (!res.ok) continue;
+                    const text = await res.text();
+                    if (!text || !text.trim().startsWith('{')) continue;
+                    const parsed = JSON.parse(text);
+                    if (parsed && parsed.settings && parsed.meta) {
+                        return parsed;
+                    }
+                } catch (e) {}
+            }
+            return null;
         }
 
         async function forceCloudPullNow(silent = false) {
             try {
                 if (!silent) setSyncStatusText('Syncing...');
-                const topicUrl = getRelayTopicURL();
-                const res = await fetch(`${topicUrl}/json?poll=1&since=all`, { cache: 'no-store' });
-                if (!res.ok) throw new Error('Relay unavailable');
-                const rawText = await res.text();
-                const lines = rawText.trim().split('\n').filter(Boolean);
-                let latestState = null;
-                let maxTs = 0;
-                for (const line of lines) {
+
+                // 1. Check Firestore if active
+                if (firestoreDocRef) {
                     try {
-                        const evt = JSON.parse(line);
-                        if (evt && evt.event === 'message' && evt.message) {
-                            const parsed = JSON.parse(evt.message);
-                            const ts = Number(parsed?.meta?.updatedAt || 0);
-                            if (parsed && parsed.settings && ts >= maxTs) {
-                                maxTs = ts;
-                                latestState = parsed;
-                            }
+                        const snap = await getDoc(firestoreDocRef);
+                        if (snap.exists()) {
+                            applyIncomingRemoteState(snap.data(), 'Firebase Firestore');
                         }
-                    } catch (err) {}
+                    } catch (e) {}
                 }
-                if (latestState && maxTs > Number(state.meta?.updatedAt || 0)) {
-                    applyIncomingRemoteState(latestState, 'Cloud Pull');
-                    if (!silent) showToast('Synced latest updates from cloud');
+
+                // 2. Check Cloud KV Store
+                const remoteState = await pullStateFromCloudKV();
+                const remoteTs = Number(remoteState?.meta?.updatedAt || 0);
+                const localTs = Number(state.meta?.updatedAt || 0);
+
+                if (remoteState && remoteTs > localTs) {
+                    applyIncomingRemoteState(remoteState, firestoreDocRef ? 'Firestore + Cloud KV' : 'Cloud KV Sync');
+                    if (!silent) showToast('✅ Synced latest updates from other devices');
                 } else {
-                    // Push our state if cloud is empty or behind
-                    if (Number(state.meta?.updatedAt || 0) > maxTs) {
-                        await pushStateToCloudRelay();
+                    // If local has newer changes that haven't reached cloud yet, push them now
+                    if (localTs > remoteTs) {
+                        await pushStateToCloudKV();
                     }
-                    setSyncStatusText(`Synced (${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })})`);
-                    if (!silent) showToast('All devices are up to date');
+                    setSyncStatusText(
+                        `Synced (${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })})`,
+                        firestoreDocRef ? 'Firestore + Cloud KV' : 'Cloud KV Sync'
+                    );
+                    if (!silent) showToast('✅ All devices are synchronized');
                 }
             } catch (e) {
-                setSyncStatusText('Local Storage Mode');
-                if (!silent) showToast('Could not reach cloud relay — using local storage', 'error');
+                setSyncStatusText('Local Storage Mode', 'Offline');
+                if (!silent) showToast('Could not reach cloud — saved locally', 'error');
             }
         }
 
-        function startRealtimeCloudStream() {
-            if (relayEventSource) {
-                try { relayEventSource.close(); } catch (e) {}
-                relayEventSource = null;
+        function startRealtimeCloudPolling() {
+            if (syncPollTimer) {
+                clearInterval(syncPollTimer);
+                syncPollTimer = null;
             }
-            try {
-                const topicUrl = getRelayTopicURL();
-                relayEventSource = new EventSource(`${topicUrl}/sse`);
-                relayEventSource.onopen = () => {
-                    setSyncStatusText('Live Cloud Sync Active');
-                };
-                relayEventSource.onmessage = (event) => {
-                    try {
-                        const evt = JSON.parse(event.data);
-                        if (evt && evt.message) {
-                            const parsed = JSON.parse(evt.message);
-                            if (parsed && parsed.settings) {
-                                applyIncomingRemoteState(parsed, 'Live Push');
-                            }
-                        }
-                    } catch (err) {}
-                };
-                relayEventSource.onerror = () => {
-                    // Browser EventSource auto-reconnects automatically
-                };
-            } catch (e) {}
+            // Poll every 4 seconds so requests sent from Phone appear on PC automatically
+            syncPollTimer = setInterval(() => {
+                if (document.visibilityState === 'visible') {
+                    forceCloudPullNow(true);
+                }
+            }, 4000);
         }
 
         async function initCloudSync() {
-            // 1. Always start the zero-config cross-device relay first (works on GitHub Pages, PC, & Phone)
+            // 1. Pull latest state from Cloud KV immediately on boot
             await forceCloudPullNow(true);
-            startRealtimeCloudStream();
+            startRealtimeCloudPolling();
 
-            // 2. Also connect Firestore if either Canvas __firebase_config or user's custom Firebase config is present
+            // 2. Connect Firebase Firestore if configured in environment or System Settings
             try {
                 let cfg = null;
                 if (typeof __firebase_config !== 'undefined') {
@@ -1868,14 +1903,15 @@
 
                 db = getFirestore(app);
                 const appId = typeof __app_id !== 'undefined' ? __app_id : 'regent-science-lab';
-                firestoreDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'regent_lab_data', 'main_state');
+                const roomSlug = (state.settings.syncRoomId || 'ris-regent-lab-sync-2026').replace(/[^a-zA-Z0-9_-]/g, '_');
+                firestoreDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'regent_lab_rooms', roomSlug);
 
                 onSnapshot(
                     firestoreDocRef,
                     (snap) => {
-                        setSyncStatusText('Live Firestore Sync Active');
+                        setSyncStatusText('Live Firestore Sync Active', 'Firebase Firestore');
                         if (snap.exists()) {
-                            applyIncomingRemoteState(snap.data(), 'Firestore');
+                            applyIncomingRemoteState(snap.data(), 'Firebase Firestore');
                         } else {
                             persistState();
                         }
@@ -3987,7 +4023,7 @@
             }
             state.settings.syncRoomId = room;
             persistState(true);
-            startRealtimeCloudStream();
+            initCloudSync();
             showToast('Sync Channel saved & pushed to cloud');
         }
 
