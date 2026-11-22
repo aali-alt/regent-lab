@@ -59,6 +59,7 @@ integration('Real HTTP/Auth emulator: admin-managed teacher passwords, role chec
   const post=async(path,token,value,command='http1',from=origin)=>{const res=await fetch(base+path,{method:'POST',headers:{Origin:from,'Content-Type':'application/json','X-Command-ID':command,...(token?{Authorization:'Bearer '+token}:{})},body:JSON.stringify(value)});return {status:res.status,body:await res.json()};};
   try{
     const adminToken=await login('admin@demo.invalid','Local-emulator-only-2026');
+    const adminAlias=await post('/auth/login','',{role:'admin',name:'ADMIN@DEMO.INVALID',password:'Local-emulator-only-2026'});assert.equal(adminAlias.status,200,JSON.stringify(adminAlias.body));assert.deepEqual(Object.keys(adminAlias.body),['token']);
     const missing=await post('/admin/accounts/create','',{name:'Teacher X',password:'Local-teacher-only-2026'});assert.equal(missing.status,401);
     const wrongOrigin=await post('/admin/accounts/create',adminToken,{name:'Teacher X',password:'Local-teacher-only-2026'},'x1','https://wrong.invalid');assert.equal(wrongOrigin.status,403);
     const created=await post('/admin/accounts/create',adminToken,{name:'Teacher X',password:'Local-teacher-only-2026'},'create1');assert.equal(created.status,201,JSON.stringify(created.body));
