@@ -21,3 +21,11 @@ test('server refuses provider UID mismatch and racing account disable/session ch
 test('persistent throttle caps concurrent password checks at ten per account/window',async()=>{const f=fixture();const results=await Promise.allSettled(Array.from({length:12},()=>f.broker(f.input)));assert.equal(results.filter(r=>r.status==='fulfilled').length,10);assert.equal(results.filter(r=>r.reason?.code==='SIGN_IN_LIMIT').length,2);assert.equal(f.verifyCalls,10);assert.equal([...f.rows.keys()].filter(key=>key.startsWith('authThrottle/')).length,1);});
 test('unknown attempts never create throttle records or expose provider detail',async()=>{const f=fixture();for(let i=0;i<5;i++)await assert.rejects(f.broker({...f.input,selector:'unknown_'+i}),{code:'SIGN_IN_FAILED'});assert.equal(f.rows.size,1);await assert.rejects(f.broker({...f.input,password:'wrong'}),error=>error.code==='AUTH_UNAVAILABLE'&&!error.message.includes('Provider detail'));});
 test('emulator verifier rejects non-demo or remote credential destinations',()=>{assert.throws(()=>createPasswordVerifier({apiKey:'fixture',projectId:'real-project',emulatorHost:'127.0.0.1:9099'}));assert.throws(()=>createPasswordVerifier({apiKey:'fixture',projectId:'demo-test',emulatorHost:'remote.invalid:9099'}));});
+
+test('administrator accepts display name and private email alias, including email case, without changing password',async()=>{
+  const f=fixture();f.profile.role='admin';f.profile.name='Synthetic Administrator';
+  for(const name of [f.profile.name,f.profile.login,f.profile.login.toUpperCase()]){
+    const result=await f.broker({...f.input,role:'admin',name});assert.equal(result.token,'fixture-token:opaque_teacher_1:2');
+  }
+  assert.equal(f.verifyCalls,3);
+});
