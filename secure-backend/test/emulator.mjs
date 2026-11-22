@@ -1,3 +1,4 @@
+import {publicDirectoryEntry} from '../auth-broker.mjs';
 import test,{after,before} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
@@ -22,6 +23,15 @@ integration('Firestore: concurrent requests for one slot have exactly one winner
 integration('Firestore: disjoint requests both persist and duplicate approval is atomic',async()=>{await seed();await Promise.all([createRequisition(repo,teacher,request('r1'),'c1'),createRequisition(repo,{...teacher,uid:'teacher2'},request('r2','2026-11-23'),'c2')]);assert.equal((await db.collection('regent_v2_requests').get()).docs.filter(doc=>!doc.data()._meta).length,2);await Promise.all([decideRequisition(repo,admin,{requestId:'r1',decision:'approved'},'a1'),decideRequisition(repo,admin,{requestId:'r1',decision:'approved'},'a2')]);assert.equal((await db.doc('regent_v2_inventory/beaker').get()).data().qty,7);});
 integration('Firestore: teacher booking and admin recurring slot cannot race past each other',async()=>{await seed();const results=await Promise.allSettled([createRequisition(repo,teacher,request('r1'),'c1'),applyAdminChanges(repo,admin,{changes:[{kind:'scheduleSlots',id:'s1',expectedVersion:0,value:{id:'s1',lab:'Lab 1',period:'Period 1',day:'Sunday',weekDate:'2026-11-22',recurrence:'weekly'}}]},'a1')]);assert.equal(results.filter(x=>x.status==='fulfilled').length,1);assert.equal(results.find(x=>x.status==='rejected').reason.code,'BOOKING_CONFLICT');});
 integration('Rules: unauthenticated clients cannot read inventory, legacy documents, or write requests',async()=>{await seed();const client=env.unauthenticatedContext().firestore();await assertFails(getDoc(doc(client,'regent_v2_inventory/beaker')));await assertFails(getDoc(doc(client,'regent_lab_data/main_state')));await assertFails(setDoc(doc(client,'regent_v2_requests/forged'),{teacherUid:'teacher1',status:'approved'}));});
+integration('Rules: directory is private even if a backend bug writes extra fields',async()=>{
+  await seed();const client=env.unauthenticatedContext().firestore(),signedTeacher=env.authenticatedContext('teacher1',{auth_time:100,sessionVersion:1}).firestore(),signedAdmin=env.authenticatedContext('admin1',{auth_time:100,sessionVersion:1}).firestore();
+  await db.doc('regent_v2_directory/teacher1').set({...publicDirectoryEntry(teacher),login:'must-remain-private@demo.invalid',role:'teacher'});
+  for(const viewer of [client,signedTeacher]){
+    await assertFails(getDoc(doc(viewer,'regent_v2_directory/teacher1')));
+    await assertFails(getDocs(query(collection(viewer,'regent_v2_directory'),where('disabled','==',false))));
+  }
+  await assertSucceeds(getDocs(collection(signedAdmin,'regent_v2_directory')));
+});
 integration('Rules: teacher can read own requests only and cannot write stock',async()=>{await seed();await createRequisition(repo,teacher,request('r1'),'c1');await createRequisition(repo,{...teacher,uid:'teacher2'},request('r2','2026-11-23'),'c2');const client=env.authenticatedContext('teacher1',{auth_time:100,sessionVersion:1}).firestore();await assertSucceeds(getDoc(doc(client,'regent_v2_requests/r1')));await assertFails(getDoc(doc(client,'regent_v2_requests/r2')));await assertSucceeds(getDocs(query(collection(client,'regent_v2_requests'),where('teacherUid','==','teacher1'))));await assertFails(getDocs(collection(client,'regent_v2_requests')));await assertFails(setDoc(doc(client,'regent_v2_inventory/beaker'),{qty:100}));});
 integration('Rules: admin can read all requests but cannot bypass the transaction server',async()=>{await seed();const client=env.authenticatedContext('admin1',{auth_time:100,sessionVersion:1}).firestore();await assertSucceeds(getDocs(collection(client,'regent_v2_requests')));await assertFails(setDoc(doc(client,'regent_v2_inventory/beaker'),{qty:-1}));});
 integration('Rules: disabled accounts and pre-reset sessions lose access immediately',async()=>{await seed();const old=env.authenticatedContext('teacher1',{auth_time:100,sessionVersion:1}).firestore();await assertSucceeds(getDoc(doc(old,'regent_v2_inventory/beaker')));await db.doc('regent_v2_accounts/teacher1').update({sessionVersion:2});await assertFails(getDoc(doc(old,'regent_v2_inventory/beaker')));const fresh=env.authenticatedContext('teacher1',{auth_time:101,sessionVersion:2}).firestore();await assertSucceeds(getDoc(doc(fresh,'regent_v2_inventory/beaker')));await db.doc('regent_v2_accounts/teacher1').update({disabled:true});await assertFails(getDoc(doc(fresh,'regent_v2_inventory/beaker')));});
@@ -40,7 +50,7 @@ integration('Real HTTP/Auth emulator: admin-managed teacher passwords, role chec
   await auth.createUser({uid:'admin1',email:'admin@demo.invalid',password:'Local-emulator-only-2026',displayName:'Lab Admin'});
   await auth.setCustomUserClaims('admin1',{sessionVersion:1});
   await db.doc('regent_v2_accounts/admin1').update({login:'admin@demo.invalid'});
-  await db.doc('regent_v2_directory/admin1').set({...admin,login:'admin@demo.invalid',disabled:false});
+  await db.doc('regent_v2_directory/admin1').set(publicDirectoryEntry(admin));
   const origin='https://aali-alt.github.io';
   const server=createServer(createHandler({repo:restRepo,auth:platform.auth,allowedOrigin:origin}));
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
@@ -62,7 +72,22 @@ integration('Real HTTP/Auth emulator: admin-managed teacher passwords, role chec
     const oldSession=await fetch(base+'/me',{headers:{Authorization:'Bearer '+teacherToken}});assert.equal(oldSession.status,401);
     teacherToken=await login(email,'Local-replacement-only-2026');
     const newSession=await fetch(base+'/me',{headers:{Authorization:'Bearer '+teacherToken}});assert.equal(newSession.status,200);
-    const directory=await(await fetch(base+'/directory')).json();const entry=directory.accounts.find(a=>a.uid===uid);assert.deepEqual(Object.keys(entry).sort(),['login','name','role','uid']);
+    const directory=await(await fetch(base+'/directory')).json();const entry=directory.accounts.find(a=>a.selector===uid);assert.deepEqual(Object.keys(entry).sort(),['name','selector']);
+    const publicRow=(await db.doc('regent_v2_directory/'+uid).get()).data();assert.deepEqual(Object.keys(publicRow).sort(),['disabled','name','selector']);
+    const adminDirectory=await fetch(base+'/admin/directory',{headers:{Authorization:'Bearer '+adminToken}});assert.equal(adminDirectory.status,200);assert.ok((await adminDirectory.json()).accounts.some(row=>row.uid===uid&&row.login===email));
+    const teacherDirectory=await fetch(base+'/admin/directory',{headers:{Authorization:'Bearer '+teacherToken}});assert.equal(teacherDirectory.status,403);
+    const wrongPassword=await post('/auth/login','',{role:'teacher',name:'Teacher X',selector:uid,password:'Not-the-password'});assert.equal(wrongPassword.status,401);
+    const wrongRole=await post('/auth/login','',{role:'admin',name:'Teacher X',selector:uid,password:'Local-replacement-only-2026'});assert.equal(wrongRole.status,401);
+    const brokered=await post('/auth/login','',{role:'teacher',name:'Teacher X',selector:uid,password:'Local-replacement-only-2026'});assert.equal(brokered.status,200,JSON.stringify(brokered.body));assert.deepEqual(Object.keys(brokered.body),['token']);
+    const customExchange=await fetch('http://'+process.env.FIREBASE_AUTH_EMULATOR_HOST+'/identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=local-test-api-key',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:brokered.body.token,returnSecureToken:true})});assert.equal(customExchange.status,200);const customSession=await customExchange.json();
+    const brokeredProfile=await fetch(base+'/me',{headers:{Authorization:'Bearer '+customSession.idToken}});assert.equal(brokeredProfile.status,200);assert.equal((await brokeredProfile.json()).account.role,'teacher');
+    const beforeMinimize=(await db.doc('regent_v2_accounts/'+uid).get()).data();
+    await db.doc('regent_v2_directory/orphan_test').set({uid:'orphan_test',name:'Orphan test',role:'admin',login:'orphan@demo.invalid',disabled:false});
+    const minimized=await post('/admin/directory/minimize',adminToken,{},'minimize1');assert.equal(minimized.status,200,JSON.stringify(minimized.body));assert.equal(minimized.body.accountsUnchanged,true);
+    assert.deepEqual((await db.doc('regent_v2_accounts/'+uid).get()).data(),beforeMinimize);
+    for(const doc of (await db.collection('regent_v2_directory').get()).docs)assert.deepEqual(Object.keys(doc.data()).sort(),['disabled','name','selector']);
+    assert.equal((await db.doc('regent_v2_directory/orphan_test').get()).data().disabled,true);
+
     const profile=(await db.doc('regent_v2_accounts/'+uid).get()).data();assert.equal('password'in profile,false);
     const disabled=await post('/admin/accounts/disable',adminToken,{uid},'disable1');assert.equal(disabled.status,200);
     const disabledSession=await fetch(base+'/me',{headers:{Authorization:'Bearer '+teacherToken}});assert.ok([401,403].includes(disabledSession.status));
