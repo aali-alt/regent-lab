@@ -23,13 +23,14 @@ export function createSignInBroker({repo,auth,passwordVerifier}) {
     // A backstop per running instance, not a substitute for a host-level IP limit.
     if(++localAttempts>100)throw new AppError(429,'SIGN_IN_LIMIT','Too many sign-in attempts. Try again in five minutes.');
     const role=input.role,name=input.name,selector=input.selector,password=input.password;
-    if(!['teacher','admin'].includes(role)||typeof password!=='string'||password.length<1||password.length>128||typeof name!=='string'||name.length>120||role==='teacher'&&(typeof selector!=='string'||!/^[-a-zA-Z0-9_]{1,128}$/.test(selector)))deny();
+    if(!['teacher','admin'].includes(role)||typeof password!=='string'||password.length<1||password.length>128||typeof name!=='string'||name.length>(role==='admin'?254:120)||role==='teacher'&&(typeof selector!=='string'||!/^[-a-zA-Z0-9_]{1,128}$/.test(selector)))deny();
     if(!passwordVerifier||!auth.createCustomToken)throw new AppError(503,'SIGN_IN_SETUP_REQUIRED','Private sign-in is not configured.');
     let profile;
     if(role==='teacher')profile=(await repo.collection('accounts').doc(selector).get()).data();
     else {
-      const matches=await repo.collection('accounts').where('name','==',name).get();
-      const enabled=matches.docs.map(doc=>doc.data()).filter(account=>account.role==='admin'&&!account.disabled);
+      const byName=await repo.collection('accounts').where('name','==',name).get();
+      const byLogin=await repo.collection('accounts').where('login','==',name.toLowerCase()).get();
+      const enabled=[...new Map([...byName.docs,...byLogin.docs].map(doc=>{const account=doc.data();return [account.uid,account];})).values()].filter(account=>account.role==='admin'&&!account.disabled);
       if(enabled.length===1)profile=enabled[0];
     }
     // Unknown accounts create no unbounded database records.
