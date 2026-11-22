@@ -6,7 +6,7 @@
     "node": ">=22"
   },
   "scripts": {
-    "test": "node --test test/domain.test.mjs",
+    "test": "node --test test/*.test.mjs",
     "start": "node server.mjs",
     "test:emulator": "firebase emulators:exec --only firestore,auth --project demo-regent-lab \"node --test test/emulator.mjs\"",
     "test:ui": "firebase emulators:exec --only firestore,auth --project demo-regent-lab \"node test/ui-roundtrip.mjs\""
