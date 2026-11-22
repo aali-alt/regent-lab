@@ -42,6 +42,7 @@
             background-color: #F4F6FA;
             color: #1E293B;
             overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
         }
         .font-ar {
             font-family: 'Cairo', 'sans-serif';
@@ -209,7 +210,7 @@
     <div id="print-stage" class="hidden bg-white text-slate-900"></div>
 
     <!-- ================= TOAST NOTIFICATION ================= -->
-    <div id="toast-container" class="fixed bottom-5 right-5 z-[100] flex flex-col gap-2 pointer-events-none no-print"></div>
+    <div id="toast-container" class="fixed bottom-5 right-5 left-5 sm:left-auto z-[100] flex flex-col gap-2 pointer-events-none no-print"></div>
 
     <!-- ================= EXECUTIVE ADMIN LOGIN GATE ================= -->
     <div id="admin-login-gate" class="hidden fixed inset-0 z-[90] bg-gradient-to-br from-ris-navyDark via-ris-navy to-slate-900 flex items-center justify-center p-4">
@@ -218,6 +219,10 @@
                 <div class="w-20 h-20 mx-auto bg-white rounded-2xl p-2 shadow-lg flex items-center justify-center mb-3" data-ris-crest="lg"></div>
                 <h1 class="text-xl font-black tracking-tight">Science Lab Portal</h1>
                 <p class="text-xs font-semibold text-blue-200 mt-0.5">Regent International School • Laboratory Control</p>
+                <div class="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-blue-100 text-[10px] font-extrabold">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span class="sync-status-label">Connecting Cloud Sync...</span>
+                </div>
             </div>
             <form onsubmit="handleAdminLogin(event)" class="p-6 sm:p-8 space-y-4">
                 <div id="admin-login-error" class="hidden p-3 rounded-xl bg-red-50 border border-red-200 text-ris-red text-xs font-bold text-center">
@@ -235,7 +240,7 @@
                     <span>🔐 Unlock Laboratory System</span>
                 </button>
                 <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] font-bold text-slate-400">
-                    <span>Default: admin / RIS2026</span>
+                    <button type="button" onclick="forceCloudPullNow()" class="text-emerald-700 hover:underline font-extrabold">🔄 Sync Credentials</button>
                     <button type="button" onclick="launchTeacherPortalPreview()" class="text-ris-navy hover:underline font-extrabold">Teacher Portal →</button>
                 </div>
             </form>
@@ -246,26 +251,30 @@
     <div id="teacher-portal-shell" class="hidden min-h-screen bg-ris-bg pb-12">
         <header class="bg-ris-navy text-white shadow-md sticky top-0 z-30">
             <div class="max-w-3xl mx-auto px-4 py-3.5 flex items-center justify-between gap-3">
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-3 min-w-0">
                     <div class="w-11 h-11 bg-white rounded-xl p-1 flex items-center justify-center shrink-0" data-ris-crest="sm"></div>
-                    <div>
-                        <h1 class="text-base font-black tracking-tight leading-tight">Teacher Lab Requisition Portal</h1>
-                        <p class="text-[11px] font-semibold text-blue-200" id="tp-school-subtitle">Regent International School • Science Department</p>
+                    <div class="min-w-0">
+                        <h1 class="text-sm sm:text-base font-black tracking-tight leading-tight truncate">Teacher Lab Requisition Portal</h1>
+                        <p class="text-[11px] font-semibold text-blue-200 truncate" id="tp-school-subtitle">Regent International School • Science Department</p>
                     </div>
                 </div>
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2 shrink-0">
+                    <span class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-200 text-[10px] font-extrabold">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                        <span class="sync-status-label">Synced</span>
+                    </span>
                     <button type="button" id="tp-logout-btn" onclick="logoutTeacherPortal()" class="hidden px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-extrabold text-white transition">
-                        Switch Teacher
+                        Switch
                     </button>
                     <button type="button" id="tp-back-admin-btn" onclick="exitTeacherPortalToAdmin()" class="hidden px-3 py-1.5 rounded-xl bg-ris-red hover:bg-ris-redDark text-xs font-extrabold text-white transition">
-                        Admin Dashboard
+                        Admin
                     </button>
                 </div>
             </div>
         </header>
 
         <!-- Teacher Individual Authentication Gate -->
-        <div id="tp-auth-gate" class="max-w-md mx-auto px-4 pt-10">
+        <div id="tp-auth-gate" class="max-w-md mx-auto px-4 pt-8 sm:pt-10">
             <div class="bg-white rounded-3xl shadow-xl border border-ris-border overflow-hidden">
                 <div class="bg-gradient-to-r from-ris-navy to-ris-navyDark p-6 text-white text-center">
                     <div class="w-16 h-16 mx-auto bg-white rounded-2xl p-1.5 mb-3 flex items-center justify-center" data-ris-crest="md"></div>
@@ -287,6 +296,11 @@
                     <button type="submit" class="w-full py-3.5 rounded-xl bg-ris-navy hover:bg-ris-navyDark text-white font-extrabold text-sm shadow-md transition">
                         Verify & Open Requisition Form
                     </button>
+                    <div class="text-center pt-1">
+                        <button type="button" onclick="forceCloudPullNow()" class="text-[11px] font-extrabold text-emerald-700 hover:underline">
+                            🔄 Refresh Teacher List & Passwords
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -296,7 +310,7 @@
             <div id="teacher-submit-success" class="hidden bg-emerald-50 border-2 border-emerald-300 rounded-3xl p-6 text-center space-y-3 shadow-sm">
                 <div class="w-12 h-12 rounded-full bg-emerald-600 text-white flex items-center justify-center mx-auto text-xl font-black">✓</div>
                 <h2 class="text-lg font-black text-emerald-900">Requisition Submitted to Lab Technician!</h2>
-                <p class="text-xs font-semibold text-emerald-700">Your experiment equipment & chemical request has been logged and synced in real time.</p>
+                <p class="text-xs font-semibold text-emerald-700">Your experiment equipment & chemical request has been logged and synced across all devices in real time.</p>
                 <button type="button" onclick="resetTeacherPortalForm()" class="px-5 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-extrabold">
                     + Submit Another Experiment Request
                 </button>
@@ -306,7 +320,7 @@
                 <!-- Locked Teacher Identity Card -->
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl bg-blue-50/80 border border-blue-200">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-ris-navy text-white flex items-center justify-center font-black text-sm">🔒</div>
+                        <div class="w-10 h-10 rounded-xl bg-ris-navy text-white flex items-center justify-center font-black text-sm shrink-0">🔒</div>
                         <div>
                             <div class="text-[10px] font-extrabold uppercase tracking-wider text-blue-700">Verified & Locked Teacher Identity</div>
                             <div id="tp-locked-teacher-display" class="text-sm font-black text-ris-navy">—</div>
@@ -396,14 +410,16 @@
                 <div class="space-y-3">
                     <div class="flex items-center justify-between">
                         <label class="text-xs font-extrabold text-ris-navy">Select Required Apparatus & Chemicals *</label>
-                        <span class="text-[11px] font-bold text-slate-400">Catalog View</span>
+                        <span class="text-[11px] font-bold text-slate-400">Live Stock View</span>
                     </div>
                     <div class="flex flex-col sm:flex-row gap-2">
                         <select id="tp-item-select" class="flex-1 px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold text-ris-navy"></select>
-                        <input type="number" id="tp-item-qty" min="1" value="1" class="w-full sm:w-24 px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold text-center">
-                        <button type="button" onclick="addTeacherPortalItem()" class="px-4 py-2.5 rounded-xl bg-ris-navy hover:bg-ris-navyDark text-white text-xs font-extrabold shrink-0">
-                            + Add Item
-                        </button>
+                        <div class="flex gap-2">
+                            <input type="number" id="tp-item-qty" min="1" value="1" class="w-24 px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold text-center">
+                            <button type="button" onclick="addTeacherPortalItem()" class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-ris-navy hover:bg-ris-navyDark text-white text-xs font-extrabold shrink-0">
+                                + Add Item
+                            </button>
+                        </div>
                     </div>
                     <div id="tp-cart-list" class="space-y-2"></div>
                 </div>
@@ -418,6 +434,15 @@
                     📤 Submit Requisition to Lab Technician
                 </button>
             </form>
+
+            <!-- Teacher's Own Submitted Requests Live Tracker -->
+            <div class="bg-white rounded-3xl shadow-sm border border-ris-border p-5 space-y-3">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-sm font-black text-ris-navy">📋 My Recent Requisitions Status</h3>
+                    <button type="button" onclick="forceCloudPullNow()" class="text-[11px] font-extrabold text-ris-navy hover:underline">🔄 Refresh</button>
+                </div>
+                <div id="tp-my-requests-list" class="space-y-2"></div>
+            </div>
         </main>
     </div>
 
@@ -425,14 +450,14 @@
     <div id="cabinet-audit-shell" class="hidden min-h-screen bg-ris-bg pb-12">
         <header class="bg-ris-navy text-white shadow-md sticky top-0 z-30">
             <div class="max-w-2xl mx-auto px-4 py-3.5 flex items-center justify-between gap-3">
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-3 min-w-0">
                     <div class="w-10 h-10 bg-white rounded-xl p-1 flex items-center justify-center shrink-0" data-ris-crest="sm"></div>
-                    <div>
-                        <h1 id="ca-header-title" class="text-base font-black leading-tight">Cabinet Quick-Audit</h1>
-                        <p id="ca-header-sub" class="text-[11px] text-blue-200 font-semibold">Instant Shelf Inventory Verification</p>
+                    <div class="min-w-0">
+                        <h1 id="ca-header-title" class="text-base font-black leading-tight truncate">Cabinet Quick-Audit</h1>
+                        <p id="ca-header-sub" class="text-[11px] text-blue-200 font-semibold truncate">Instant Shelf Inventory Verification</p>
                     </div>
                 </div>
-                <button type="button" onclick="exitCabinetAuditToAdmin()" class="px-3 py-1.5 rounded-xl bg-white/15 hover:bg-white/25 text-xs font-extrabold">
+                <button type="button" onclick="exitCabinetAuditToAdmin()" class="px-3 py-1.5 rounded-xl bg-white/15 hover:bg-white/25 text-xs font-extrabold shrink-0">
                     Full Dashboard
                 </button>
             </div>
@@ -443,34 +468,47 @@
     <!-- ================= MAIN ADMIN APPLICATION SHELL ================= -->
     <div id="app-shell" class="min-h-screen flex flex-col lg:flex-row">
         <!-- Mobile Top Bar -->
-        <div class="lg:hidden bg-ris-navy text-white px-4 py-3 flex items-center justify-between sticky top-0 z-30 shadow-md">
-            <div class="flex items-center gap-2.5">
-                <div class="w-9 h-9 bg-white rounded-xl p-1 flex items-center justify-center" data-ris-crest="sm"></div>
-                <div>
-                    <div class="text-sm font-black leading-tight" id="mobile-brand-title">Science Lab</div>
-                    <div class="text-[10px] text-blue-200 font-semibold" id="mobile-brand-sub">Regent International School</div>
+        <div class="lg:hidden bg-ris-navy text-white px-3.5 py-3 flex items-center justify-between sticky top-0 z-30 shadow-md gap-2">
+            <div class="flex items-center gap-2.5 min-w-0">
+                <div class="w-9 h-9 bg-white rounded-xl p-1 flex items-center justify-center shrink-0" data-ris-crest="sm"></div>
+                <div class="min-w-0">
+                    <div class="text-sm font-black leading-tight truncate" id="mobile-brand-title">Science Lab</div>
+                    <div class="flex items-center gap-1.5 text-[10px] text-emerald-300 font-extrabold">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span class="sync-status-label truncate">Cloud Sync</span>
+                    </div>
                 </div>
             </div>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1.5 shrink-0">
+                <button type="button" onclick="forceCloudPullNow()" class="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs" title="Sync Now">
+                    🔄
+                </button>
                 <button type="button" onclick="toggleDarkMode()" class="theme-toggle-btn p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs" title="Toggle Dark Mode">
                     🌙
                 </button>
-                <button type="button" onclick="toggleMobileSidebar()" class="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm">
-                    ☰ Menu
+                <button type="button" onclick="toggleMobileSidebar(true)" class="px-3 py-2 rounded-xl bg-ris-red hover:bg-ris-redDark text-white font-extrabold text-xs flex items-center gap-1">
+                    <span>☰</span>
+                    <span>Menu</span>
                 </button>
             </div>
         </div>
 
-        <!-- Sidebar Navigation -->
-        <aside id="main-sidebar" class="hidden lg:flex flex-col w-72 bg-ris-navy text-white shrink-0 lg:sticky lg:top-0 lg:h-screen overflow-y-auto z-40">
-            <div class="p-5 text-center border-b border-white/10">
+        <!-- Mobile Slide-Over Backdrop -->
+        <div id="mobile-sidebar-backdrop" onclick="toggleMobileSidebar(false)" class="hidden fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-xs lg:hidden"></div>
+
+        <!-- Sidebar Navigation (Fixed Slide-Over on Mobile, Sticky Column on Desktop) -->
+        <aside id="main-sidebar" class="hidden lg:flex flex-col fixed inset-y-0 left-0 z-50 lg:static w-72 bg-ris-navy text-white shrink-0 lg:sticky lg:top-0 lg:h-screen overflow-y-auto shadow-2xl lg:shadow-none">
+            <div class="p-5 text-center border-b border-white/10 relative">
+                <button type="button" onclick="toggleMobileSidebar(false)" class="lg:hidden absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white font-black text-xs flex items-center justify-center">
+                    ✕
+                </button>
                 <div class="w-20 h-20 mx-auto bg-white rounded-2xl p-2 shadow-lg flex items-center justify-center mb-3" data-ris-crest="lg"></div>
                 <h1 id="sidebar-app-title" class="text-lg font-black tracking-tight">Science Lab</h1>
                 <p id="sidebar-school-name" class="text-xs font-semibold text-blue-200">Regent International School</p>
-                <div class="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-200 text-[10px] font-extrabold">
+                <button type="button" onclick="forceCloudPullNow()" class="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-200 text-[10px] font-extrabold hover:bg-emerald-500/30 transition">
                     <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <span id="cloud-sync-badge">Live Cloud Sync Active</span>
-                </div>
+                    <span id="cloud-sync-badge" class="sync-status-label">Live Cloud Sync Active</span>
+                </button>
             </div>
 
             <nav class="flex-1 p-3.5 space-y-1">
@@ -536,73 +574,76 @@
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
                         <span id="dash-dept-badge" class="inline-block px-3 py-1 rounded-full bg-blue-100 text-ris-navy text-[11px] font-extrabold mb-1">RIS Science Department</span>
-                        <h2 class="text-2xl font-black text-ris-navy tracking-tight">Laboratory Operations Overview</h2>
+                        <h2 class="text-xl sm:text-2xl font-black text-ris-navy tracking-tight">Laboratory Operations Overview</h2>
                     </div>
                     <div class="flex flex-wrap items-center gap-2">
-                        <span id="dash-live-clock" class="px-3.5 py-2 rounded-xl bg-white border border-ris-border text-xs font-extrabold text-slate-600"></span>
-                        <button type="button" onclick="toggleDarkMode()" class="theme-toggle-btn px-3.5 py-2 rounded-xl bg-white border border-ris-border hover:bg-slate-50 text-xs font-extrabold text-ris-navy shadow-xs">
+                        <span id="dash-live-clock" class="px-3 py-2 rounded-xl bg-white border border-ris-border text-xs font-extrabold text-slate-600"></span>
+                        <button type="button" onclick="forceCloudPullNow()" class="px-3 py-2 rounded-xl bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 text-xs font-extrabold text-emerald-800 shadow-xs">
+                            🔄 Sync Now
+                        </button>
+                        <button type="button" onclick="toggleDarkMode()" class="theme-toggle-btn hidden sm:inline-flex px-3.5 py-2 rounded-xl bg-white border border-ris-border hover:bg-slate-50 text-xs font-extrabold text-ris-navy shadow-xs">
                             🌙 Dark Mode
                         </button>
-                        <button type="button" onclick="lockAdminSession()" class="px-3.5 py-2 rounded-xl bg-white border border-ris-border hover:bg-slate-50 text-xs font-extrabold text-ris-navy shadow-xs">
+                        <button type="button" onclick="lockAdminSession()" class="px-3 py-2 rounded-xl bg-white border border-ris-border hover:bg-slate-50 text-xs font-extrabold text-ris-navy shadow-xs">
                             🔒 Lock App
                         </button>
-                        <button type="button" onclick="openTeacherQRModal()" class="px-4 py-2 rounded-xl bg-ris-navy hover:bg-ris-navyDark text-white text-xs font-extrabold shadow-xs">
+                        <button type="button" onclick="openTeacherQRModal()" class="px-3.5 py-2 rounded-xl bg-ris-navy hover:bg-ris-navyDark text-white text-xs font-extrabold shadow-xs">
                             📱 Teacher QR
                         </button>
                     </div>
                 </div>
 
-                <!-- KPI Cards -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-                    <div onclick="switchTab('inventory')" class="cursor-pointer bg-white p-5 rounded-3xl border border-ris-border shadow-xs hover:border-ris-navy transition">
+                <!-- KPI Cards (2 cols on mobile, 5 cols on desktop) -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+                    <div onclick="switchTab('inventory')" class="cursor-pointer bg-white p-4 sm:p-5 rounded-3xl border border-ris-border shadow-xs hover:border-ris-navy transition">
                         <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold text-slate-500">Total Inventory Items</span>
+                            <span class="text-[11px] sm:text-xs font-bold text-slate-500">Total Inventory</span>
                             <span class="text-base">🧪</span>
                         </div>
-                        <div id="kpi-total-items" class="text-3xl font-black text-ris-navy mt-1">0</div>
-                        <div id="kpi-total-units-sub" class="text-[11px] font-bold text-slate-400 mt-1">Registered SKUs</div>
+                        <div id="kpi-total-items" class="text-2xl sm:text-3xl font-black text-ris-navy mt-1">0</div>
+                        <div id="kpi-total-units-sub" class="text-[10px] sm:text-[11px] font-bold text-slate-400 mt-1 truncate">Registered SKUs</div>
                     </div>
-                    <div onclick="switchTab('inventory')" class="cursor-pointer bg-white p-5 rounded-3xl border border-ris-border shadow-xs hover:border-amber-500 transition">
+                    <div onclick="switchTab('inventory')" class="cursor-pointer bg-white p-4 sm:p-5 rounded-3xl border border-ris-border shadow-xs hover:border-amber-500 transition">
                         <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold text-slate-500">Low Stock Alerts</span>
+                            <span class="text-[11px] sm:text-xs font-bold text-slate-500">Low Stock</span>
                             <span class="text-base">📉</span>
                         </div>
-                        <div id="kpi-low-stock" class="text-3xl font-black text-amber-600 mt-1">0</div>
-                        <div class="text-[11px] font-bold text-amber-700 mt-1">Below minimum threshold</div>
+                        <div id="kpi-low-stock" class="text-2xl sm:text-3xl font-black text-amber-600 mt-1">0</div>
+                        <div class="text-[10px] sm:text-[11px] font-bold text-amber-700 mt-1 truncate">Below threshold</div>
                     </div>
-                    <div onclick="switchTab('inventory')" class="cursor-pointer bg-white p-5 rounded-3xl border border-ris-border shadow-xs hover:border-ris-red transition">
+                    <div onclick="switchTab('inventory')" class="cursor-pointer bg-white p-4 sm:p-5 rounded-3xl border border-ris-border shadow-xs hover:border-ris-red transition">
                         <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold text-slate-500">Expiry & Safety Alerts</span>
+                            <span class="text-[11px] sm:text-xs font-bold text-slate-500">Expiry Alerts</span>
                             <span class="text-base">☣️</span>
                         </div>
-                        <div id="kpi-expired" class="text-3xl font-black text-ris-red mt-1">0</div>
-                        <div class="text-[11px] font-bold text-ris-red mt-1">Expired reagents</div>
+                        <div id="kpi-expired" class="text-2xl sm:text-3xl font-black text-ris-red mt-1">0</div>
+                        <div class="text-[10px] sm:text-[11px] font-bold text-ris-red mt-1 truncate">Expired reagents</div>
                     </div>
-                    <div onclick="switchTab('loans')" class="cursor-pointer bg-white p-5 rounded-3xl border border-ris-border shadow-xs hover:border-blue-600 transition">
+                    <div onclick="switchTab('loans')" class="cursor-pointer bg-white p-4 sm:p-5 rounded-3xl border border-ris-border shadow-xs hover:border-blue-600 transition">
                         <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold text-slate-500">Active Teacher Loans</span>
+                            <span class="text-[11px] sm:text-xs font-bold text-slate-500">Active Loans</span>
                             <span class="text-base">🔄</span>
                         </div>
-                        <div id="kpi-active-loans" class="text-3xl font-black text-blue-600 mt-1">0</div>
-                        <div id="kpi-overdue-sub" class="text-[11px] font-bold text-blue-700 mt-1">Currently outside lab</div>
+                        <div id="kpi-active-loans" class="text-2xl sm:text-3xl font-black text-blue-600 mt-1">0</div>
+                        <div id="kpi-overdue-sub" class="text-[10px] sm:text-[11px] font-bold text-blue-700 mt-1 truncate">Outside lab</div>
                     </div>
-                    <div onclick="switchTab('requests')" class="cursor-pointer bg-white p-5 rounded-3xl border border-ris-border shadow-xs hover:border-emerald-600 transition">
+                    <div onclick="switchTab('requests')" class="col-span-2 sm:col-span-1 cursor-pointer bg-white p-4 sm:p-5 rounded-3xl border border-ris-border shadow-xs hover:border-emerald-600 transition">
                         <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold text-slate-500">Pending Requests</span>
+                            <span class="text-[11px] sm:text-xs font-bold text-slate-500">Pending Requests</span>
                             <span class="text-base">📥</span>
                         </div>
-                        <div id="kpi-pending-reqs" class="text-3xl font-black text-emerald-600 mt-1">0</div>
-                        <div class="text-[11px] font-bold text-emerald-700 mt-1">Awaiting lab setup</div>
+                        <div id="kpi-pending-reqs" class="text-2xl sm:text-3xl font-black text-emerald-600 mt-1">0</div>
+                        <div class="text-[10px] sm:text-[11px] font-bold text-emerald-700 mt-1 truncate">Awaiting lab setup</div>
                     </div>
                 </div>
 
                 <!-- Instant Global Search -->
                 <div class="bg-white p-5 rounded-3xl border border-ris-border shadow-xs space-y-3">
-                    <div class="flex items-center justify-between">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                         <h3 class="text-sm font-black text-ris-navy">🔍 Instant Global Inventory & Location Search</h3>
                         <span class="text-[11px] font-bold text-slate-400">Type English, Arabic, Code, or Cabinet</span>
                     </div>
-                    <input type="text" id="global-search-input" oninput="handleGlobalSearch()" placeholder="Search by English name, Arabic name, Item Code, Cabinet, or Lab (e.g., Benedict, محلول بندكت, CHM-101, Lab 1)..." class="w-full px-4 py-3 bg-ris-bg border border-slate-300 rounded-2xl text-xs font-bold text-ris-navy focus:outline-none focus:border-ris-navy">
+                    <input type="text" id="global-search-input" oninput="handleGlobalSearch()" placeholder="Search by English name, Arabic name, Item Code, Cabinet, or Lab..." class="w-full px-4 py-3 bg-ris-bg border border-slate-300 rounded-2xl text-xs font-bold text-ris-navy focus:outline-none focus:border-ris-navy">
                     <div id="global-search-results" class="hidden space-y-2 pt-2"></div>
                 </div>
 
@@ -657,7 +698,8 @@
                         <h2 class="text-xl font-black text-ris-navy">📥 Teacher Lab & Equipment Requisitions</h2>
                         <p class="text-xs font-semibold text-slate-500">Approve requests to automatically book lab slots, issue classroom loans, or deduct consumed reagents.</p>
                     </div>
-                    <div class="flex gap-2">
+                    <div class="flex flex-wrap gap-2">
+                        <button type="button" onclick="forceCloudPullNow()" class="px-3.5 py-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-extrabold">🔄 Check New Requests</button>
                         <button type="button" onclick="openTeacherQRModal()" class="px-4 py-2 rounded-xl bg-ris-navy text-white text-xs font-extrabold">📱 Show Teacher QR</button>
                         <button type="button" onclick="launchTeacherPortalPreview()" class="px-4 py-2 rounded-xl bg-white border border-ris-border text-ris-navy text-xs font-extrabold">+ New Request</button>
                     </div>
@@ -690,7 +732,11 @@
                     <div id="schedule-stats-bar" class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 border-t border-slate-100"></div>
                 </div>
 
-                <div class="bg-white rounded-3xl border border-ris-border shadow-xs overflow-x-auto">
+                <!-- Mobile Day-by-Day Schedule Cards (< md) -->
+                <div id="mobile-schedule-cards" class="md:hidden space-y-3"></div>
+
+                <!-- Desktop Full Matrix Timetable (>= md) -->
+                <div class="hidden md:block bg-white rounded-3xl border border-ris-border shadow-xs overflow-x-auto">
                     <table class="w-full text-left border-collapse min-w-[840px]">
                         <thead>
                             <tr id="weekly-schedule-thead-row" class="bg-ris-navy text-white text-xs">
@@ -754,8 +800,11 @@
                     </select>
                 </div>
 
-                <!-- Inventory Register Table -->
-                <div class="bg-white rounded-3xl border border-ris-border shadow-xs overflow-x-auto">
+                <!-- Mobile Inventory Cards (< md) -->
+                <div id="inventory-mobile-cards" class="md:hidden space-y-3"></div>
+
+                <!-- Desktop Inventory Register Table (>= md) -->
+                <div class="hidden md:block bg-white rounded-3xl border border-ris-border shadow-xs overflow-x-auto">
                     <table class="w-full text-left border-collapse min-w-[900px]">
                         <thead>
                             <tr class="bg-ris-navy text-white text-xs">
@@ -891,11 +940,48 @@
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
                         <h2 class="text-xl font-black text-ris-navy">⚙️ System Settings & Access Control</h2>
-                        <p class="text-xs font-semibold text-slate-500">Manage admin credentials, permanent QR URL, teacher accounts, and all custom dropdown lists.</p>
+                        <p class="text-xs font-semibold text-slate-500">Manage cross-device cloud sync, admin credentials, permanent QR URL, teacher accounts, and dropdown lists.</p>
                     </div>
                     <button type="button" onclick="resetDefaultSettings()" class="px-4 py-2 rounded-xl bg-white border border-ris-border hover:bg-slate-50 text-xs font-extrabold text-slate-600">
                         ↺ Restore Default Lists
                     </button>
+                </div>
+
+                <!-- 0. Cross-Device Real-Time Cloud Sync (PC <-> Phone) -->
+                <div class="bg-white p-6 rounded-3xl border-2 border-emerald-200 shadow-xs space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div>
+                            <h3 class="text-base font-black text-ris-navy">☁️ Cross-Device Cloud Sync (PC ↔ Phone Real-Time Sync)</h3>
+                            <p class="text-xs text-slate-500 font-medium">Ensures passwords, teacher requests, inventory, and schedules sync automatically between your computer and phones.</p>
+                        </div>
+                        <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-extrabold self-start sm:self-center sync-status-label">
+                            Live Cloud Sync Active
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
+                        <div class="sm:col-span-2">
+                            <label class="block text-xs font-bold text-slate-700 mb-1">School Sync Channel ID (Shared automatically via QR codes)</label>
+                            <input type="text" id="set-sync-room-id" placeholder="ris-regent-lab-sync-2026" class="w-full px-3.5 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-mono font-bold text-ris-navy">
+                        </div>
+                        <div class="flex gap-2">
+                            <button type="button" onclick="saveCloudSyncSettings()" class="flex-1 py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold">
+                                Save & Push
+                            </button>
+                            <button type="button" onclick="forceCloudPullNow()" class="py-2.5 px-3 rounded-xl bg-ris-navy hover:bg-ris-navyDark text-white text-xs font-extrabold">
+                                🔄 Pull Now
+                            </button>
+                        </div>
+                    </div>
+                    <details class="text-xs">
+                        <summary class="cursor-pointer font-extrabold text-ris-navy hover:underline">Optional: Connect Custom Firebase Project Config (JSON)</summary>
+                        <div class="mt-3 space-y-2">
+                            <p class="text-[11px] text-slate-500">Paste your Firebase <code class="font-mono">firebaseConfig</code> JSON object for dedicated Firestore database storage:</p>
+                            <textarea id="set-custom-firebase-cfg" rows="3" placeholder='{"apiKey":"...","authDomain":"...","projectId":"..."}' class="w-full px-3 py-2 bg-ris-bg border border-slate-300 rounded-xl text-xs font-mono"></textarea>
+                            <button type="button" onclick="saveCustomFirebaseConfig()" class="px-4 py-2 rounded-xl bg-ris-navy text-white text-xs font-extrabold">
+                                Connect Firebase & Sync
+                            </button>
+                        </div>
+                    </details>
                 </div>
 
                 <!-- 1. Admin Login Security -->
@@ -903,7 +989,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <h3 class="text-base font-black text-ris-navy">🔐 Administrator Login Credentials</h3>
-                            <p class="text-xs text-slate-500 font-medium">Control the username and password required to unlock the Lab Control Dashboard.</p>
+                            <p class="text-xs text-slate-500 font-medium">Control the username and password required to unlock the Lab Control Dashboard (syncs across PC & Phone).</p>
                         </div>
                         <span class="px-3 py-1 rounded-full bg-red-50 text-ris-red text-[11px] font-extrabold">Security</span>
                     </div>
@@ -918,7 +1004,7 @@
                         </div>
                         <div class="flex gap-2">
                             <button type="button" onclick="saveAdminSecuritySettings()" class="flex-1 py-2.5 px-4 rounded-xl bg-ris-navy hover:bg-ris-navyDark text-white text-xs font-extrabold">
-                                Save Credentials
+                                Save & Sync
                             </button>
                             <button type="button" onclick="lockAdminSession()" class="py-2.5 px-3 rounded-xl bg-ris-red text-white text-xs font-extrabold">
                                 🔒 Lock
@@ -1092,7 +1178,7 @@
                 <h3 class="text-base font-black text-ris-navy">📱 Teacher Portal QR Code</h3>
                 <button type="button" onclick="closeModal('teacher-qr-modal')" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 font-bold text-slate-600">✕</button>
             </div>
-            <p class="text-xs text-slate-500 font-medium">Teachers scan this code with their phone camera to open the authenticated requisition portal (<code class="text-ris-navy font-bold">?mode=teacher</code>).</p>
+            <p class="text-xs text-slate-500 font-medium">Teachers scan this code with their phone camera to open the authenticated requisition portal (<code class="text-ris-navy font-bold">?mode=teacher</code>) synced with your PC.</p>
             <div id="teacher-qr-canvas" class="qr-single-box mx-auto"></div>
             <div class="flex gap-2">
                 <input type="text" id="teacher-qr-url-input" readonly class="flex-1 px-3 py-2 bg-ris-bg border border-slate-300 rounded-xl text-[11px] font-bold text-slate-600">
@@ -1383,7 +1469,7 @@
         </div>
     </div>
 
-    <!-- ================= APPLICATION LOGIC & FIREBASE SYNC ================= -->
+    <!-- ================= APPLICATION LOGIC & CROSS-DEVICE SYNC ================= -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -1441,13 +1527,22 @@
         }
 
         // ================= DEFAULT STATE & PERSISTENCE =================
-        const STORAGE_KEY = 'ris_science_lab_state_v4';
+        const STORAGE_KEY = 'ris_science_lab_state_v5';
+        const CUSTOM_FB_KEY = 'ris_custom_firebase_cfg_v1';
+        const CLIENT_INSTANCE_ID = 'client-' + Math.random().toString(36).slice(2, 10);
+
         const DEFAULT_STATE = {
+            meta: {
+                updatedAt: 0,
+                settingsUpdatedAt: 0,
+                lastSender: ''
+            },
             settings: {
                 appTitle: 'Science Lab',
                 schoolName: 'Regent International School',
                 deptBadge: 'RIS Science Department',
                 publicBaseUrl: 'https://aal-alt.github.io/regent-lab/',
+                syncRoomId: 'ris-regent-lab-sync-2026',
                 adminUsername: 'admin',
                 adminPassword: 'RIS2026',
                 teachers: [
@@ -1499,10 +1594,10 @@
                 { id: 'cab-3', code: 'CAB-03', name: 'Borosilicate Glassware', lab: 'Lab 2 (Biology)', specialty: 'Glassware & Volumetric', color: '#059669' }
             ],
             inventory: [
-                { id: 'inv-1', code: 'CHM-101', nameEn: 'Benedict’s Qualitative Reagent', nameAr: 'محلول بندكت للكشف عن السكريات', spec: '500 mL Solution', hazard: '🟢 Safe / Standard', category: 'Chemicals & Reagents', cabinetCode: 'CAB-01', shelf: 'Shelf 1', qty: 8, minQty: 4, unit: 'Bottle / زجاجة', expiry: '2027-06-15' },
-                { id: 'inv-2', code: 'CHM-102', nameEn: 'Hydrochloric Acid (HCl 1M)', nameAr: 'حمض الهيدروكلوريك المخفف', spec: '1.0 M Analytical', hazard: '☣️ Corrosive / Acid / Base', category: 'Chemicals & Reagents', cabinetCode: 'CAB-02', shelf: 'Shelf 1', qty: 3, minQty: 5, unit: 'Bottle / زجاجة', expiry: '2027-09-01' },
-                { id: 'inv-3', code: 'GLS-201', nameEn: 'Pyrex Beaker 250 mL', nameAr: 'كأس زجاجي بايركس ٢٥٠ مل', spec: 'Borosilicate 3.3', hazard: '🔷 Fragile Glassware', category: 'Glassware', cabinetCode: 'CAB-03', shelf: 'Shelf 2', qty: 24, minQty: 10, unit: 'Piece / قطعة', expiry: '' },
-                { id: 'inv-4', code: 'BIO-301', nameEn: 'Compound Light Microscope', nameAr: 'ميكروسكوب ضوئي مركب', spec: '40x–1000x LED', hazard: '🟢 Safe / Standard', category: 'Lab Apparatus', cabinetCode: 'CAB-03', shelf: 'Shelf 1', qty: 12, minQty: 6, unit: 'Piece / قطعة', expiry: '' }
+                { id: 'inv-1', code: 'CHM-101', nameEn: 'Benedict’s Qualitative Reagent', nameAr: 'محلول بندكت للكشف عن السكريات', spec: '500 mL Solution', hazard: '🟢 Safe / Standard', category: 'Chemicals & Reagents', cabinetCode: 'CAB-01', shelf: 'Shelf 1', qty: 8, minQty: 4, unit: 'Bottle / زجاجة', expiry: '2027-06-15', updatedAt: 1 },
+                { id: 'inv-2', code: 'CHM-102', nameEn: 'Hydrochloric Acid (HCl 1M)', nameAr: 'حمض الهيدروكلوريك المخفف', spec: '1.0 M Analytical', hazard: '☣️ Corrosive / Acid / Base', category: 'Chemicals & Reagents', cabinetCode: 'CAB-02', shelf: 'Shelf 1', qty: 3, minQty: 5, unit: 'Bottle / زجاجة', expiry: '2027-09-01', updatedAt: 1 },
+                { id: 'inv-3', code: 'GLS-201', nameEn: 'Pyrex Beaker 250 mL', nameAr: 'كأس زجاجي بايركس ٢٥٠ مل', spec: 'Borosilicate 3.3', hazard: '🔷 Fragile Glassware', category: 'Glassware', cabinetCode: 'CAB-03', shelf: 'Shelf 2', qty: 24, minQty: 10, unit: 'Piece / قطعة', expiry: '', updatedAt: 1 },
+                { id: 'inv-4', code: 'BIO-301', nameEn: 'Compound Light Microscope', nameAr: 'ميكروسكوب ضوئي مركب', spec: '40x–1000x LED', hazard: '🟢 Safe / Standard', category: 'Lab Apparatus', cabinetCode: 'CAB-03', shelf: 'Shelf 1', qty: 12, minQty: 6, unit: 'Piece / قطعة', expiry: '', updatedAt: 1 }
             ],
             requests: [],
             loans: [],
@@ -1517,17 +1612,38 @@
         let db = null;
         let firestoreDocRef = null;
         let isRemoteUpdate = false;
+        let relayEventSource = null;
+        let lastAppliedRemoteTs = 0;
         let authenticatedTeacherName = sessionStorage.getItem('ris_verified_teacher') || '';
         let teacherPortalCart = [];
 
+        // Check URL sync room override (?sync=...)
+        const urlParamsInit = new URLSearchParams(window.location.search);
+        const hashParamsInit = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+        const urlSyncRoom = urlParamsInit.get('sync') || hashParamsInit.get('sync');
+        if (urlSyncRoom && urlSyncRoom.trim()) {
+            state.settings.syncRoomId = urlSyncRoom.trim();
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        }
+
+        function setSyncStatusText(label) {
+            document.querySelectorAll('.sync-status-label').forEach(el => {
+                el.textContent = label;
+            });
+        }
+
         function loadLocalState() {
             try {
-                const raw = localStorage.getItem(STORAGE_KEY);
+                const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('ris_science_lab_state_v4');
                 if (!raw) return structuredClone(DEFAULT_STATE);
                 const parsed = JSON.parse(raw);
                 return {
                     ...structuredClone(DEFAULT_STATE),
                     ...parsed,
+                    meta: {
+                        ...structuredClone(DEFAULT_STATE.meta),
+                        ...(parsed.meta || {})
+                    },
                     settings: {
                         ...structuredClone(DEFAULT_STATE.settings),
                         ...(parsed.settings || {})
@@ -1538,25 +1654,209 @@
             }
         }
 
-        function persistState() {
+        // Smart Non-Destructive Collection Merger (Prevents Phone & PC Overwrites)
+        function mergeCollectionsById(localArr = [], remoteArr = [], preferRemote = true) {
+            const map = new Map();
+            const first = preferRemote ? localArr : remoteArr;
+            const second = preferRemote ? remoteArr : localArr;
+            first.forEach(item => { if (item && item.id) map.set(item.id, item); });
+            second.forEach(item => {
+                if (!item || !item.id) return;
+                const existing = map.get(item.id);
+                if (!existing) {
+                    map.set(item.id, item);
+                } else {
+                    const exTs = Number(existing.updatedAt || 0);
+                    const inTs = Number(item.updatedAt || 0);
+                    if (inTs >= exTs) map.set(item.id, item);
+                }
+            });
+            return Array.from(map.values());
+        }
+
+        function applyIncomingRemoteState(remote, sourceLabel = 'Cloud Sync') {
+            if (!remote || typeof remote !== 'object') return;
+            const remoteTs = Number(remote.meta?.updatedAt || 0);
+            if (remote.meta?.lastSender === CLIENT_INSTANCE_ID && remoteTs <= lastAppliedRemoteTs) return;
+            if (remoteTs && remoteTs <= lastAppliedRemoteTs) return;
+            if (remoteTs) lastAppliedRemoteTs = remoteTs;
+
+            const prevPendingCount = (state.requests || []).filter(r => r.status === 'pending').length;
+            const localSettingsTs = Number(state.meta?.settingsUpdatedAt || 0);
+            const remoteSettingsTs = Number(remote.meta?.settingsUpdatedAt || 0);
+
+            const mergedSettings = remoteSettingsTs >= localSettingsTs
+                ? { ...structuredClone(DEFAULT_STATE.settings), ...(remote.settings || {}) }
+                : { ...structuredClone(DEFAULT_STATE.settings), ...(state.settings || {}) };
+
+            // Preserve local syncRoomId if explicitly set via URL
+            if (urlSyncRoom && urlSyncRoom.trim()) {
+                mergedSettings.syncRoomId = urlSyncRoom.trim();
+            }
+
+            isRemoteUpdate = true;
+            state = {
+                ...structuredClone(DEFAULT_STATE),
+                ...remote,
+                meta: {
+                    updatedAt: Math.max(Number(state.meta?.updatedAt || 0), remoteTs),
+                    settingsUpdatedAt: Math.max(localSettingsTs, remoteSettingsTs),
+                    lastSender: remote.meta?.lastSender || 'remote'
+                },
+                settings: mergedSettings,
+                cabinets: mergeCollectionsById(state.cabinets, remote.cabinets, true),
+                inventory: mergeCollectionsById(state.inventory, remote.inventory, true),
+                requests: mergeCollectionsById(state.requests, remote.requests, true),
+                loans: mergeCollectionsById(state.loans, remote.loans, true),
+                lossRecords: mergeCollectionsById(state.lossRecords, remote.lossRecords, true),
+                scheduleSlots: mergeCollectionsById(state.scheduleSlots, remote.scheduleSlots, true),
+                logs: mergeCollectionsById(state.logs, remote.logs, true).slice(0, 200)
+            };
+
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            setSyncStatusText(`Synced (${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })})`);
+            refreshAllViews();
+            checkAdminAuthGate();
+            isRemoteUpdate = false;
+
+            const newPendingCount = (state.requests || []).filter(r => r.status === 'pending').length;
+            if (newPendingCount > prevPendingCount) {
+                showToast(`📥 New Teacher Request received (${newPendingCount} pending)`);
+            }
+        }
+
+        function persistState(markSettingsChanged = false) {
+            const now = Date.now();
+            state.meta = state.meta || {};
+            state.meta.updatedAt = now;
+            state.meta.lastSender = CLIENT_INSTANCE_ID;
+            if (markSettingsChanged) {
+                state.meta.settingsUpdatedAt = now;
+            }
             try {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
             } catch (e) {
                 console.warn('LocalStorage save warning:', e);
             }
-            if (firestoreDocRef && !isRemoteUpdate) {
-                setDoc(firestoreDocRef, state).catch(() => {});
+            if (!isRemoteUpdate) {
+                if (firestoreDocRef) {
+                    setDoc(firestoreDocRef, state).catch(() => {});
+                }
+                pushStateToCloudRelay();
             }
         }
 
-        async function initCloudSync() {
-            const badge = document.getElementById('cloud-sync-badge');
+        // ================= ZERO-CONFIG REAL-TIME CLOUD RELAY (WORKS ON GITHUB PAGES) =================
+        function getRelayTopicURL() {
+            const room = (state.settings.syncRoomId || 'ris-regent-lab-sync-2026')
+                .toLowerCase()
+                .replace(/[^a-z0-9_-]/g, '-');
+            return `https://ntfy.sh/${encodeURIComponent(room)}`;
+        }
+
+        async function pushStateToCloudRelay() {
             try {
-                const cfg = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
-                if (!cfg || !cfg.apiKey) {
-                    if (badge) badge.textContent = 'Local Storage Mode';
-                    return;
+                const topicUrl = getRelayTopicURL();
+                const res = await fetch(topicUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Title': 'RIS_LAB_SYNC',
+                        'Cache': 'yes'
+                    },
+                    body: JSON.stringify(state)
+                });
+                if (res.ok) {
+                    setSyncStatusText(`Synced (${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })})`);
                 }
+            } catch (e) {
+                setSyncStatusText('Offline / Local Mode');
+            }
+        }
+
+        async function forceCloudPullNow(silent = false) {
+            try {
+                if (!silent) setSyncStatusText('Syncing...');
+                const topicUrl = getRelayTopicURL();
+                const res = await fetch(`${topicUrl}/json?poll=1&since=all`, { cache: 'no-store' });
+                if (!res.ok) throw new Error('Relay unavailable');
+                const rawText = await res.text();
+                const lines = rawText.trim().split('\n').filter(Boolean);
+                let latestState = null;
+                let maxTs = 0;
+                for (const line of lines) {
+                    try {
+                        const evt = JSON.parse(line);
+                        if (evt && evt.event === 'message' && evt.message) {
+                            const parsed = JSON.parse(evt.message);
+                            const ts = Number(parsed?.meta?.updatedAt || 0);
+                            if (parsed && parsed.settings && ts >= maxTs) {
+                                maxTs = ts;
+                                latestState = parsed;
+                            }
+                        }
+                    } catch (err) {}
+                }
+                if (latestState && maxTs > Number(state.meta?.updatedAt || 0)) {
+                    applyIncomingRemoteState(latestState, 'Cloud Pull');
+                    if (!silent) showToast('Synced latest updates from cloud');
+                } else {
+                    // Push our state if cloud is empty or behind
+                    if (Number(state.meta?.updatedAt || 0) > maxTs) {
+                        await pushStateToCloudRelay();
+                    }
+                    setSyncStatusText(`Synced (${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })})`);
+                    if (!silent) showToast('All devices are up to date');
+                }
+            } catch (e) {
+                setSyncStatusText('Local Storage Mode');
+                if (!silent) showToast('Could not reach cloud relay — using local storage', 'error');
+            }
+        }
+
+        function startRealtimeCloudStream() {
+            if (relayEventSource) {
+                try { relayEventSource.close(); } catch (e) {}
+                relayEventSource = null;
+            }
+            try {
+                const topicUrl = getRelayTopicURL();
+                relayEventSource = new EventSource(`${topicUrl}/sse`);
+                relayEventSource.onopen = () => {
+                    setSyncStatusText('Live Cloud Sync Active');
+                };
+                relayEventSource.onmessage = (event) => {
+                    try {
+                        const evt = JSON.parse(event.data);
+                        if (evt && evt.message) {
+                            const parsed = JSON.parse(evt.message);
+                            if (parsed && parsed.settings) {
+                                applyIncomingRemoteState(parsed, 'Live Push');
+                            }
+                        }
+                    } catch (err) {}
+                };
+                relayEventSource.onerror = () => {
+                    // Browser EventSource auto-reconnects automatically
+                };
+            } catch (e) {}
+        }
+
+        async function initCloudSync() {
+            // 1. Always start the zero-config cross-device relay first (works on GitHub Pages, PC, & Phone)
+            await forceCloudPullNow(true);
+            startRealtimeCloudStream();
+
+            // 2. Also connect Firestore if either Canvas __firebase_config or user's custom Firebase config is present
+            try {
+                let cfg = null;
+                if (typeof __firebase_config !== 'undefined') {
+                    cfg = JSON.parse(__firebase_config);
+                } else {
+                    const savedCustom = localStorage.getItem(CUSTOM_FB_KEY);
+                    if (savedCustom) cfg = JSON.parse(savedCustom);
+                }
+                if (!cfg || !cfg.apiKey) return;
+
                 const app = initializeApp(cfg);
                 const auth = getAuth(app);
 
@@ -1573,33 +1873,19 @@
                 onSnapshot(
                     firestoreDocRef,
                     (snap) => {
-                        if (badge) badge.textContent = 'Live Cloud Sync Active';
+                        setSyncStatusText('Live Firestore Sync Active');
                         if (snap.exists()) {
-                            isRemoteUpdate = true;
-                            const remote = snap.data();
-                            state = {
-                                ...structuredClone(DEFAULT_STATE),
-                                ...remote,
-                                settings: {
-                                    ...structuredClone(DEFAULT_STATE.settings),
-                                    ...(remote.settings || {})
-                                }
-                            };
-                            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-                            refreshAllViews();
-                            isRemoteUpdate = false;
+                            applyIncomingRemoteState(snap.data(), 'Firestore');
                         } else {
                             persistState();
                         }
                     },
                     () => {
                         firestoreDocRef = null;
-                        if (badge) badge.textContent = 'Local Storage Mode';
                     }
                 );
             } catch (e) {
                 firestoreDocRef = null;
-                if (badge) badge.textContent = 'Local Storage Mode';
             }
         }
 
@@ -1633,7 +1919,7 @@
             setTimeout(() => {
                 toast.style.opacity = '0';
                 setTimeout(() => toast.remove(), 300);
-            }, 3000);
+            }, 3200);
         }
 
         function getBaseCleanURL() {
@@ -1653,6 +1939,18 @@
                 return url.toString();
             }
             return 'https://aal-alt.github.io/regent-lab/';
+        }
+
+        function buildTeacherPortalURL() {
+            const base = getBaseCleanURL();
+            const room = encodeURIComponent(state.settings.syncRoomId || 'ris-regent-lab-sync-2026');
+            return `${base}?mode=teacher&sync=${room}`;
+        }
+
+        function buildCabinetAuditURL(cabCode) {
+            const base = getBaseCleanURL();
+            const room = encodeURIComponent(state.settings.syncRoomId || 'ris-regent-lab-sync-2026');
+            return `${base}?cabinet=${encodeURIComponent(cabCode)}&sync=${room}`;
         }
 
         function detectCurrentPublishedURL() {
@@ -1697,7 +1995,11 @@
             if (!inp) return;
             inp.select();
             inp.setSelectionRange(0, 99999);
-            document.execCommand('copy');
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(inp.value).catch(() => document.execCommand('copy'));
+            } else {
+                document.execCommand('copy');
+            }
             showToast('Link copied to clipboard');
         }
 
@@ -1730,13 +2032,17 @@
                 item,
                 delta,
                 note,
-                time: new Date().toLocaleString()
+                time: new Date().toLocaleString(),
+                updatedAt: Date.now()
             });
             if (state.logs.length > 200) state.logs.length = 200;
         }
 
         // ================= DUAL-LAYER AUTHENTICATION =================
         function checkAdminAuthGate() {
+            if (!document.getElementById('teacher-portal-shell').classList.contains('hidden')) return;
+            if (!document.getElementById('cabinet-audit-shell').classList.contains('hidden')) return;
+
             const requiredPass = (state.settings.adminPassword || '').trim();
             const isUnlocked = sessionStorage.getItem('ris_admin_unlocked') === 'true';
             const gate = document.getElementById('admin-login-gate');
@@ -1747,8 +2053,11 @@
             }
         }
 
-        function handleAdminLogin(e) {
+        async function handleAdminLogin(e) {
             e.preventDefault();
+            // Pull latest password from cloud before validating so PC changes reflect immediately on Phone
+            await forceCloudPullNow(true);
+
             const user = document.getElementById('admin-login-user').value.trim();
             const pass = document.getElementById('admin-login-pass').value.trim();
             const expectedUser = (state.settings.adminUsername || 'admin').trim();
@@ -1782,11 +2091,19 @@
             const logoutBtn = document.getElementById('tp-logout-btn');
             const lockedDisplay = document.getElementById('tp-locked-teacher-display');
 
+            // Verify authenticated teacher still exists in synced settings
+            const stillExists = (state.settings.teachers || []).some(t => t.name === authenticatedTeacherName);
+            if (authenticatedTeacherName && !stillExists) {
+                authenticatedTeacherName = '';
+                sessionStorage.removeItem('ris_verified_teacher');
+            }
+
             if (authenticatedTeacherName) {
                 gate.classList.add('hidden');
                 main.classList.remove('hidden');
                 logoutBtn.classList.remove('hidden');
                 lockedDisplay.textContent = authenticatedTeacherName;
+                renderTeacherOwnRequests();
             } else {
                 gate.classList.remove('hidden');
                 main.classList.add('hidden');
@@ -1794,8 +2111,9 @@
             }
         }
 
-        function handleTeacherPortalLogin(e) {
+        async function handleTeacherPortalLogin(e) {
             e.preventDefault();
+            await forceCloudPullNow(true);
             const selectedName = document.getElementById('tp-login-teacher-select').value;
             const enteredPass = document.getElementById('tp-login-password').value.trim();
             const teacherObj = (state.settings.teachers || []).find(t => t.name === selectedName);
@@ -1958,6 +2276,32 @@
             `).join('');
         }
 
+        function renderTeacherOwnRequests() {
+            const box = document.getElementById('tp-my-requests-list');
+            if (!box || !authenticatedTeacherName) return;
+            const mine = (state.requests || []).filter(r => r.teacherName === authenticatedTeacherName);
+            if (!mine.length) {
+                box.innerHTML = `<div class="p-3 rounded-xl bg-ris-bg text-center text-xs font-bold text-slate-400">No requisitions submitted yet under ${authenticatedTeacherName}.</div>`;
+                return;
+            }
+            box.innerHTML = mine.slice(0, 8).map(r => {
+                const badge = r.status === 'approved'
+                    ? `<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black">✅ Approved by Lab</span>`
+                    : r.status === 'rejected'
+                        ? `<span class="px-2 py-0.5 rounded-full bg-red-100 text-ris-red text-[10px] font-black">✕ Declined</span>`
+                        : `<span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 text-[10px] font-black">⏳ Pending Setup</span>`;
+                return `
+                    <div class="p-3 rounded-2xl bg-ris-bg border border-slate-200 flex items-center justify-between gap-2 text-xs">
+                        <div>
+                            <div class="font-black text-ris-navy">${r.experiment}</div>
+                            <div class="text-[11px] font-bold text-slate-500">${r.date} • ${r.period} • ${r.lab}</div>
+                        </div>
+                        ${badge}
+                    </div>
+                `;
+            }).join('');
+        }
+
         function submitTeacherRequisition(e) {
             e.preventDefault();
             if (!authenticatedTeacherName) {
@@ -1971,7 +2315,7 @@
             const usageMode = document.querySelector('input[name="tp-usage-mode"]:checked')?.value || 'in-lab';
             const dateStr = document.getElementById('tp-date').value;
             const req = {
-                id: 'req-' + Date.now(),
+                id: 'req-' + Date.now() + '-' + Math.random().toString(36).slice(2, 5),
                 teacherName: authenticatedTeacherName,
                 subject: document.getElementById('tp-subject').value,
                 grade: document.getElementById('tp-grade').value,
@@ -1986,7 +2330,8 @@
                 items: structuredClone(teacherPortalCart),
                 notes: document.getElementById('tp-notes').value.trim(),
                 status: 'pending',
-                submittedAt: new Date().toLocaleString()
+                submittedAt: new Date().toLocaleString(),
+                updatedAt: Date.now()
             };
 
             state.requests.unshift(req);
@@ -1995,7 +2340,8 @@
 
             document.getElementById('teacher-portal-form').classList.add('hidden');
             document.getElementById('teacher-submit-success').classList.remove('hidden');
-            showToast('Requisition submitted to Lab Technician');
+            renderTeacherOwnRequests();
+            showToast('Requisition submitted & synced to Lab Technician');
         }
 
         function resetTeacherPortalForm() {
@@ -2021,9 +2367,20 @@
         }
 
         // ================= ADMIN NAVIGATION, DASHBOARD & REQUESTS =================
-        function toggleMobileSidebar() {
+        function toggleMobileSidebar(forceOpen) {
             const sb = document.getElementById('main-sidebar');
-            if (sb) sb.classList.toggle('hidden');
+            const bd = document.getElementById('mobile-sidebar-backdrop');
+            if (!sb) return;
+            const shouldOpen = typeof forceOpen === 'boolean' ? forceOpen : sb.classList.contains('hidden');
+            if (shouldOpen) {
+                sb.classList.remove('hidden');
+                sb.classList.add('flex');
+                if (bd) bd.classList.remove('hidden');
+            } else {
+                sb.classList.add('hidden');
+                sb.classList.remove('flex');
+                if (bd) bd.classList.add('hidden');
+            }
         }
 
         function switchTab(tabName) {
@@ -2047,7 +2404,7 @@
             });
 
             if (window.innerWidth < 1024) {
-                document.getElementById('main-sidebar')?.classList.add('hidden');
+                toggleMobileSidebar(false);
             }
             if (tabName === 'schedule') renderWeeklySchedule();
             if (tabName === 'damaged') renderDamagedTab();
@@ -2082,7 +2439,7 @@
             const overdueSub = document.getElementById('kpi-overdue-sub');
             if (overdueSub) {
                 overdueSub.textContent = overdueLoans.length ? `⚠️ ${overdueLoans.length} overdue return(s)` : 'All within return window';
-                overdueSub.className = overdueLoans.length ? 'text-[11px] font-black text-ris-red mt-1' : 'text-[11px] font-bold text-blue-700 mt-1';
+                overdueSub.className = overdueLoans.length ? 'text-[10px] sm:text-[11px] font-black text-ris-red mt-1 truncate' : 'text-[10px] sm:text-[11px] font-bold text-blue-700 mt-1 truncate';
             }
 
             document.getElementById('kpi-pending-reqs').textContent = pendingReqs.length;
@@ -2231,13 +2588,13 @@
                 return;
             }
             box.innerHTML = matches.map(i => `
-                <div class="p-3 rounded-xl bg-ris-bg border border-slate-200 flex items-center justify-between text-xs">
-                    <div>
+                <div class="p-3 rounded-xl bg-ris-bg border border-slate-200 flex items-center justify-between gap-2 text-xs">
+                    <div class="min-w-0">
                         <span class="font-black text-ris-navy">${i.nameEn}</span>
                         ${i.nameAr ? `<span class="font-ar text-slate-500 ml-2">${i.nameAr}</span>` : ''}
                         <div class="text-[11px] font-bold text-slate-500 mt-0.5">Code: ${i.code} • Location: ${i.cabinetCode} (${i.shelf})</div>
                     </div>
-                    <span class="px-2.5 py-1 rounded-full bg-white border border-slate-300 font-black text-ris-navy">${i.qty} ${i.unit}</span>
+                    <span class="px-2.5 py-1 rounded-full bg-white border border-slate-300 font-black text-ris-navy shrink-0">${i.qty} ${i.unit.split('/')[0]}</span>
                 </div>
             `).join('');
         }
@@ -2249,7 +2606,8 @@
                 container.innerHTML = `<div class="bg-white p-8 rounded-3xl border border-ris-border text-center text-xs font-bold text-slate-400">No teacher requisitions submitted yet. Share the Teacher Portal QR Code to start receiving requests.</div>`;
                 return;
             }
-            container.innerHTML = state.requests.map(req => {
+            const sorted = [...state.requests].sort((a, b) => Number(b.updatedAt || 0) - Number(a.updatedAt || 0));
+            container.innerHTML = sorted.map(req => {
                 const isPending = req.status === 'pending';
                 const statusBadge = req.status === 'approved'
                     ? `<span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black">✅ Approved</span>`
@@ -2279,7 +2637,7 @@
                             </div>
                             ${isPending ? `
                                 <div class="flex items-center gap-2 shrink-0">
-                                    <button type="button" onclick="approveRequisition('${req.id}')" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold">
+                                    <button type="button" onclick="approveRequisition('${req.id}')" class="flex-1 sm:flex-none px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold">
                                         ✅ Approve & Fulfill
                                     </button>
                                     <button type="button" onclick="rejectRequisition('${req.id}')" class="px-3 py-2 rounded-xl bg-red-50 hover:bg-red-100 text-ris-red text-xs font-extrabold">
@@ -2299,12 +2657,14 @@
             const req = state.requests.find(r => r.id === reqId);
             if (!req || req.status !== 'pending') return;
             req.status = 'approved';
+            req.updatedAt = Date.now();
 
             (req.items || []).forEach(reqItem => {
                 const invItem = state.inventory.find(i => i.id === reqItem.itemId);
                 if (!invItem) return;
                 const qtyNum = Number(reqItem.qty) || 1;
                 invItem.qty = Math.max(0, Number(invItem.qty) - qtyNum);
+                invItem.updatedAt = Date.now();
 
                 if (req.usageMode === 'outside-lab') {
                     state.loans.unshift({
@@ -2318,7 +2678,8 @@
                         dueDate: req.returnDate || req.date,
                         duePeriod: req.returnPeriod || 'End of Day',
                         issuedAt: new Date().toLocaleString(),
-                        status: 'active'
+                        status: 'active',
+                        updatedAt: Date.now()
                     });
                     addLogEntry(invItem.nameEn, `-${qtyNum} ${invItem.unit}`, `Classroom Loan to ${req.teacherName} (${req.grade}) — Due ${req.returnDate || req.date}`);
                 } else {
@@ -2328,13 +2689,14 @@
 
             persistState();
             refreshAllViews();
-            showToast('Requisition approved & inventory updated');
+            showToast('Requisition approved & synced to Teacher Portal');
         }
 
         function rejectRequisition(reqId) {
             const req = state.requests.find(r => r.id === reqId);
             if (!req) return;
             req.status = 'rejected';
+            req.updatedAt = Date.now();
             persistState();
             refreshAllViews();
             showToast('Requisition declined');
@@ -2345,7 +2707,6 @@
             document.getElementById('sidebar-app-title').textContent = s.appTitle || 'Science Lab';
             document.getElementById('sidebar-school-name').textContent = s.schoolName || 'Regent International School';
             document.getElementById('mobile-brand-title').textContent = s.appTitle || 'Science Lab';
-            document.getElementById('mobile-brand-sub').textContent = s.schoolName || 'Regent International School';
             document.getElementById('dash-dept-badge').textContent = s.deptBadge || 'RIS Science Department';
             document.getElementById('tp-school-subtitle').textContent = `${s.schoolName || 'Regent International School'} • ${s.deptBadge || 'Science Department'}`;
 
@@ -2359,6 +2720,7 @@
             renderDamagedTab();
             renderLogsList();
             renderSettingsPanel();
+            renderTeacherOwnRequests();
         }
 
         // ================= WEEKLY LAB OCCUPANCY SCHEDULE =================
@@ -2396,6 +2758,7 @@
             const tbody = document.getElementById('weekly-schedule-tbody');
             const theadRow = document.getElementById('weekly-schedule-thead-row');
             const statsBar = document.getElementById('schedule-stats-bar');
+            const mobileCards = document.getElementById('mobile-schedule-cards');
             const labFilter = document.getElementById('schedule-lab-filter')?.value || 'ALL';
             const dateInp = document.getElementById('schedule-week-date');
             if (!tbody || !theadRow) return;
@@ -2485,6 +2848,59 @@
                 return `<tr><td class="p-3 font-extrabold text-ris-navy bg-slate-50/70 align-top">${period}</td>${cells}</tr>`;
             }).join('');
 
+            // Mobile Day-by-Day Cards (< md)
+            if (mobileCards) {
+                mobileCards.innerHTML = weekDays.map(wd => {
+                    const dayItems = [];
+                    periods.forEach(period => {
+                        (state.scheduleSlots || []).filter(s =>
+                            (labFilter === 'ALL' || s.lab === labFilter) &&
+                            s.day === wd.name &&
+                            s.period === period &&
+                            !(s.skippedDates || []).includes(wd.iso) &&
+                            (s.recurrence === 'weekly' || s.weekDate === wd.iso)
+                        ).forEach(b => dayItems.push({ type: 'slot', period, data: b }));
+
+                        (state.requests || []).filter(r =>
+                            r.status !== 'rejected' &&
+                            r.usageMode === 'in-lab' &&
+                            (labFilter === 'ALL' || r.lab === labFilter) &&
+                            r.date === wd.iso &&
+                            r.period === period
+                        ).forEach(r => dayItems.push({ type: 'req', period, data: r }));
+                    });
+
+                    return `
+                        <div class="bg-white rounded-3xl border ${wd.iso === todayIso ? 'border-ris-red' : 'border-ris-border'} p-4 space-y-2.5 shadow-xs">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <span class="text-sm font-black text-ris-navy">${wd.name}</span>
+                                    <span class="text-xs font-bold text-slate-400 ml-1.5">${wd.label}</span>
+                                    ${wd.iso === todayIso ? '<span class="ml-1.5 px-2 py-0.5 rounded-full bg-ris-red text-white text-[9px] font-black">TODAY</span>' : ''}
+                                </div>
+                                <button type="button" onclick="openScheduleSlotModal('${wd.name}', '${periods[0] || ''}', '${wd.iso}', '')" class="px-3 py-1 rounded-xl bg-ris-navy text-white text-[11px] font-extrabold">
+                                    + Book
+                                </button>
+                            </div>
+                            ${dayItems.length ? dayItems.map(it => it.type === 'slot' ? `
+                                <div class="p-3 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-between gap-2 text-xs">
+                                    <div>
+                                        <div class="font-black text-ris-navy">${it.period} • ${it.data.lab}</div>
+                                        <div class="font-bold text-slate-700">👩‍🏫 ${it.data.teacherName} (${it.data.subject} - ${it.data.grade})</div>
+                                    </div>
+                                    <button type="button" onclick="openScheduleSlotModal('${wd.name}', '${it.period}', '${wd.iso}', '${it.data.id}')" class="px-2.5 py-1.5 rounded-lg bg-white text-ris-navy font-black">✎</button>
+                                </div>
+                            ` : `
+                                <div class="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs">
+                                    <div class="font-black text-emerald-900">${it.period} • ${it.data.lab} (QR)</div>
+                                    <div class="font-bold text-emerald-800">👩‍🏫 ${it.data.teacherName} — ${it.data.experiment}</div>
+                                </div>
+                            `).join('') : `<div class="text-xs font-bold text-slate-400 py-1">No sessions booked for ${wd.name}.</div>`}
+                        </div>
+                    `;
+                }).join('');
+            }
+
             if (statsBar) {
                 const openCount = Math.max(0, totalCapacity - bookedCount);
                 const pct = totalCapacity ? Math.round((bookedCount / totalCapacity) * 100) : 0;
@@ -2557,7 +2973,7 @@
             if (editId) {
                 const slot = state.scheduleSlots.find(s => s.id === editId);
                 if (slot) {
-                    Object.assign(slot, { lab, teacherName, subject, grade, topic, recurrence, weekDate: targetDate });
+                    Object.assign(slot, { lab, teacherName, subject, grade, topic, recurrence, weekDate: targetDate, updatedAt: Date.now() });
                 }
             } else {
                 state.scheduleSlots.push({
@@ -2571,13 +2987,14 @@
                     topic,
                     recurrence,
                     weekDate: targetDate,
-                    skippedDates: []
+                    skippedDates: [],
+                    updatedAt: Date.now()
                 });
             }
             persistState();
             closeModal('schedule-slot-modal');
             renderWeeklySchedule();
-            showToast('Lab schedule updated');
+            showToast('Lab schedule updated & synced');
         }
 
         function skipRecurringSlotDate(slotId, dateIso) {
@@ -2585,6 +3002,7 @@
             if (!slot) return;
             slot.skippedDates = slot.skippedDates || [];
             if (!slot.skippedDates.includes(dateIso)) slot.skippedDates.push(dateIso);
+            slot.updatedAt = Date.now();
             persistState();
             renderWeeklySchedule();
             showToast(`Skipped ${dateIso} for this recurring slot`);
@@ -2617,6 +3035,7 @@
 
         function renderInventoryTable() {
             const tbody = document.getElementById('inventory-table-body');
+            const mobileCards = document.getElementById('inventory-mobile-cards');
             const summaryStrip = document.getElementById('inv-summary-strip');
             if (!tbody) return;
 
@@ -2665,8 +3084,42 @@
 
             if (!filtered.length) {
                 tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-xs font-bold text-slate-400">No inventory items match your filter criteria.</td></tr>`;
+                if (mobileCards) mobileCards.innerHTML = `<div class="bg-white p-6 rounded-3xl border border-ris-border text-center text-xs font-bold text-slate-400">No inventory items match your filter criteria.</div>`;
                 renderLossRegister();
                 return;
+            }
+
+            if (mobileCards) {
+                mobileCards.innerHTML = filtered.map(i => {
+                    const isLow = Number(i.qty) <= Number(i.minQty);
+                    return `
+                        <div class="bg-white p-4 rounded-3xl border border-ris-border shadow-xs space-y-2.5">
+                            <div class="flex items-start justify-between gap-2">
+                                <div>
+                                    <div class="flex flex-wrap items-center gap-1.5">
+                                        <span class="text-xs font-black text-ris-navy">${i.code}</span>
+                                        ${getHazardBadgeHTML(i.hazard)}
+                                    </div>
+                                    <div class="text-sm font-black text-slate-800 mt-1">${i.nameEn}</div>
+                                    ${i.nameAr ? `<div class="font-ar text-xs font-bold text-slate-500">${i.nameAr}</div>` : ''}
+                                </div>
+                                <div class="inline-flex items-center gap-1 bg-ris-bg border border-slate-200 rounded-xl p-1 shrink-0">
+                                    <button type="button" onclick="quickAdjustInventoryStock('${i.id}', -1)" class="w-7 h-7 rounded-lg bg-white text-ris-red font-black">−</button>
+                                    <span class="px-2 font-black text-xs ${isLow ? 'text-amber-700' : 'text-ris-navy'}">${i.qty}</span>
+                                    <button type="button" onclick="quickAdjustInventoryStock('${i.id}', 1)" class="w-7 h-7 rounded-lg bg-white text-emerald-700 font-black">+</button>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-[11px]">
+                                <span class="font-extrabold text-ris-navy">🗄️ ${i.cabinetCode} (${i.shelf})</span>
+                                <div class="space-x-1">
+                                    <button type="button" onclick="openLossModal('${i.id}')" class="px-2.5 py-1 rounded-lg bg-amber-50 text-amber-900 font-extrabold">⚠️ Loss</button>
+                                    <button type="button" onclick="openInventoryModal('${i.id}')" class="px-2.5 py-1 rounded-lg bg-slate-100 text-ris-navy font-extrabold">✎</button>
+                                    <button type="button" onclick="deleteInventoryItem('${i.id}')" class="px-2.5 py-1 rounded-lg bg-red-50 text-ris-red font-extrabold">✕</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
             }
 
             tbody.innerHTML = filtered.map(i => {
@@ -2715,6 +3168,7 @@
             const it = state.inventory.find(i => i.id === id);
             if (!it) return;
             it.qty = Math.max(0, Number(it.qty) + delta);
+            it.updatedAt = Date.now();
             addLogEntry(it.nameEn, delta > 0 ? `+${delta}` : `${delta}`, 'Quick inventory adjustment');
             persistState();
             refreshAllViews();
@@ -2771,7 +3225,8 @@
                 qty: parseFloat(document.getElementById('inv-qty').value) || 0,
                 minQty: parseFloat(document.getElementById('inv-min-qty').value) || 0,
                 unit: document.getElementById('inv-unit').value,
-                expiry: document.getElementById('inv-expiry').value
+                expiry: document.getElementById('inv-expiry').value,
+                updatedAt: Date.now()
             };
             if (editId) {
                 const it = state.inventory.find(i => i.id === editId);
@@ -2784,7 +3239,7 @@
             persistState();
             closeModal('inventory-modal');
             refreshAllViews();
-            showToast('Inventory record saved');
+            showToast('Inventory record saved & synced');
         }
 
         function deleteInventoryItem(id) {
@@ -2829,11 +3284,14 @@
                     const lostCount = Math.min(Number(loan.qty), qty);
                     const returnedGood = Math.max(0, Number(loan.qty) - lostCount);
                     loan.status = 'returned';
+                    loan.updatedAt = Date.now();
                     item.qty = Number(item.qty) + returnedGood;
+                    item.updatedAt = Date.now();
                     addLogEntry(item.nameEn, `+${returnedGood} / -${lostCount} lost`, `Partial custody return by ${loan.teacherName} (${lostCount} lost/broken)`);
                 }
             } else {
                 item.qty = Math.max(0, Number(item.qty) - qty);
+                item.updatedAt = Date.now();
                 addLogEntry(item.nameEn, `-${qty} ${item.unit}`, `${reason}${person ? ' — ' + person : ''}`);
             }
 
@@ -2849,13 +3307,14 @@
                 person: person || 'Lab Technician',
                 notes,
                 date: new Date().toLocaleDateString('en-GB'),
-                time: new Date().toLocaleString()
+                time: new Date().toLocaleString(),
+                updatedAt: Date.now()
             });
 
             persistState();
             closeModal('loss-modal');
             refreshAllViews();
-            showToast('Loss / Breakage recorded and stock updated');
+            showToast('Loss / Breakage recorded and synced');
         }
 
         function renderLossRegister() {
@@ -2985,6 +3444,7 @@
             if (!item) return;
 
             item.qty = Math.max(0, Number(item.qty) - qty);
+            item.updatedAt = Date.now();
             state.loans.unshift({
                 id: 'loan-' + Date.now(),
                 teacherName,
@@ -2996,7 +3456,8 @@
                 dueDate,
                 duePeriod,
                 issuedAt: new Date().toLocaleString(),
-                status: 'active'
+                status: 'active',
+                updatedAt: Date.now()
             });
             addLogEntry(item.nameEn, `-${qty} ${item.unit}`, `Manual Loan to ${teacherName} (${classRoom}) — Due ${dueDate}`);
             persistState();
@@ -3009,9 +3470,11 @@
             const loan = state.loans.find(l => l.id === loanId);
             if (!loan || loan.status !== 'active') return;
             loan.status = 'returned';
+            loan.updatedAt = Date.now();
             const item = state.inventory.find(i => i.id === loan.itemId);
             if (item) {
                 item.qty = Number(item.qty) + Number(loan.qty);
+                item.updatedAt = Date.now();
             }
             addLogEntry(loan.itemName, `+${loan.qty} ${loan.unit}`, `Returned by ${loan.teacherName}`);
             persistState();
@@ -3064,13 +3527,13 @@
         }
 
         function printTeacherPortalPoster() {
-            const url = `${getBaseCleanURL()}?mode=teacher`;
+            const url = buildTeacherPortalURL();
             triggerSinglePagePrint(`
                 <div class="text-center py-6 space-y-4">
                     <h2 class="text-2xl font-black text-ris-navy">Science Lab Teacher Requisition Portal</h2>
                     <p class="text-sm font-bold text-slate-600">Scan this QR code with your smartphone camera to submit lab sessions & equipment requests.</p>
                     <div id="print-poster-qr" class="qr-single-box mx-auto"></div>
-                    <div class="text-xs font-extrabold text-ris-navy">${url}</div>
+                    <div class="text-xs font-extrabold text-ris-navy break-all">${url}</div>
                 </div>
             `);
             renderSingleCrispQR('print-poster-qr', url, 240);
@@ -3079,7 +3542,7 @@
         function printCabinetDoorLabel(cabCode) {
             const cab = state.cabinets.find(c => c.code === cabCode);
             if (!cab) return;
-            const url = `${getBaseCleanURL()}?cabinet=${encodeURIComponent(cab.code)}`;
+            const url = buildCabinetAuditURL(cab.code);
             triggerSinglePagePrint(`
                 <div class="border-4 border-ris-navy rounded-3xl p-8 text-center space-y-4 max-w-md mx-auto">
                     <div class="inline-block px-4 py-1 rounded-full bg-ris-red text-white text-sm font-black">${cab.code}</div>
@@ -3198,9 +3661,9 @@
                             ...(parsed.settings || {})
                         }
                     };
-                    persistState();
+                    persistState(true);
                     refreshAllViews();
-                    showToast('System backup restored successfully');
+                    showToast('System backup restored & synced');
                 } catch (err) {
                     showToast('Failed to parse JSON backup file', 'error');
                 }
@@ -3209,12 +3672,12 @@
             reader.readAsText(file);
         }
 
-        // ================= SYSTEM SETTINGS & DROPDOWN SYNC =================
+        // ================= SYSTEM SETTINGS & NON-DESTRUCTIVE DROPDOWN SYNC =================
         function populateAllDropdowns() {
             const s = state.settings;
             const fill = (id, arr, includeAllLabel = '') => {
                 const el = document.getElementById(id);
-                if (!el) return;
+                if (!el || document.activeElement === el) return;
                 const prev = el.value;
                 const opts = [];
                 if (includeAllLabel) opts.push(`<option value="ALL">${includeAllLabel}</option>`);
@@ -3263,17 +3726,19 @@
             fill('inv-filter-cab', cabCodes, 'All Cabinets');
 
             const cabColorSel = document.getElementById('cab-color');
-            if (cabColorSel) {
+            if (cabColorSel && document.activeElement !== cabColorSel) {
                 cabColorSel.innerHTML = (s.cabinetColors || []).map(c => `<option value="${c.hex}">${c.name}</option>`).join('');
             }
 
-            const itemOpts = (state.inventory || []).map(i => `<option value="${i.id}">${i.nameEn} (${i.code})</option>`).join('');
-            const tpItemSel = document.getElementById('tp-item-select');
-            if (tpItemSel) tpItemSel.innerHTML = itemOpts;
-            const loanItemSel = document.getElementById('loan-item-select');
-            if (loanItemSel) loanItemSel.innerHTML = itemOpts;
-            const lossItemSel = document.getElementById('loss-item-select');
-            if (lossItemSel) lossItemSel.innerHTML = itemOpts;
+            const itemOpts = (state.inventory || []).map(i => `<option value="${i.id}">${i.nameEn} (${i.code}) — [${i.qty} left]</option>`).join('');
+            ['tp-item-select', 'loan-item-select', 'loss-item-select'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el && document.activeElement !== el) {
+                    const prev = el.value;
+                    el.innerHTML = itemOpts;
+                    if (prev && [...el.options].some(o => o.value === prev)) el.value = prev;
+                }
+            });
         }
 
         // ================= CABINETS, DOOR QR SYSTEM & MOBILE QUICK-AUDIT =================
@@ -3348,7 +3813,8 @@
                 lab: document.getElementById('cab-lab').value,
                 name: document.getElementById('cab-name').value.trim(),
                 specialty: document.getElementById('cab-specialty').value,
-                color: document.getElementById('cab-color').value
+                color: document.getElementById('cab-color').value,
+                updatedAt: Date.now()
             };
             if (editId) {
                 const cab = state.cabinets.find(c => c.id === editId);
@@ -3359,7 +3825,7 @@
             persistState();
             closeModal('cabinet-modal');
             refreshAllViews();
-            showToast('Storage cabinet saved');
+            showToast('Storage cabinet saved & synced');
         }
 
         function deleteCabinet(id) {
@@ -3370,7 +3836,7 @@
         }
 
         function openTeacherQRModal() {
-            const url = `${getBaseCleanURL()}?mode=teacher`;
+            const url = buildTeacherPortalURL();
             document.getElementById('teacher-qr-url-input').value = url;
             openModal('teacher-qr-modal');
             renderSingleCrispQR('teacher-qr-canvas', url, 195);
@@ -3379,7 +3845,7 @@
         function openCabinetQRModal(cabCode) {
             const cab = state.cabinets.find(c => c.code === cabCode);
             if (!cab) return;
-            const url = `${getBaseCleanURL()}?cabinet=${encodeURIComponent(cab.code)}`;
+            const url = buildCabinetAuditURL(cab.code);
             document.getElementById('cab-qr-modal-title').textContent = `🗄️ ${cab.code} — ${cab.name}`;
             document.getElementById('cab-qr-modal-sub').textContent = `${cab.lab} • ${cab.specialty}`;
             document.getElementById('cabinet-qr-url-input').value = url;
@@ -3446,6 +3912,7 @@
             const item = state.inventory.find(i => i.id === itemId);
             if (!item) return;
             item.qty = Math.max(0, Number(item.qty) + delta);
+            item.updatedAt = Date.now();
             addLogEntry(item.nameEn, delta > 0 ? `+${delta}` : `${delta}`, `QR Cabinet Audit (${cabCode})`);
             persistState();
             launchCabinetAuditMode(cabCode);
@@ -3454,7 +3921,12 @@
 
         function renderSettingsPanel() {
             const s = state.settings;
-            const setVal = (id, v) => { const el = document.getElementById(id); if (el) el.value = v || ''; };
+            const setVal = (id, v) => {
+                const el = document.getElementById(id);
+                if (el && document.activeElement !== el) el.value = v || '';
+            };
+            setVal('set-sync-room-id', s.syncRoomId || 'ris-regent-lab-sync-2026');
+            setVal('set-custom-firebase-cfg', localStorage.getItem(CUSTOM_FB_KEY) || '');
             setVal('set-admin-user', s.adminUsername);
             setVal('set-admin-pass', s.adminPassword);
             setVal('set-app-title', s.appTitle);
@@ -3507,11 +3979,41 @@
             }
         }
 
+        function saveCloudSyncSettings() {
+            const room = document.getElementById('set-sync-room-id').value.trim();
+            if (!room) {
+                showToast('Please enter a valid Sync Channel ID', 'error');
+                return;
+            }
+            state.settings.syncRoomId = room;
+            persistState(true);
+            startRealtimeCloudStream();
+            showToast('Sync Channel saved & pushed to cloud');
+        }
+
+        function saveCustomFirebaseConfig() {
+            const raw = document.getElementById('set-custom-firebase-cfg').value.trim();
+            if (!raw) {
+                localStorage.removeItem(CUSTOM_FB_KEY);
+                showToast('Custom Firebase config cleared');
+                return;
+            }
+            try {
+                const parsed = JSON.parse(raw);
+                if (!parsed.apiKey) throw new Error('Missing apiKey');
+                localStorage.setItem(CUSTOM_FB_KEY, JSON.stringify(parsed));
+                initCloudSync();
+                showToast('Firebase connected & synced');
+            } catch (e) {
+                showToast('Invalid Firebase JSON config', 'error');
+            }
+        }
+
         function saveAdminSecuritySettings() {
             state.settings.adminUsername = document.getElementById('set-admin-user').value.trim() || 'admin';
             state.settings.adminPassword = document.getElementById('set-admin-pass').value.trim();
-            persistState();
-            showToast('Admin credentials updated');
+            persistState(true);
+            showToast('Admin credentials saved & synced to all devices');
         }
 
         function saveBrandingSettings() {
@@ -3522,7 +4024,7 @@
             if (rawUrl) {
                 state.settings.publicBaseUrl = rawUrl;
             }
-            persistState();
+            persistState(true);
             refreshAllViews();
             showToast('Branding & permanent QR Base URL updated');
         }
@@ -3537,21 +4039,21 @@
             state.settings.teachers.push({ name, password });
             document.getElementById('new-teacher-name').value = '';
             document.getElementById('new-teacher-pass').value = '';
-            persistState();
+            persistState(true);
             refreshAllViews();
-            showToast(`Added teacher account for ${name}`);
+            showToast(`Added & synced teacher account for ${name}`);
         }
 
         function updateTeacherPassword(idx, newPass) {
             if (!newPass.trim()) return;
             state.settings.teachers[idx].password = newPass.trim();
-            persistState();
-            showToast('Teacher password updated');
+            persistState(true);
+            showToast('Teacher password updated & synced');
         }
 
         function removeTeacherAccount(idx) {
             state.settings.teachers.splice(idx, 1);
-            persistState();
+            persistState(true);
             refreshAllViews();
         }
 
@@ -3561,14 +4063,14 @@
             if (!val) return;
             state.settings[key].push(val);
             inp.value = '';
-            persistState();
+            persistState(true);
             refreshAllViews();
-            showToast('Setting item added');
+            showToast('Setting item added & synced');
         }
 
         function removeSimpleSettingItem(key, idx) {
             state.settings[key].splice(idx, 1);
-            persistState();
+            persistState(true);
             refreshAllViews();
         }
 
@@ -3578,20 +4080,20 @@
             if (!name) return;
             state.settings.cabinetColors.push({ name, hex });
             document.getElementById('new-cab-color-name').value = '';
-            persistState();
+            persistState(true);
             refreshAllViews();
-            showToast('Cabinet color added');
+            showToast('Cabinet color added & synced');
         }
 
         function removeCabinetColor(idx) {
             state.settings.cabinetColors.splice(idx, 1);
-            persistState();
+            persistState(true);
             refreshAllViews();
         }
 
         function resetDefaultSettings() {
             state.settings = structuredClone(DEFAULT_STATE.settings);
-            persistState();
+            persistState(true);
             refreshAllViews();
             showToast('Default lists restored');
         }
@@ -3599,6 +4101,7 @@
         // ================= EXPOSE HANDLERS TO WINDOW & BOOTSTRAP =================
         Object.assign(window, {
             toggleDarkMode,
+            forceCloudPullNow,
             handleAdminLogin,
             lockAdminSession,
             handleTeacherPortalLogin,
@@ -3655,6 +4158,8 @@
             exportInventoryCSV,
             exportSystemJSON,
             importSystemJSON,
+            saveCloudSyncSettings,
+            saveCustomFirebaseConfig,
             saveAdminSecuritySettings,
             saveBrandingSettings,
             detectCurrentPublishedURL,
@@ -3668,7 +4173,7 @@
             resetDefaultSettings
         });
 
-        window.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('DOMContentLoaded', async () => {
             applySavedTheme();
             injectAllCrests();
             const params = new URLSearchParams(window.location.search);
@@ -3677,7 +4182,6 @@
             const cabParam = params.get('cabinet') || hashParams.get('cabinet');
 
             refreshAllViews();
-            initCloudSync();
 
             if (mode === 'teacher') {
                 launchTeacherPortalPreview();
@@ -3688,9 +4192,20 @@
                 checkAdminAuthGate();
             }
 
+            // Initialize real-time cross-device sync & pull latest updates immediately
+            await initCloudSync();
+
+            // Re-sync automatically when switching back to the browser tab on Phone or PC
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible') {
+                    forceCloudPullNow(true);
+                }
+            });
+
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape') {
                     ['teacher-qr-modal', 'cabinet-qr-modal', 'inventory-modal', 'cabinet-modal', 'loan-modal', 'schedule-slot-modal', 'loss-modal'].forEach(closeModal);
+                    toggleMobileSidebar(false);
                 }
             });
             ['teacher-qr-modal', 'cabinet-qr-modal', 'inventory-modal', 'cabinet-modal', 'loan-modal', 'schedule-slot-modal', 'loss-modal'].forEach(id => {
