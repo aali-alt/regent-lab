@@ -1,9 +1,11 @@
+import {createSignInBroker,publicDirectoryEntry} from './auth-broker.mjs';
 import {AppError,assertActor,createRequisition,decideRequisition,applyAdminChanges,issueManualLoan,returnLoan,recordLoss,id,text} from './domain.mjs';
 import {restoreDataset} from './restore.mjs';
 import {sha256Hex} from './portable-crypto.mjs';
 const error=(status,code,message)=>{throw new AppError(status,code,message);};
-export function createHandler({repo,auth,allowedOrigin,allowLocalDevelopment=false}) {
+export function createHandler({repo,auth,allowedOrigin,allowLocalDevelopment=false,passwordVerifier=auth.passwordSignIn?.bind(auth)}) {
   if(!allowedOrigin||!(/^https:\/\//.test(allowedOrigin)||(allowLocalDevelopment&&auth.app.options.projectId.startsWith('demo-')&&/^http:\/\/(127\.0\.0\.1|localhost):\d+$/.test(allowedOrigin))))throw new Error('An explicit HTTPS ALLOWED_ORIGIN is required');
+  const broker=createSignInBroker({repo,auth,passwordVerifier});
   const publicProfile=account=>({uid:account.uid,name:account.name,login:account.login,role:account.role});
   async function actorFor(token){
     if(!token)error(401,'UNAUTHENTICATED','Sign in first');
@@ -31,10 +33,23 @@ export function createHandler({repo,auth,allowedOrigin,allowLocalDevelopment=fal
       if(request.method==='GET'&&url.pathname==='/health')return send(200,{status:'ok'});
       if(request.method==='GET'&&url.pathname==='/directory'){
         const docs=await repo.collection('directory').where('disabled','==',false).get();
-        return send(200,{accounts:docs.docs.map(d=>publicProfile(d.data())).sort((a,b)=>a.name.localeCompare(b.name))});
+        return send(200,{accounts:docs.docs.map(d=>({name:d.data().name,selector:d.id||d.data().selector||d.data().uid})).sort((a,b)=>a.name.localeCompare(b.name))});
+      }
+      if(request.method==='POST'&&url.pathname==='/auth/login'){
+        if(origin!==allowedOrigin)error(403,'ORIGIN_DENIED','Use the application sign-in page');
+        if(!/^application\/json(?:;|$)/i.test(request.headers['content-type']||''))error(415,'JSON_REQUIRED','Use JSON');
+        let raw='',size=0;const decoder=new TextDecoder();
+        for await(const chunk of request){const bytes=typeof chunk==='string'?new TextEncoder().encode(chunk):chunk;size+=bytes.byteLength;if(size>4096)error(413,'TOO_LARGE','Sign-in request is too large');raw+=decoder.decode(bytes,{stream:true});}
+        raw+=decoder.decode();let input;try{input=JSON.parse(raw);}catch{error(400,'INVALID_JSON','Invalid JSON');}
+        if(!input||typeof input!=='object'||Array.isArray(input))error(400,'INVALID_JSON','Use a sign-in object');
+        return send(200,await broker(input));
       }
       const token=/^Bearer ([^ ]+)$/.exec(request.headers.authorization||'')?.[1];
       const actor=await actorFor(token);
+      if(request.method==='GET'&&url.pathname==='/admin/directory'){
+        assertActor(actor,'admin');const docs=await repo.collection('accounts').where('disabled','==',false).get();
+        return send(200,{accounts:docs.docs.map(d=>publicProfile(d.data())).sort((a,b)=>a.name.localeCompare(b.name))});
+      }
       if(request.method==='GET'&&url.pathname==='/me')return send(200,{account:publicProfile(actor)});
       if(request.method!=='POST')error(404,'NOT_FOUND','Action not found');
       if(!/^application\/json(?:;|$)/i.test(request.headers['content-type']||''))error(415,'JSON_REQUIRED','Use JSON');
@@ -53,6 +68,18 @@ export function createHandler({repo,auth,allowedOrigin,allowLocalDevelopment=fal
       if(url.pathname==='/loans/issue')return send(200,await issueManualLoan(requestRepo,actor,body,commandId));
       if(url.pathname==='/losses')return send(200,await recordLoss(requestRepo,actor,body,commandId));
       if(url.pathname==='/loans/return')return send(200,await returnLoan(requestRepo,actor,body,commandId));
+      if(url.pathname==='/admin/directory/minimize'){
+        assertActor(actor,'admin');
+        const count=await repo.db.runTransaction(async tx=>{
+          const accounts=await tx.get(repo.collection('accounts')),existing=await tx.get(repo.collection('directory'));
+          const rows=new Map(existing.docs.map(doc=>[doc.id||doc.data().uid,{name:doc.data().name,selector:doc.id||doc.data().uid,disabled:true}]));
+          for(const doc of accounts.docs){const profile=doc.data();rows.set(profile.uid,publicDirectoryEntry(profile));}
+          if(rows.size>300)error(413,'DIRECTORY_TOO_LARGE','More than 300 directory records need a staged administrator procedure');
+          for(const [uid,row] of rows)tx.set(repo.collection('directory').doc(uid),row);
+          return rows.size;
+        });
+        return send(200,{minimized:true,records:count,accountsUnchanged:true});
+      }
       if(url.pathname==='/admin/self'){
         assertActor(actor,'admin');
         if(Date.now()/1000-(actor.authTime||0)>300)error(401,'RECENT_LOGIN_REQUIRED','Sign out and sign in again before changing administrator credentials');
@@ -93,7 +120,7 @@ export function createHandler({repo,auth,allowedOrigin,allowLocalDevelopment=fal
           await repo.db.runTransaction(async transaction=>{
             const reserved=await transaction.get(nameRef),directory=await transaction.get(repo.collection('directory'));
             if(reserved.exists&&reserved.data().uid!==uid)error(409,'DUPLICATE_NAME','This teacher name already has an account. Use a distinct display name or manage the existing account.');
-            if(directory.docs.some(doc=>doc.data().uid!==uid&&doc.data().name.normalize('NFKC').toLocaleLowerCase('en')===normalizedName))error(409,'DUPLICATE_NAME','This display name already has an account.');
+            if(directory.docs.some(doc=>(doc.id||doc.data().selector||doc.data().uid)!==uid&&doc.data().name.normalize('NFKC').toLocaleLowerCase('en')===normalizedName))error(409,'DUPLICATE_NAME','This display name already has an account.');
             transaction.set(nameRef,{uid,createdBy:actor.uid});
           });
           await auth.createUser({uid,email:login,password:body.password,displayName:name,disabled:true});
@@ -101,7 +128,7 @@ export function createHandler({repo,auth,allowedOrigin,allowLocalDevelopment=fal
           // A partially provisioned Auth user remains disabled; no administrator authority is granted.
           try{
             const batch=repo.db.batch();batch.set(repo.collection('accounts').doc(uid),profile);
-            batch.set(repo.collection('directory').doc(uid),{...publicProfile(profile),disabled:false});await batch.commit();
+            batch.set(repo.collection('directory').doc(uid),publicDirectoryEntry(profile));await batch.commit();
             await auth.setCustomUserClaims(uid,{sessionVersion:1});
             await auth.updateUser(uid,{disabled:false});
           }catch{error(503,'PROVISIONING_INCOMPLETE','Teacher account setup did not complete. Do not retry blindly; review the disabled account.');}
