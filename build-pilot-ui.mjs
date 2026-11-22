@@ -1,0 +1,11 @@
+import fs from 'node:fs';import vm from 'node:vm';
+const root=new URL('.',import.meta.url).pathname.replace(/\/$/,''),source=fs.readFileSync(root+'/index.html','utf8'),cfg=JSON.parse(fs.readFileSync(root+'/pilot-public-config.json','utf8'));
+const state=vm.runInNewContext('('+source.match(/const DEFAULT_STATE = ([\s\S]+?);\n\n        function loadLocalState/)[1]+')');
+const clean=v=>Array.isArray(v)?v.map(clean):v&&typeof v==='object'?Object.fromEntries(Object.entries(v).filter(([k])=>!/password|secret|credential/i.test(k)).map(([k,x])=>[k,clean(x)])):v;
+const fixture={settings:{...clean(state.settings),schoolName:'Synthetic Pilot Only',appTitle:'Synthetic Lab Review',publicBaseUrl:'https://regent-lab-backend-pilot.pages.dev/review/',syncRoomId:'synthetic-review'},inventory:clean(state.inventory),cabinets:clean(state.cabinets),requests:[],loans:[],lossRecords:[],scheduleSlots:[],logs:[]};delete fixture.settings.teachers;delete fixture.settings.adminUsername;
+fs.writeFileSync(root+'/secure-backend/pilot-fixture.json',JSON.stringify(fixture));
+let html=source.replace(/const EMBEDDED_FIREBASE_CONFIG = \{[\s\S]*?\n        \};/,'const EMBEDDED_FIREBASE_CONFIG = '+JSON.stringify(cfg)+';').replace('const SECURE_BACKEND_URL = "";','const SECURE_BACKEND_URL = "https://regent-lab-backend-pilot.pages.dev";');
+html=html.replace('<body','<body data-synthetic-pilot="true"').replace(/<title>[^<]*<\/title>/,'<title>SYNTHETIC PILOT: Regent Lab review</title>');
+html=html.replace(/<script\b[^>]*src=["']https:\/\/cdn.tailwindcss.com["'][^>]*><\/script>/,'<script src="./tailwind.js"></script>').replace(/<script\b[^>]*src=["'][^"']*qrcode.min.js["'][^>]*><\/script>/,'<script src="./qrcode.js"></script>');
+fs.mkdirSync(root+'/pilot-ui-assets/review',{recursive:true});fs.writeFileSync(root+'/pilot-ui-assets/review/index.html',html);fs.copyFileSync(root+'/secure-client.mjs',root+'/pilot-ui-assets/review/secure-client.mjs');
+for(const n of ['tailwind.js','qrcode.js'])fs.copyFileSync(root+'/'+n,root+'/pilot-ui-assets/review/'+n);fs.cpSync(root+'/assets',root+'/pilot-ui-assets/review/assets',{recursive:true});
