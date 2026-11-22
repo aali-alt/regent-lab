@@ -1,0 +1,30 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function account() { return get(/databases/$(database)/documents/regent_v2_accounts/$(request.auth.uid)); }
+    function active() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/regent_v2_accounts/$(request.auth.uid))
+        && account().data.disabled == false
+        && request.auth.token.auth_time >= account().data.validAfter
+        && (request.auth.token.sessionVersion == account().data.sessionVersion
+          || request.auth.token.sessionVersion == account().data.get('pendingSessionVersion', null));
+    }
+    function admin() { return active() && account().data.role == 'admin'; }
+    match /regent_v2_accounts/{uid} { allow read: if active() && request.auth.uid == uid; allow write: if false; }
+    match /regent_v2_directory/{uid} { allow read: if resource.data.disabled == false; allow list: if resource.data.disabled == false; allow write: if false; }
+    match /regent_v2_accountNames/{id} { allow read: if admin(); allow write: if false; }
+    match /regent_v2_meta/{id} { allow read: if active(); allow write: if false; }
+    match /regent_v2_bookings/{id} { allow read: if active(); allow write: if false; }
+    match /regent_v2_inventory/{id} { allow read: if active(); allow write: if false; }
+    match /regent_v2_cabinets/{id} { allow read: if active(); allow write: if false; }
+    match /regent_v2_scheduleSlots/{id} { allow read: if active(); allow write: if false; }
+    match /regent_v2_settings/{id} { allow read: if active(); allow write: if false; }
+    match /regent_v2_requests/{id} { allow read: if active() && (admin() || resource.data.teacherUid == request.auth.uid); allow write: if false; }
+    match /regent_v2_loans/{id} { allow read: if active() && (admin() || resource.data.teacherUid == request.auth.uid); allow write: if false; }
+    match /regent_v2_lossRecords/{id} { allow read: if admin(); allow write: if false; }
+    match /regent_v2_logs/{id} { allow read: if admin(); allow write: if false; }
+    // Legacy documents and all command/lock data stay inaccessible to browsers.
+    match /{document=**} { allow read, write: if false; }
+  }
+}
