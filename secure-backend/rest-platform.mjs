@@ -1,3 +1,4 @@
+import {createPasswordVerifier} from './auth-broker.mjs';
 // Portable Firebase REST facade. It avoids gRPC and filesystem APIs on edge runtimes.
 import {base64Url,decodeBase64UrlText,signRs256} from './portable-crypto.mjs';
 export function restPlatform({projectId,apiKey,serviceAccount,emulatorFirestore,emulatorAuth}) {
@@ -91,6 +92,12 @@ export function restPlatform({projectId,apiKey,serviceAccount,emulatorFirestore,
     if(claims.aud!==projectId||claims.iss!=='https://securetoken.google.com/'+projectId||claims.sub!==user.localId||claims.exp<=now||claims.iat>now+30||(checkRevoked&&Number(claims.auth_time)<Number(user.validSince||0)))throw Error('Invalid token claims');
     return {...claims,uid:user.localId};
   },async getUser(uid){const data=await adminAuth('/accounts:lookup',{localId:[uid]});if(!data.users?.[0])throw Error('User not found');return providerUser(data.users[0]);},
+    passwordSignIn:createPasswordVerifier({apiKey,projectId,emulatorHost:emulatorAuth}),
+    async createCustomToken(uid,claims={}){
+      const now=Math.floor(Date.now()/1000),header={alg:emulated?'none':'RS256',typ:'JWT'},issuer=emulated?'emulator@'+projectId+'.iam.gserviceaccount.com':serviceAccount.client_email;
+      const unsigned=base64Url(JSON.stringify(header))+'.'+base64Url(JSON.stringify({iss:issuer,sub:issuer,aud:'https://identitytoolkit.googleapis.com/google.identity.identitytoolkit.v1.IdentityToolkit',iat:now,exp:now+300,uid,claims}));
+      return unsigned+'.'+(emulated?'':await signRs256(unsigned,serviceAccount.private_key));
+    },
     async createUser({uid,...value}){const out=await adminAuth('/accounts',{localId:uid,...value});return {uid:out.localId};},
     async updateUser(uid,value){const {disabled,...rest}=value;return adminAuth('/accounts:update',{localId:uid,...rest,...(disabled===undefined?{}:{disableUser:disabled})});},
     async setCustomUserClaims(uid,value){return adminAuth('/accounts:update',{localId:uid,customAttributes:JSON.stringify(value)});},
