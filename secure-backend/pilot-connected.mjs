@@ -1,3 +1,4 @@
+import {publicDirectoryEntry,createPasswordVerifier} from './auth-broker.mjs';
 // Isolated synthetic integration runner. Never deploy this entry point for school data.
 import probe from './pilot-worker.mjs';
 import {pilotConfig,pilotAdminUid} from './pilot-config.mjs';
@@ -45,7 +46,7 @@ async function bootstrap(platform,repo,decoded){
   await repo.db.runTransaction(async tx=>{
     const current=await tx.get(ref),settings=await tx.get(repo.collection('settings').doc('main'));
     if(current.exists)throw Error('Bootstrap already changed');
-    tx.set(ref,profile);tx.set(repo.collection('directory').doc(pilotAdminUid),{uid:profile.uid,name:profile.name,login:profile.login,role:profile.role,disabled:false});
+    tx.set(ref,profile);tx.set(repo.collection('directory').doc(pilotAdminUid),publicDirectoryEntry(profile));
     if(!settings.exists)tx.set(repo.collection('settings').doc('main'),{labs:['Synthetic Lab'],periods:['Period 1'],version:1});
   });
   return {initialized:true,refreshToken:true};
@@ -75,7 +76,7 @@ async function step(platform,repo,admin,input){
       const old=await tx.get(marker);if(old.exists)return;
       for(let i=0;i<100;i++)tx.set(repo.collection('inventory').doc(prefix+'_item_'+i),{id:prefix+'_item_'+i,nameEn:'Synthetic Item '+i,qty:10,unit:'pcs',version:1});
       tx.set(repo.collection('accounts').doc(TEACHER),{...teacher,login:'synthetic-teacher@regent-lab-pilot.invalid',disabled:false,validAfter:0,sessionVersion:1,version:1});
-      tx.set(repo.collection('directory').doc(TEACHER),{...teacher,login:'synthetic-teacher@regent-lab-pilot.invalid',disabled:false});
+      tx.set(repo.collection('directory').doc(TEACHER),publicDirectoryEntry(teacher));
       tx.set(marker,{id:run,createdAt:repo.now(),syntheticOnly:true});
     });
     return {check:'100 synthetic inventory records seeded atomically',passed:true};
