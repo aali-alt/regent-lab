@@ -1479,6 +1479,17 @@
         import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+        // Built-in Regent International School Firebase Configuration
+        const EMBEDDED_FIREBASE_CONFIG = {
+            apiKey: "AIzaSyCHsR2-Iccj5oJGjN9KhHnIT3dDGrB0Wdw",
+            authDomain: "regent-lab.firebaseapp.com",
+            projectId: "regent-lab",
+            storageBucket: "regent-lab.firebasestorage.app",
+            messagingSenderId: "351781323945",
+            appId: "1:351781323945:web:f92eac84d7bfa2eb8915b8",
+            measurementId: "G-R5H2GEL171"
+        };
+
         // ================= EXECUTIVE RIS CREST SVG =================
         function getRISCrestSVG(sizeClass = "w-full h-full") {
             return `
@@ -1877,52 +1888,66 @@
         }
 
         async function initCloudSync() {
-            // 1. Pull latest state from Cloud KV immediately on boot
-            await forceCloudPullNow(true);
-            startRealtimeCloudPolling();
-
-            // 2. Connect Firebase Firestore if configured in environment or System Settings
+            // 1. Connect directly to Regent International School Firebase Firestore first
             try {
-                let cfg = null;
+                let cfg = EMBEDDED_FIREBASE_CONFIG;
                 if (typeof __firebase_config !== 'undefined') {
                     cfg = JSON.parse(__firebase_config);
                 } else {
                     const savedCustom = localStorage.getItem(CUSTOM_FB_KEY);
                     if (savedCustom) cfg = JSON.parse(savedCustom);
                 }
-                if (!cfg || !cfg.apiKey) return;
 
-                const app = initializeApp(cfg);
-                const auth = getAuth(app);
+                if (cfg && cfg.apiKey) {
+                    const app = initializeApp(cfg);
+                    const auth = getAuth(app);
 
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-
-                db = getFirestore(app);
-                const appId = typeof __app_id !== 'undefined' ? __app_id : 'regent-science-lab';
-                const roomSlug = (state.settings.syncRoomId || 'ris-regent-lab-sync-2026').replace(/[^a-zA-Z0-9_-]/g, '_');
-                firestoreDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'regent_lab_rooms', roomSlug);
-
-                onSnapshot(
-                    firestoreDocRef,
-                    (snap) => {
-                        setSyncStatusText('Live Firestore Sync Active', 'Firebase Firestore');
-                        if (snap.exists()) {
-                            applyIncomingRemoteState(snap.data(), 'Firebase Firestore');
-                        } else {
-                            persistState();
-                        }
-                    },
-                    () => {
-                        firestoreDocRef = null;
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
                     }
-                );
+
+                    db = getFirestore(app);
+                    const appId = typeof __app_id !== 'undefined' ? __app_id : 'regent-science-lab';
+                    const roomSlug = (state.settings.syncRoomId || 'ris-regent-lab-sync-2026').replace(/[^a-zA-Z0-9_-]/g, '_');
+                    firestoreDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'regent_lab_rooms', roomSlug);
+
+                    // Fetch initial snapshot immediately so login credentials & requests are ready
+                    try {
+                        const initialSnap = await getDoc(firestoreDocRef);
+                        if (initialSnap.exists()) {
+                            applyIncomingRemoteState(initialSnap.data(), 'Firebase Firestore (regent-lab)');
+                        } else {
+                            await setDoc(firestoreDocRef, JSON.parse(JSON.stringify(state)));
+                        }
+                    } catch (readErr) {
+                        console.warn('Firestore initial read warning:', readErr);
+                    }
+
+                    // Subscribe to real-time updates (PC <-> Phone instant push)
+                    onSnapshot(
+                        firestoreDocRef,
+                        (snap) => {
+                            setSyncStatusText('Live Firebase Sync Active', 'Firebase Firestore (regent-lab)');
+                            if (snap.exists()) {
+                                applyIncomingRemoteState(snap.data(), 'Firebase Firestore (regent-lab)');
+                            }
+                        },
+                        (snapErr) => {
+                            console.warn('Firestore listener fallback:', snapErr);
+                            firestoreDocRef = null;
+                        }
+                    );
+                }
             } catch (e) {
+                console.warn('Firebase init fallback:', e);
                 firestoreDocRef = null;
             }
+
+            // 2. Also keep Cloud KV backup polling active as a secondary fallback
+            await forceCloudPullNow(true);
+            startRealtimeCloudPolling();
         }
 
         // ================= UTILITIES =================
