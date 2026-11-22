@@ -12,7 +12,7 @@ service cloud.firestore {
     }
     function admin() { return active() && account().data.role == 'admin'; }
     match /regent_v2_accounts/{uid} { allow read: if active() && request.auth.uid == uid; allow write: if false; }
-    match /regent_v2_directory/{uid} { allow read: if resource.data.disabled == false; allow list: if resource.data.disabled == false; allow write: if false; }
+    match /regent_v2_directory/{uid} { allow read: if admin(); allow write: if false; }
     match /regent_v2_accountNames/{id} { allow read: if admin(); allow write: if false; }
     match /regent_v2_meta/{id} { allow read: if active(); allow write: if false; }
     match /regent_v2_bookings/{id} { allow read: if active(); allow write: if false; }
