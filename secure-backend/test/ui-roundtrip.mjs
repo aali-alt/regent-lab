@@ -1,3 +1,4 @@
+import {publicDirectoryEntry,createPasswordVerifier} from '../auth-broker.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -29,7 +30,7 @@ try{
     const login=account.uid+'@demo.invalid';try{await auth.deleteUser(account.uid);}catch{}
     await auth.createUser({uid:account.uid,email:login,password:'Local-ui-fixture-only-2026'});await auth.setCustomUserClaims(account.uid,{sessionVersion:1});
     await db.doc('regent_v2_accounts/'+account.uid).set({...account,login,disabled:false,sessionVersion:1,validAfter:0});
-    await db.doc('regent_v2_directory/'+account.uid).set({...account,login,disabled:false});
+    await db.doc('regent_v2_directory/'+account.uid).set(publicDirectoryEntry(account));
   }
   await build({entryPoints:[path.join(dir,'secure-client.mjs')],outfile:path.join(dir,'ui-client.bundle.js'),format:'iife',globalName:'RegentSecureReview',bundle:true,platform:'browser',plugins:[{name:'local-firebase-sdk',setup(builder){builder.onResolve({filter:/^https:\/\/www\.gstatic\.com\/firebasejs\/.*\/firebase-(app|auth|firestore)\.js$/},args=>({path:require.resolve('firebase/'+args.path.match(/firebase-(app|auth|firestore)\.js$/)[1])}));}}]});
   let html=source.replace('import {createSecureClient} from "./secure-client.mjs";','const {createSecureClient}=window.RegentSecureReview; window.__safeHTMLForTest=safeHTML;').replace('const SECURE_BACKEND_URL = "";','const SECURE_BACKEND_URL = "http://127.0.0.1:8787";').replace('testEmulators: false','testEmulators: true').replace(/regent-lab\.firebaseapp\.com/g,'demo-regent-lab.firebaseapp.com').replace('projectId: "regent-lab"','projectId: "demo-regent-lab"');
@@ -37,14 +38,24 @@ try{
   html=html.replace(/<script\b[^>]*src=["']https:\/\/cdn.tailwindcss.com["'][^>]*><\/script>/,()=>'<script>'+require('node:fs').readFileSync(path.join(dir,'tailwind.js'),'utf8')+'</script>').replace(/<script\b[^>]*src=["'][^"']*qrcode.min.js["'][^>]*><\/script>/,()=>'<script>'+require('node:fs').readFileSync(path.join(dir,'qrcode.js'),'utf8')+'</script>');
   html=html.replace('</head>','<style>*,*::before,*::after{animation:none!important;transition:none!important}</style></head>');
   await fs.writeFile(path.join(dir,'ui-emulator-preview.html'),html);
-  apiServer=createServer(createHandler({repo:new FirestoreRepository(db),auth,allowedOrigin:'http://127.0.0.1:4173',allowLocalDevelopment:true}));await new Promise(r=>apiServer.listen(8787,'127.0.0.1',r));
+  apiServer=createServer(createHandler({repo:new FirestoreRepository(db),auth,passwordVerifier:createPasswordVerifier({apiKey:'local-test-api-key',projectId:'demo-regent-lab',emulatorHost:process.env.FIREBASE_AUTH_EMULATOR_HOST}),allowedOrigin:'http://127.0.0.1:4173',allowLocalDevelopment:true}));await new Promise(r=>apiServer.listen(8787,'127.0.0.1',r));
   siteServer=createServer(async(req,res)=>{let file=req.url.startsWith('/ui-client.bundle.js')?'ui-client.bundle.js':req.url.startsWith('/assets/')?req.url.slice(1).split('?')[0]:'ui-emulator-preview.html';if(!/^[a-zA-Z0-9_./-]+$/.test(file)||file.includes('..')){res.statusCode=404;return res.end();}res.setHeader('Content-Type',file.endsWith('.js')?'application/javascript':file.endsWith('.css')?'text/css':file.endsWith('.woff2')?'font/woff2':'text/html');try{res.end(await fs.readFile(path.join(dir,file)));}catch{res.statusCode=404;res.end();}});await new Promise(r=>siteServer.listen(4173,'127.0.0.1',r));
   browser=await chromium.launch({executablePath:'/usr/bin/google-chrome',headless:true,args:['--no-sandbox']});
   const context=await browser.newContext({viewport:{width:1440,height:1000}});
   await context.route('**/*',route=>new URL(route.request().url()).hostname==='127.0.0.1'?route.continue():route.abort());
+  let brokerCalls=0,browserPasswordProviderCalls=0;
+  context.on('request',request=>{if(request.url().endsWith('/auth/login'))brokerCalls++;if(request.url().includes('accounts:signInWithPassword'))browserPasswordProviderCalls++;});
   const teacher=await context.newPage();const errors=[];teacher.on('pageerror',err=>errors.push(err.message));
   await teacher.goto('http://127.0.0.1:4173/?mode=teacher');
-  await teacher.locator('#tp-login-teacher-select').selectOption('Teacher One',{timeout:15000});await teacher.locator('#tp-login-password').fill('Local-ui-fixture-only-2026');await teacher.locator('#tp-login-password').press('Enter');
+  await teacher.locator('#tp-login-teacher-select option[value="Teacher One"]').waitFor({state:'attached'});
+  await db.doc('regent_v2_directory/refresh_probe').set({name:'Refresh Probe Teacher',selector:'refresh_probe',disabled:false});
+  await teacher.getByRole('button',{name:/Refresh Teacher List/}).click();
+  await teacher.locator('#tp-login-teacher-select option[value="Refresh Probe Teacher"]').waitFor({state:'attached'});
+  const publicDirectory=await (await fetch('http://127.0.0.1:8787/directory')).json();
+  for(const row of publicDirectory.accounts)assert.deepEqual(Object.keys(row).sort(),['name','selector']);
+  await db.doc('regent_v2_directory/refresh_probe').delete();
+  console.log('PASS: existing pre-login refresh control reloads only public names and opaque selectors.');
+  await teacher.locator('#tp-login-teacher-select').selectOption('Teacher One',{timeout:15000});await teacher.screenshot({path:path.join(dir,'ui-private-directory-login.png'),fullPage:false});await teacher.locator('#tp-login-password').fill('Local-ui-fixture-only-2026');await teacher.locator('#tp-login-password').press('Enter');
   try { await teacher.locator('#tp-main-content').waitFor({state:'visible',timeout:20000}); } catch(err) { console.log('LOGIN DEBUG', errors, await teacher.locator('#toast-container').innerText(), await teacher.locator('#tp-login-teacher-select').inputValue(), await teacher.locator('#tp-login-password').evaluate(input=>({length:input.value.length}))); throw err; }
   await teacher.locator('#tp-experiment').fill('UI round-trip microscopy');
   for(const selector of ['#tp-subject','#tp-grade','#tp-period','#tp-lab']){const value=await teacher.locator(selector+' option').evaluateAll(options=>options.find(o=>o.value)?.value);await teacher.locator(selector).selectOption(value);}
@@ -134,6 +145,8 @@ try{
   await adminPage.locator('#set-sync-room-id').fill('post-restore-generation-two');await adminPage.evaluate(()=>window.saveCloudSyncSettings());
   assert.equal((await db.doc('regent_v2_settings/main').get()).data().syncRoomId,'post-restore-generation-two');
   await adminPage.evaluate(()=>window.switchTab('settings'));
+  assert.ok(brokerCalls>=2);assert.equal(browserPasswordProviderCalls,0);
+  console.log('PASS: teacher and administrator browser login use only the private broker, with no direct email/password provider request.');
   await adminPage.screenshot({path:path.join(dir,'ui-settings-review.png'),fullPage:false});
   await adminPage.evaluate(()=>window.switchTab('requests'));
   console.log('PASS: safe QR-label save, rejection of mismatched backend config, full UI restore with audit/account preservation, and rejection of incomplete and tampered backups.');
