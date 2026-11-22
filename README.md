@@ -1,57 +1,25 @@
-# Regent Lab secure repair
+# Regent Lab
 
-Latest tested review checkpoint: 2026-11-22, private sign-in broker and teacher-list refresh included. This is not a school deployment. The default branch and original school website were not changed. Existing protected accounts were not replaced, and no billing was enabled.
+The repaired school app is now live at https://aali-alt.github.io/regent-lab/ .
 
-## Try the working isolated version
+## Current production source checkpoint
 
-https://regent-lab-backend-pilot.pages.dev/review/
+[`26-26-regent-lab-school-production-20261122.zip`](https://github.com/aali-alt/regent-lab/blob/fix/secure-sync-review/26-26-regent-lab-school-production-20261122.zip) is the complete school production checkpoint dated 2026-11-22. Extract it and start with its own README and OPERATIONS files.
 
-Teacher entry: https://regent-lab-backend-pilot.pages.dev/review/?mode=teacher
+It includes the exact published frontend, school backend source, exact deployed backend ZIP and compiled worker, matching Firebase rules, assets, dependency lock, reproducible build script, tests, verification screenshots and a SHA-256 manifest. It contains no live passwords, private service-account key or school database export.
 
-This is the existing `regent-lab-pilot` synthetic Firebase project. Use only the separately supplied synthetic administrator/teacher credentials. Administrator username: `synthetic-admin@regent-lab-pilot.invalid`. The display name `Synthetic Administrator` also works. The password is supplied only through its secure copy link. The pilot target guard rejects the school project. No passwords or server credentials are in this source package.
+Archive SHA-256:
 
-## Canonical source
-
-`index.html` is the reviewed frontend. Its generic secure backend URL is deliberately unset until a school target/cutover is approved. `secure-client.mjs` uses Firebase browser SDK 13.4.0 and the private broker. `secure-backend/` contains readable backend modules, rules, tests, the dependency lock and the guarded synthetic pilot entry point. `assets/`, `tailwind.js` and `qrcode.js` are local visual dependencies.
-
-The public sign-in API returns names and opaque selectors only. Password verification and login-address/role lookup are server-side. Teacher dropdown selection is preserved. Raw directory reads require an active administrator. The existing pre-login Refresh Teacher List control now reloads only the public list.
-
-`build-pilot-ui.mjs` creates isolated pilot assets from the canonical frontend and applies only the synthetic pilot configuration. It does not deploy anything. School/backend entry points are review material, not permission to change a live service.
-
-## Verification
-
-- 41 unit, broker/security, crypto and restore checks passed.
-- 12 real Firestore/Auth/portable-REST emulator checks passed, including custom-token exchange, public-field minimization, teacher denial of private directory access and account-preserving minimization.
-- Actual Chrome UI suite passed with both teacher and administrator broker login, zero direct browser email/password-provider requests, pre-login list refresh, request/approval, stock changes, loans/losses/schedule/print, stale-write rejection and logout privacy.
-- The same UI suite covers two consecutive complete restores, cross-session listener re-sync, a later save, incomplete/tampered backup rejection, password-free export and preservation of protected accounts and prior audit history.
-- Hosted pilot evidence separately proves persistent 100-item approval/retry, competing concurrent approvals, full transactional restore and teacher/admin live request approval.
-- Fresh hosted administrator and teacher broker sessions were verified as Firebase custom sessions with unchanged UIDs. The pre-login endpoint returned only name/selector. Anonymous and authenticated-teacher direct directory reads both returned 403 after the published rules were checked against the tested source.
-
-Test logs and dependency audits are in `test-results/`. The final teacher-list label/refresh-only change was tested through the actual UI after the broker tests.
-
-## Reproduce
-
-Use Node 22+, Java 21+ and Google Chrome at `/usr/bin/google-chrome`, or adjust the UI test's browser path.
-
-From `secure-backend/`:
-
-```sh
-npm ci
-npm test
-npm run test:emulator
-npm run test:ui
+```text
+f16b8462dd0a3d938a4238ac4e4696b821e513aa47c3fc1f0da5e7f103a808f0
 ```
 
-Tests use local `demo-` emulator projects. Never point them at school data. The package contains the complete local assets and dependency lock needed for reproduction.
+Fresh verification of the packaged production source passed 41 unit/security/restore tests, 12 Firestore/Auth integration tests and the Chrome UI round trip, including individual teacher-password management. Separate live school checks covered fresh administrator login at the original URL, teacher login, booking submission, admin approval and the teacher's live approval update.
 
-## Launch boundary
+Frontend cutover commit: https://github.com/aali-alt/regent-lab/commit/6d34da6b9daa48ae69f1ccfd228c6707f42f4417
 
-The owner's latest clarification is that current records are test data. There is no valuable-record migration to perform. Actual school cutover still needs the intended target and administrator/account setup to be approved. Preserve the current source/configuration and legacy test records rather than deleting or silently replacing them. Synthetic credentials are not school credentials.
+## Historical review files
 
-See `OPERATIONS.md` for explicit free-tier capacity, sign-in limits and recovery/rollback conditions. There is no unlimited-capacity, automatic-backup or outage-free claim.
+The older loose files and earlier numbered archives on this branch are preserved review checkpoints. They are not the current school deployment source. Their earlier pilot-only notes describe that earlier stage. Do not deploy them over the current school app or substitute their synthetic accounts for school accounts.
 
-Captured dependency audit: zero production advisories, zero high/critical overall, and 14 moderate advisories in development-only Firebase CLI dependencies. The runtime audit is clean; the whole development tree is not described as clean.
-
-## Administrator login compatibility
-
-The administrator broker accepts the existing private Firebase email alias as well as the display name. Email aliases are looked up privately and never added to the public directory. A fresh final hosted login using the exact email username shown in the owner's screenshot and the unchanged saved password passed. The vault username matches that email alias; no password reset occurred.
+No claim is made that every device, physical printer or UI edge case has been tested. See the production archive for the tested flows, operational limits and recovery boundaries.
