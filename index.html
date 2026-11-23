@@ -4085,7 +4085,7 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
             triggerSinglePagePrint(safeHTML`
                 <h2 class="text-base font-black text-ris-navy">Complete Laboratory Inventory Register</h2>
                 <table class="w-full text-left border-collapse">
-                    <thead><tr class="bg-slate-100 text-[11px] font-black"><th class="p-2">Code</th><th class="p-2">Item</th><th class="p-2">Location</th><th class="p-2">Stock</th><th class="p-2">Expiry</th></tr></thead>
+                    <thead><tr class="bg-ris-navy text-white text-[11px] font-black"><th class="p-2">Code</th><th class="p-2">Item</th><th class="p-2">Location</th><th class="p-2">Stock</th><th class="p-2">Expiry</th></tr></thead>
                     <tbody>${rows}</tbody>
                 </table>
             `, 'Complete Laboratory Inventory Register');
@@ -4105,7 +4105,7 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
             triggerSinglePagePrint(safeHTML`
                 <h2 class="text-base font-black text-ris-navy">Low Stock & Expired Reagents Procurement Sheet</h2>
                 <table class="w-full text-left border-collapse">
-                    <thead><tr class="bg-slate-100 text-[11px] font-black"><th class="p-2">Code</th><th class="p-2">Item</th><th class="p-2">Current / Min</th><th class="p-2">Expiry</th></tr></thead>
+                    <thead><tr class="bg-ris-navy text-white text-[11px] font-black"><th class="p-2">Code</th><th class="p-2">Item</th><th class="p-2">Current / Min</th><th class="p-2">Expiry</th></tr></thead>
                     <tbody>${rows || safeHTML.raw('<tr><td colspan="4" class="p-3 text-center text-xs">No alerts currently active.</td></tr>')}</tbody>
                 </table>
             `, 'Low Stock & Expired Reagents Procurement Sheet');
@@ -4125,7 +4125,7 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
             triggerSinglePagePrint(safeHTML`
                 <h2 class="text-base font-black text-ris-navy">Official Loss, Breakage & Chemical Disposal Register</h2>
                 <table class="w-full text-left border-collapse">
-                    <thead><tr class="bg-slate-100 text-[11px] font-black"><th class="p-2">Date</th><th class="p-2">Item</th><th class="p-2">Qty Lost</th><th class="p-2">Reason</th><th class="p-2">Responsible</th></tr></thead>
+                    <thead><tr class="bg-ris-navy text-white text-[11px] font-black"><th class="p-2">Date</th><th class="p-2">Item</th><th class="p-2">Qty Lost</th><th class="p-2">Reason</th><th class="p-2">Responsible</th></tr></thead>
                     <tbody>${rows || safeHTML.raw('<tr><td colspan="5" class="p-3 text-center text-xs">No loss or breakage records logged.</td></tr>')}</tbody>
                 </table>
             `, 'Official Loss, Breakage & Chemical Disposal Register');
