@@ -198,8 +198,7 @@
                 width: 100% !important;
                 margin: 0 !important;
                 padding: 0 !important;
-                page-break-inside: avoid;
-                break-inside: avoid;
+                /* No break-inside:avoid here: multi-page reports must flow so the repeated thead identity strip appears on every page */
             }
             .print-card-avoid-break {
                 page-break-inside: avoid;
@@ -3985,25 +3984,42 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
         }
 
         // ================= OFFICIAL SINGLE-PAGE A4 PRINTING & EXPORTS =================
-        function triggerSinglePagePrint(innerHTML) {
+        function triggerSinglePagePrint(innerHTML, reportTitle) {
             const stage = document.getElementById('print-stage');
             if (!stage) return;
+            const todayStr = new Date().toLocaleDateString();
             stage.innerHTML = safeHTML`
-                <div class="print-card-avoid-break p-4 space-y-4">
-                    <div class="flex items-center justify-between border-b-2 border-ris-navy pb-3">
+                <div class="p-4">
+                    <div class="flex items-center justify-between border-b-2 border-ris-navy pb-3 mb-4">
                         <div class="flex items-center gap-3">
                             <div class="w-14 h-14">${getRISCrestSVG('w-full h-full')}</div>
+                            <img src="assets/dept-logo.jpg" alt="RIS Science Department" class="h-14 w-14 rounded-lg" style="object-fit:contain" decoding="async">
                             <div>
-                                <div class="text-lg font-black text-ris-navy">${state.settings.schoolName}</div>
-                                <div class="text-xs font-bold text-ris-red">${state.settings.deptBadge} • ${state.settings.appTitle}</div>
+                                <div class="text-lg font-black text-ris-navy">${state.settings.schoolName || 'Regent International School'}</div>
+                                <div class="text-xs font-bold text-ris-red">${state.settings.deptBadge || 'RIS Science Department'} • ${state.settings.appTitle || 'Science Lab'}</div>
                             </div>
                         </div>
                         <div class="text-right text-[11px] font-bold text-slate-500">
-                            <div>Date: ${new Date().toLocaleDateString()}</div>
+                            <div>Date: ${todayStr}</div>
                             <div>Official Laboratory Document</div>
                         </div>
                     </div>
-                    ${innerHTML}
+                    <table class="w-full" style="border-collapse:collapse">
+                        <thead>
+                            <tr><th class="p-0" style="border:none">
+                                <div class="flex items-center justify-between border-b border-slate-300 pb-1 mb-3">
+                                    <div class="flex items-center gap-2 text-[10px] font-bold text-slate-500">
+                                        <div class="w-5 h-5">${getRISCrestSVG('w-full h-full')}</div>
+                                        <span>${state.settings.schoolName || 'Regent International School'} • ${state.settings.deptBadge || 'RIS Science Department'}</span>
+                                    </div>
+                                    <div class="text-[10px] font-bold text-slate-500">${reportTitle || ''} • ${todayStr}</div>
+                                </div>
+                            </th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="p-0" style="border:none">${innerHTML}</td></tr>
+                        </tbody>
+                    </table>
                 </div>
             `;
             setTimeout(() => {
@@ -4014,13 +4030,13 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
         function printTeacherPortalPoster() {
             const url = buildTeacherPortalURL();
             triggerSinglePagePrint(safeHTML`
-                <div class="text-center py-6 space-y-4">
+                <div class="print-card-avoid-break text-center py-6 space-y-4">
                     <h2 class="text-2xl font-black text-ris-navy">Science Lab Teacher Requisition Portal</h2>
                     <p class="text-sm font-bold text-slate-600">Scan this QR code with your smartphone camera to submit lab sessions & equipment requests.</p>
                     <div id="print-poster-qr" class="qr-single-box mx-auto"></div>
                     <div class="text-xs font-extrabold text-ris-navy break-all">${url}</div>
                 </div>
-            `);
+            `, 'Teacher Requisition Portal Poster');
             renderSingleCrispQR('print-poster-qr', url, 240);
         }
 
@@ -4029,14 +4045,14 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
             if (!cab) return;
             const url = buildCabinetAuditURL(cab.code);
             triggerSinglePagePrint(safeHTML`
-                <div class="border-4 border-ris-navy rounded-3xl p-8 text-center space-y-4 max-w-md mx-auto">
+                <div class="print-card-avoid-break border-4 border-ris-navy rounded-3xl p-8 text-center space-y-4 max-w-md mx-auto">
                     <div class="inline-block px-4 py-1 rounded-full bg-ris-red text-white text-sm font-black">${cab.code}</div>
                     <h2 class="text-2xl font-black text-ris-navy">${cab.name}</h2>
                     <p class="text-sm font-bold text-slate-600">${cab.lab} • ${cab.specialty}</p>
                     <div id="print-cab-qr" class="qr-single-box mx-auto"></div>
                     <div class="text-xs font-extrabold text-slate-500">Scan for Instant Mobile Shelf Audit</div>
                 </div>
-            `);
+            `, 'Cabinet Door Label ' + cab.code);
             renderSingleCrispQR('print-cab-qr', url, 220);
         }
 
@@ -4056,7 +4072,7 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
                     <thead><tr class="bg-slate-100 text-[11px] font-black"><th class="p-2">Code</th><th class="p-2">Item</th><th class="p-2">Location</th><th class="p-2">Stock</th><th class="p-2">Expiry</th></tr></thead>
                     <tbody>${rows}</tbody>
                 </table>
-            `);
+            `, 'Complete Laboratory Inventory Register');
         }
 
         function printAlertsReport() {
@@ -4076,7 +4092,7 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
                     <thead><tr class="bg-slate-100 text-[11px] font-black"><th class="p-2">Code</th><th class="p-2">Item</th><th class="p-2">Current / Min</th><th class="p-2">Expiry</th></tr></thead>
                     <tbody>${rows || safeHTML.raw('<tr><td colspan="4" class="p-3 text-center text-xs">No alerts currently active.</td></tr>')}</tbody>
                 </table>
-            `);
+            `, 'Low Stock & Expired Reagents Procurement Sheet');
         }
 
         function printLossBreakageReport() {
@@ -4096,7 +4112,7 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
                     <thead><tr class="bg-slate-100 text-[11px] font-black"><th class="p-2">Date</th><th class="p-2">Item</th><th class="p-2">Qty Lost</th><th class="p-2">Reason</th><th class="p-2">Responsible</th></tr></thead>
                     <tbody>${rows || safeHTML.raw('<tr><td colspan="5" class="p-3 text-center text-xs">No loss or breakage records logged.</td></tr>')}</tbody>
                 </table>
-            `);
+            `, 'Official Loss, Breakage & Chemical Disposal Register');
         }
 
         function printWeeklyScheduleA4() {
@@ -4108,7 +4124,7 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
             triggerSinglePagePrint(safeHTML`
                 <h2 class="text-base font-black text-ris-navy">Weekly Science Laboratory Timetable</h2>
                 ${safeHTML.raw(tableClone.outerHTML)}
-            `);
+            `, 'Weekly Science Laboratory Timetable');
         }
 
         function exportInventoryCSV() {
