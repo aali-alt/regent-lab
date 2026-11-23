@@ -433,12 +433,13 @@
                 <div class="space-y-3">
                     <div class="flex items-center justify-between">
                         <label class="text-xs font-extrabold text-ris-navy">Select Required Apparatus & Chemicals *</label>
-                        <span class="text-[11px] font-bold text-slate-400">Live Stock View</span>
+                        <span class="text-[11px] font-bold text-slate-400">Request catalog — stock levels hidden</span>
                     </div>
                     <div class="flex flex-col sm:flex-row gap-2">
-                        <select id="tp-item-select" class="flex-1 px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold text-ris-navy"></select>
+                        <select id="tp-item-select" onchange="updateTpUnitOptions()" class="flex-1 px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold text-ris-navy"></select>
                         <div class="flex gap-2">
-                            <input type="number" id="tp-item-qty" min="1" value="1" class="w-24 px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold text-center">
+                            <input type="number" id="tp-item-qty" min="0.01" step="any" value="1" class="w-24 px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold text-center">
+                            <select id="tp-item-unit" class="w-32 px-2 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold text-ris-navy"></select>
                             <button type="button" onclick="addTeacherPortalItem()" class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-ris-navy hover:bg-ris-navyDark text-white text-xs font-extrabold shrink-0">
                                 + Add Item
                             </button>
@@ -671,6 +672,41 @@
                 </div>
 
                 <!-- Real-Time Operational Grid -->
+                <!-- Quick actions -->
+                <div class="flex flex-wrap gap-2">
+                    <button type="button" onclick="openInventoryModal()" class="px-4 py-2 rounded-xl bg-ris-red hover:bg-ris-redDark text-white text-xs font-extrabold shadow-xs">+ Add Inventory Item</button>
+                    <button type="button" onclick="openModal('loan-modal')" class="px-4 py-2 rounded-xl bg-white border border-ris-border hover:bg-slate-50 text-ris-navy text-xs font-extrabold shadow-xs">🤝 Issue Manual Loan</button>
+                    <button type="button" onclick="openTeacherQRModal()" class="px-4 py-2 rounded-xl bg-white border border-ris-border hover:bg-slate-50 text-ris-navy text-xs font-extrabold shadow-xs">📱 Teacher QR</button>
+                    <button type="button" onclick="switchTab('schedule')" class="px-4 py-2 rounded-xl bg-white border border-ris-border hover:bg-slate-50 text-ris-navy text-xs font-extrabold shadow-xs">📅 Full Timetable</button>
+                </div>
+
+                <!-- Session preparation list: today & tomorrow -->
+                <div class="bg-white p-5 rounded-3xl border border-ris-border shadow-xs space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-sm font-black text-ris-navy">🧰 Session Preparation — What to Set Up</h3>
+                        <span class="text-[11px] font-bold text-slate-400">Materials per approved booking</span>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        <div>
+                            <div class="text-[11px] font-extrabold text-slate-500 mb-2">TODAY</div>
+                            <div id="dash-prep-today" class="space-y-2"></div>
+                        </div>
+                        <div>
+                            <div class="text-[11px] font-extrabold text-slate-500 mb-2">TOMORROW</div>
+                            <div id="dash-prep-tomorrow" class="space-y-2"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pending requests quick review -->
+                <div id="dash-pending-panel" class="bg-white p-5 rounded-3xl border border-ris-border shadow-xs space-y-3 hidden">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-sm font-black text-ris-navy">📥 Pending Requests — Review</h3>
+                        <button type="button" onclick="switchTab('requests')" class="px-3 py-1.5 rounded-xl bg-ris-bg hover:bg-slate-200 text-[11px] font-extrabold text-ris-navy">All Requests →</button>
+                    </div>
+                    <div id="dash-pending-list" class="space-y-2"></div>
+                </div>
+
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
                     <div class="lg:col-span-2 bg-white p-5 rounded-3xl border border-ris-border shadow-xs space-y-3">
                         <div class="flex items-center justify-between">
@@ -1615,7 +1651,7 @@ safeHTML.join=values=>new SafeMarkup(values.map(value=>value instanceof SafeMark
 safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
 
 
-        import {createSecureClient} from "https://regent-lab-backend.a-ali-896.workers.dev/client/secure-client.mjs";
+        import {createSecureClient} from "./assets/secure-client.mjs";
         const SECURE_BACKEND_URL = "https://regent-lab-backend.a-ali-896.workers.dev"; // Set only after approved hosting and staging verification.
         let secureClient = null; let hadAuthorizedSession = false;
         const scrubSecrets = value => Array.isArray(value) ? value.map(scrubSecrets) : value && typeof value === "object" ? Object.fromEntries(Object.entries(value).filter(([key]) => !/password|credential|secret|private.?key|auth.?token/i.test(key)).map(([key,val]) => [key,scrubSecrets(val)])) : value;
@@ -1842,6 +1878,21 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
             }
         }
 
+        function buildRequestCatalog() {
+            return (state.inventory || []).map(i => ({ id: i.id, nameEn: i.nameEn || '', nameAr: i.nameAr || '', unit: i.unit || '', category: i.category || '' }))
+                .sort((a, b) => a.nameEn.localeCompare(b.nameEn));
+        }
+        let requestCatalogSaveInFlight = false;
+        async function ensureRequestCatalog() {
+            if (requestCatalogSaveInFlight || secureClient?.account?.role !== 'admin' || !secureClient?.ready) return;
+            const cat = buildRequestCatalog();
+            if (JSON.stringify(state.settings.requestCatalog || null) === JSON.stringify(cat)) return;
+            requestCatalogSaveInFlight = true;
+            state.settings.requestCatalog = cat;
+            try { await persistState(); } catch (e) { /* persistState already surfaces save errors */ }
+            requestCatalogSaveInFlight = false;
+        }
+
         // ================= PERSISTENT CLOUD KV & FIREBASE SYNC ENGINE =================
         // Uses a true persistent JSON Cloud Blob endpoint (no 4KB message cap like ntfy) + Firestore
         function getCloudBucketKey() {
@@ -1881,7 +1932,7 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
             if (secureClient) return;
             secureClient = createSecureClient({firebaseConfig: (() => { const raw = localStorage.getItem(CUSTOM_FB_KEY); if (!raw) return EMBEDDED_FIREBASE_CONFIG; try { return validatePublicFirebaseConfig(JSON.parse(raw)); } catch { return EMBEDDED_FIREBASE_CONFIG; } })(), backendUrl: SECURE_BACKEND_URL,
                 testEmulators: false,
-                onState(next) { state = scrubSecrets(next); refreshAllViews(); configureTeacherPortalAuthGate(); checkAdminAuthGate(); maybeAutoBackup(); refreshLatestSnapshotStamp(); },
+                onState(next) { state = scrubSecrets(next); refreshAllViews(); configureTeacherPortalAuthGate(); checkAdminAuthGate(); maybeAutoBackup(); refreshLatestSnapshotStamp(); ensureRequestCatalog(); },
                 onDirectory(accounts) { state.settings.teachers = accounts.filter(a => a.role === 'teacher'); refreshAllViews(); },
                 onAccount(account) {
                     authenticatedTeacherName = account?.role === 'teacher' ? account.name : '';
@@ -2215,26 +2266,41 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
             }
         }
 
+        const TP_UNITS = ['Bottle / زجاجة', 'mL / مل', 'g / جرام', 'Piece / قطعة', 'Pack / عبوة', 'Set / مجموعة'];
+        function getRequestCatalog() { return state.settings.requestCatalog || []; }
+        function updateTpUnitOptions() {
+            const sel = document.getElementById('tp-item-select'), unitSel = document.getElementById('tp-item-unit');
+            if (!sel || !unitSel) return;
+            const item = getRequestCatalog().find(i => i.id === sel.value);
+            const prev = unitSel.value;
+            const units = [...new Set([item && item.unit, ...TP_UNITS].filter(Boolean))];
+            if (!units.length) units.push('Piece / قطعة');
+            unitSel.innerHTML = safeHTML.join(units.map(u => safeHTML`<option value="${u}">${u}</option>`));
+            unitSel.value = (prev && units.includes(prev)) ? prev : ((item && item.unit) || units[0]);
+        }
+
         function addTeacherPortalItem() {
             const sel = document.getElementById('tp-item-select');
             const qtyInp = document.getElementById('tp-item-qty');
+            const unitSel = document.getElementById('tp-item-unit');
             if (!sel || !sel.value) return;
-            const item = state.inventory.find(i => i.id === sel.value);
-            if (!item) return;
-            const qty = Math.max(1, parseInt(qtyInp.value, 10) || 1);
+            const item = getRequestCatalog().find(i => i.id === sel.value);
+            if (!item) { showToast('Request catalog not published yet - ask the lab administrator', 'error'); return; }
+            const qty = parseFloat(qtyInp.value);
+            if (!Number.isFinite(qty) || qty <= 0) { showToast('Enter a valid quantity', 'error'); return; }
+            const unit = (unitSel && unitSel.value) || item.unit;
 
-            const existing = teacherPortalCart.find(c => c.itemId === item.id);
-            if (existing) {
-                existing.qty += qty;
-            } else {
-                teacherPortalCart.push({
-                    itemId: item.id,
-                    nameEn: item.nameEn,
-                    nameAr: item.nameAr || '',
-                    unit: item.unit,
-                    qty
-                });
+            if (teacherPortalCart.some(c => c.itemId === item.id)) {
+                showToast('Already added - remove it first to change quantity or unit', 'error');
+                return;
             }
+            teacherPortalCart.push({
+                itemId: item.id,
+                nameEn: item.nameEn,
+                nameAr: item.nameAr || '',
+                unit,
+                qty
+            });
             qtyInp.value = 1;
             renderTeacherPortalCart();
         }
@@ -2412,6 +2478,8 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
 
             const lowItems = state.inventory.filter(i => Number(i.qty) <= Number(i.minQty));
             const expiredItems = state.inventory.filter(i => { const e = effectiveExpiry(i); return e && e < today; });
+            const soonExpiryDate = (() => { const d = new Date(); d.setDate(d.getDate() + 30); return d.toISOString().slice(0, 10); })();
+            const soonExpiringItems = state.inventory.filter(i => { const e = effectiveExpiry(i); return e && e >= today && e <= soonExpiryDate; });
             const activeLoans = state.loans.filter(l => l.status === 'active');
             const overdueLoans = activeLoans.filter(l => l.dueDate && l.dueDate < today);
             const pendingReqs = state.requests.filter(r => r.status === 'pending');
@@ -2536,6 +2604,11 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
                     color: 'bg-red-50 border-red-200 text-ris-red',
                     text: `${i.nameEn} (${i.code}) in ${i.cabinetCode} expired on ${effectiveExpiry(i)}`
                 })),
+                ...soonExpiringItems.map(i => ({
+                    badge: 'EXPIRING SOON',
+                    color: 'bg-amber-50 border-amber-200 text-amber-900',
+                    text: `${i.nameEn} (${i.code}) expires on ${effectiveExpiry(i)} — plan use or disposal`
+                })),
                 ...lowItems.map(i => ({
                     badge: 'LOW STOCK',
                     color: 'bg-amber-50 border-amber-200 text-amber-900',
@@ -2544,6 +2617,7 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
             ];
 
             document.getElementById('urgent-alerts-count').textContent = alerts.length;
+            renderPrepLists();
             const feed = document.getElementById('urgent-alerts-list');
             if (!alerts.length) {
                 feed.innerHTML = safeHTML`<div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs font-extrabold text-emerald-800 text-center">✅ All inventory levels, reagents, and equipment loans are compliant.</div>`;
@@ -2554,6 +2628,83 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
                     </div>
                 `));
             }
+        }
+
+        function itemLocationLabel(item) {
+            if (!item) return '';
+            const locs = new Set();
+            if (Array.isArray(item.batches) && item.batches.length) {
+                item.batches.forEach(b => { if (b.cabinetCode) locs.add(b.cabinetCode + (b.shelf ? ' ' + b.shelf : '')); });
+            }
+            if (!locs.size && item.cabinetCode) locs.add(item.cabinetCode + (item.shelf ? ' ' + item.shelf : ''));
+            return [...locs].join(', ');
+        }
+        function renderPrepCard(r, dayStr, done) {
+            const itemsHTML = (r.items || []).map(ri => {
+                const item = state.inventory.find(i => i.id === ri.itemId) || state.inventory.find(i => i.nameEn === ri.nameEn);
+                const disp = ri.dispensedQty !== undefined && ri.dispensedQty !== ri.qty ? ` → dispense ${ri.dispensedQty} ${(item && item.unit) || ''}` : '';
+                const loc = itemLocationLabel(item);
+                return safeHTML`<div class="flex items-center justify-between gap-2 text-[11px] py-1 border-b border-slate-100 last:border-0">
+                    <span class="font-bold text-slate-700">${ri.nameEn}${item && item.nameAr ? ' — ' + item.nameAr : ''}</span>
+                    <span class="font-black text-ris-navy whitespace-nowrap">${ri.qty} ${ri.unit || (item && item.unit) || ''}<span class="text-slate-400 font-bold">${disp}</span></span>
+                    <span class="text-slate-400 font-bold whitespace-nowrap">${loc || '—'}</span>
+                </div>`;
+            });
+            return safeHTML`
+                <div class="p-3 rounded-2xl bg-ris-bg border ${done ? 'border-emerald-300' : 'border-slate-200'}">
+                    <div class="flex items-center justify-between gap-2 text-xs">
+                        <div class="min-w-0">
+                            <span class="px-2 py-0.5 rounded-md bg-ris-navy text-white text-[10px] font-black">${r.lab}</span>
+                            <span class="font-black text-ris-navy ml-1">${r.period}</span>
+                            <div class="font-bold text-slate-700 mt-1 truncate">👩‍🏫 ${r.teacherName} • ${r.experiment} (${r.grade})</div>
+                        </div>
+                        <label class="flex items-center gap-1.5 text-[10px] font-extrabold ${done ? 'text-emerald-700' : 'text-slate-400'} cursor-pointer shrink-0">
+                            <input type="checkbox" ${done ? 'checked' : ''} onchange="togglePrepDone('${r.id}')" class="w-4 h-4 accent-emerald-600"> Prepped
+                        </label>
+                    </div>
+                    <div class="mt-2">${itemsHTML.length ? safeHTML.join(itemsHTML) : ''}</div>
+                </div>`;
+        }
+        function renderPrepLists() {
+            const todayEl = document.getElementById('dash-prep-today');
+            if (!todayEl) return;
+            const tomorrowEl = document.getElementById('dash-prep-tomorrow');
+            const now = new Date(), todayStr = now.toISOString().slice(0, 10);
+            const tmr = new Date(now); tmr.setDate(tmr.getDate() + 1);
+            const tmrStr = tmr.toISOString().slice(0, 10);
+            const prepLog = state.settings.prepLog || {};
+            const approvedFor = d => (state.requests || []).filter(r => r.status === 'approved' && !r.reversed && r.usageMode === 'in-lab' && r.date === d)
+                .sort((a, b) => String(a.period).localeCompare(String(b.period)));
+            const fill = (el, list, dayStr) => {
+                el.innerHTML = list.length
+                    ? safeHTML.join(list.map(r => renderPrepCard(r, dayStr, prepLog[r.id] === dayStr)))
+                    : safeHTML`<div class="p-4 rounded-2xl bg-ris-bg text-center text-xs font-bold text-slate-400">No approved lab sessions to prepare.</div>`;
+            };
+            fill(todayEl, approvedFor(todayStr), todayStr);
+            if (tomorrowEl) fill(tomorrowEl, approvedFor(tmrStr), tmrStr);
+            const panel = document.getElementById('dash-pending-panel'), listEl = document.getElementById('dash-pending-list');
+            if (panel && listEl) {
+                const pending = (state.requests || []).filter(r => r.status === 'pending').slice(0, 5);
+                panel.classList.toggle('hidden', !pending.length);
+                listEl.innerHTML = safeHTML.join(pending.map(r => safeHTML`
+                    <div class="p-3 rounded-2xl bg-amber-50/70 border border-amber-200 flex items-center justify-between gap-2 text-xs">
+                        <div class="min-w-0">
+                            <span class="font-black text-ris-navy">${r.experiment}</span>
+                            <span class="text-[11px] font-bold text-slate-500 ml-1">${r.teacherName} • ${r.date} • ${r.period}</span>
+                            <div class="text-[11px] font-bold text-slate-500 truncate">${(r.items || []).map(i => `${i.nameEn} (${i.qty} ${i.unit})`).join(', ')}</div>
+                        </div>
+                        <button type="button" onclick="openBookingDetail('${r.id}')" class="px-3 py-2 rounded-xl bg-white border border-amber-300 text-ris-navy text-[11px] font-extrabold shrink-0">Review</button>
+                    </div>`));
+            }
+        }
+        async function togglePrepDone(reqId) {
+            if (secureClient?.account?.role !== 'admin') return;
+            const todayStr = new Date().toISOString().slice(0, 10);
+            const log = { ...(state.settings.prepLog || {}) };
+            if (log[reqId] === todayStr) delete log[reqId]; else log[reqId] = todayStr;
+            state.settings.prepLog = log;
+            renderPrepLists();
+            try { await persistState(); } catch (e) { /* persistState surfaces save errors */ }
         }
 
         function handleGlobalSearch() {
@@ -2658,46 +2809,76 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
 
         async function approveRequisition(reqId) {
             const req = state.requests.find(r => r.id === reqId);
-            const picks = req ? (req.items || []).map(ri => {
+            const plan = (req ? (req.items || []).map(ri => {
                 const item = state.inventory.find(i => i.id === ri.itemId) || state.inventory.find(i => i.nameEn === ri.nameEn);
-                return { reqItem: ri, item, batches: (item && Array.isArray(item.batches) ? item.batches : []).filter(b => Number(b.qty) > 0) };
-            }).filter(p => p.batches.length > 1) : [];
-            let batchChoices;
-            if (picks.length) {
+                const batches = (item && Array.isArray(item.batches) ? item.batches : []).filter(b => Number(b.qty) > 0);
+                const stockUnit = (item && item.unit) || ri.unit || '';
+                const sameUnit = (ri.unit || stockUnit) === stockUnit;
+                return { reqItem: ri, item, batches, stockUnit, sameUnit };
+            }) : []);
+            let batchChoices, dispense;
+            if (plan.length) {
                 const chosen = await new Promise(resolve => {
                     const dialog = document.createElement('dialog');
-                    dialog.setAttribute('aria-label', 'Choose bottles for this requisition');
-                    dialog.style.cssText = 'max-width:560px;padding:28px;border:1px solid #cbd5e1;border-radius:18px;color:#18324c;background:white;box-shadow:0 20px 80px #0005';
-                    const title = document.createElement('h2'); title.textContent = 'Which bottles should this come from?'; title.style.cssText = 'font-size:22px;font-weight:bold;margin-bottom:6px';
-                    const details = document.createElement('p'); details.textContent = 'Leave a bottle on Auto to dispense earliest expiry first, or pick a specific bottle.'; details.style.cssText = 'font-size:13px;margin-bottom:12px';
-                    const selects = [];
-                    picks.forEach(p => {
-                        const label = document.createElement('label'); label.style.cssText = 'display:block;font-size:13px;font-weight:700;margin-top:12px';
-                        label.textContent = `${p.reqItem.nameEn} (needs ${p.reqItem.qty} ${p.reqItem.unit})`;
-                        const sel = document.createElement('select'); sel.style.cssText = 'width:100%;margin-top:4px;padding:8px;border:1px solid #cbd5e1;border-radius:8px';
-                        sel.innerHTML = '<option value="">Auto - earliest expiry first</option>';
-                        [...p.batches].sort((a, b) => (a.expiry || '9999-12-31').localeCompare(b.expiry || '9999-12-31')).forEach(b => {
-                            const opt = document.createElement('option'); opt.value = b.id;
-                            opt.textContent = `${b.metadataComplete === false ? '\u26a0\ufe0f REVIEW: ' : ''}${b.label || 'Unlabeled batch'} - ${b.qty} ${p.item.unit}${b.expiry ? ` (exp ${b.expiry})` : ''}${b.cabinetCode ? ` - at ${b.cabinetCode}${b.shelf ? ' ' + b.shelf : ''}` : ''}`;
-                            sel.appendChild(opt);
-                        });
-                        selects.push({ itemId: p.reqItem.itemId || (p.item && p.item.id), sel });
-                        dialog.append(label, sel);
+                    dialog.setAttribute('aria-label', 'Dispense details for this requisition');
+                    dialog.style.cssText = 'max-width:560px;padding:28px;border:1px solid #cbd5e1;border-radius:18px;color:#18324c;background:white;box-shadow:0 20px 80px #0005;max-height:85vh;overflow-y:auto';
+                    const title = document.createElement('h2'); title.textContent = 'Confirm dispensing for this request'; title.style.cssText = 'font-size:22px;font-weight:bold;margin-bottom:6px';
+                    const details = document.createElement('p'); details.textContent = 'Confirm the amount to dispense in stock units for each item. Leave the bottle on Auto to dispense earliest expiry first, or pick a specific bottle.'; details.style.cssText = 'font-size:13px;margin-bottom:12px';
+                    const rows = [];
+                    plan.forEach(p => {
+                        const wrap = document.createElement('div'); wrap.style.cssText = 'margin-top:12px;padding:10px;border:1px solid #e2e8f0;border-radius:10px';
+                        const label = document.createElement('label'); label.style.cssText = 'display:block;font-size:13px;font-weight:700';
+                        label.textContent = `${p.reqItem.nameEn} — requested ${p.reqItem.qty} ${p.reqItem.unit || p.stockUnit}`;
+                        wrap.append(label);
+                        if (!p.sameUnit) {
+                            const warn = document.createElement('div'); warn.style.cssText = 'font-size:11px;color:#b91c1c;font-weight:700;margin-top:4px';
+                            warn.textContent = `Requested unit differs from stock unit (${p.stockUnit}). Enter the actual amount to dispense in ${p.stockUnit} — no automatic conversion.`;
+                            wrap.append(warn);
+                        }
+                        const qtyInput = document.createElement('input');
+                        qtyInput.type = 'number'; qtyInput.min = '0.01'; qtyInput.step = 'any'; qtyInput.required = true;
+                        qtyInput.style.cssText = 'width:160px;margin-top:4px;padding:8px;border:1px solid #cbd5e1;border-radius:8px';
+                        if (p.sameUnit) qtyInput.value = p.reqItem.qty;
+                        qtyInput.placeholder = `Qty in ${p.stockUnit}`;
+                        wrap.append(qtyInput);
+                        let sel = null;
+                        if (p.batches.length > 1) {
+                            sel = document.createElement('select'); sel.style.cssText = 'width:100%;margin-top:6px;padding:8px;border:1px solid #cbd5e1;border-radius:8px';
+                            sel.innerHTML = '<option value="">Auto - earliest expiry first</option>';
+                            [...p.batches].sort((a, b) => (a.expiry || '9999-12-31').localeCompare(b.expiry || '9999-12-31')).forEach(b => {
+                                const opt = document.createElement('option'); opt.value = b.id;
+                                opt.textContent = `${b.metadataComplete === false ? '\u26a0\ufe0f REVIEW: ' : ''}${b.label || 'Unlabeled batch'} - ${b.qty} ${p.stockUnit}${b.expiry ? ` (exp ${b.expiry})` : ''}${b.cabinetCode ? ` - at ${b.cabinetCode}${b.shelf ? ' ' + b.shelf : ''}` : ''}`;
+                                sel.appendChild(opt);
+                            });
+                            wrap.append(sel);
+                        }
+                        rows.push({ itemId: p.reqItem.itemId || (p.item && p.item.id), qtyInput, sel });
+                        dialog.append(wrap);
                     });
                     const cancel = document.createElement('button'); cancel.type = 'button'; cancel.textContent = 'Cancel'; cancel.style.cssText = 'padding:12px;margin:20px 12px 0 0;border:1px solid #cbd5e1;border-radius:8px';
                     const accept = document.createElement('button'); accept.type = 'button'; accept.textContent = 'Approve & fulfill'; accept.style.cssText = 'padding:12px;margin-top:20px;background:#1b2a59;color:white;border-radius:8px';
                     const done = value => { dialog.close(); dialog.remove(); resolve(value); };
                     cancel.addEventListener('click', () => done(undefined));
-                    accept.addEventListener('click', () => done(selects.map(s => ({ itemId: s.itemId, batchId: s.sel.value })).filter(c => c.batchId)));
+                    accept.addEventListener('click', () => {
+                        const out = [];
+                        for (const r of rows) {
+                            const q = parseFloat(r.qtyInput.value);
+                            if (!Number.isFinite(q) || q <= 0) { r.qtyInput.style.borderColor = '#b91c1c'; r.qtyInput.focus(); return; }
+                            out.push({ itemId: r.itemId, qty: q, batchId: r.sel ? r.sel.value : '' });
+                        }
+                        done(out);
+                    });
                     dialog.addEventListener('cancel', event => { event.preventDefault(); done(undefined); });
                     dialog.append(cancel, accept);
                     dialog.prepend(title, details); document.body.append(dialog); dialog.showModal();
                 });
                 if (chosen === undefined) return;
-                if (chosen.length) batchChoices = chosen;
+                dispense = chosen.map(c => ({ itemId: c.itemId, qty: c.qty }));
+                const bc = chosen.filter(c => c.batchId).map(c => ({ itemId: c.itemId, batchId: c.batchId }));
+                if (bc.length) batchChoices = bc;
             }
             try {
-                await secureClient.decideRequest(reqId, 'approved', batchChoices);
+                await secureClient.decideRequest(reqId, 'approved', batchChoices, dispense);
                 showToast('Requisition approved and stock updated');
             } catch (err) { showToast(err.message || 'Approval was not saved.', 'error'); }
         }
@@ -3524,6 +3705,7 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
                 addLogEntry(payload.nameEn, `+${payload.qty} ${payload.unit}`, 'Added new inventory item');
             }
             await persistState();
+            ensureRequestCatalog();
             if (typeof keptFlagged === 'number' && keptFlagged > 0) showToast(keptFlagged + ' bottle(s) still marked for details review - flag kept until you confirm', 'info');
             closeModal('inventory-modal');
             refreshAllViews();
@@ -3533,6 +3715,7 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
         async function deleteInventoryItem(id) {
             state.inventory = state.inventory.filter(i => i.id !== id);
             await persistState();
+            ensureRequestCatalog();
             refreshAllViews();
             showToast('Inventory item deleted');
         }
@@ -4354,7 +4537,17 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
             }
 
             const itemOpts = safeHTML.join((state.inventory || []).map(i => safeHTML`<option value="${i.id}">${i.nameEn} (${i.code}) — [${i.qty} left]</option>`));
-            ['tp-item-select', 'loan-item-select', 'loss-item-select'].forEach(id => {
+            const tpSel2 = document.getElementById('tp-item-select');
+            if (tpSel2 && document.activeElement !== tpSel2) {
+                const cat = getRequestCatalog();
+                const prevTp = tpSel2.value;
+                tpSel2.innerHTML = cat.length
+                    ? safeHTML.join(cat.map(i => safeHTML`<option value="${i.id}">${i.nameEn}${i.nameAr ? ' — ' + i.nameAr : ''}</option>`))
+                    : '<option value="">Catalog not published yet - ask the lab administrator</option>';
+                if (prevTp && [...tpSel2.options].some(o => o.value === prevTp)) tpSel2.value = prevTp;
+                updateTpUnitOptions();
+            }
+            ['loan-item-select', 'loss-item-select'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el && document.activeElement !== el) {
                     const prev = el.value;
@@ -4818,6 +5011,8 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
             saveAdminSecuritySettings,
             saveBrandingSettings,
             detectCurrentPublishedURL,
+            togglePrepDone,
+            updateTpUnitOptions,
             addTeacherAccount,
             updateTeacherPassword,
             removeTeacherAccount,
