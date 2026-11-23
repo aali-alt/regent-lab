@@ -2685,6 +2685,7 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
                     cancel.addEventListener('click', () => done(undefined));
                     accept.addEventListener('click', () => done(selects.map(s => ({ itemId: s.itemId, batchId: s.sel.value })).filter(c => c.batchId)));
                     dialog.addEventListener('cancel', event => { event.preventDefault(); done(undefined); });
+                    dialog.append(cancel, accept);
                     dialog.prepend(title, details); document.body.append(dialog); dialog.showModal();
                 });
                 if (chosen === undefined) return;
@@ -3563,10 +3564,15 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
 
         async function submitLossRecord(e) {
             e.preventDefault();
-            await secureClient.recordLoss({itemId:document.getElementById('loss-item-select').value, qty:Number(document.getElementById('loss-qty').value),
-                date:formatLocalDate(new Date()), reason:document.getElementById('loss-reason').value, person:document.getElementById('loss-person').value.trim(),
-                notes:document.getElementById('loss-notes').value.trim(), linkedLoanId:document.getElementById('loss-linked-loan-id').value,
-                batchId:document.getElementById('loss-batch-select')?.value || undefined});
+            try {
+                await secureClient.recordLoss({itemId:document.getElementById('loss-item-select').value, qty:Number(document.getElementById('loss-qty').value),
+                    date:formatLocalDate(new Date()), reason:document.getElementById('loss-reason').value, person:document.getElementById('loss-person').value.trim(),
+                    notes:document.getElementById('loss-notes').value.trim(), linkedLoanId:document.getElementById('loss-linked-loan-id').value,
+                    batchId:document.getElementById('loss-batch-select')?.value || undefined});
+            } catch (err) {
+                showToast(err.message || 'The loss record was not saved. Check the entries and try again.', 'error');
+                return;
+            }
             closeModal('loss-modal'); showToast('Loss / Breakage recorded and stock updated');
         }
 
@@ -3698,10 +3704,15 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
 
         async function submitManualLoan(e) {
             e.preventDefault();
-            await secureClient.issueLoan({teacherName:document.getElementById('loan-teacher').value, classRoom:document.getElementById('loan-class').value,
-                dueDate:document.getElementById('loan-due-date').value || formatLocalDate(new Date()), duePeriod:document.getElementById('loan-due').value,
-                itemId:document.getElementById('loan-item-select').value, qty:Number(document.getElementById('loan-qty').value),
-                batchId:document.getElementById('loan-batch-select')?.value || undefined});
+            try {
+                await secureClient.issueLoan({teacherName:document.getElementById('loan-teacher').value, classRoom:document.getElementById('loan-class').value,
+                    dueDate:document.getElementById('loan-due-date').value || formatLocalDate(new Date()), duePeriod:document.getElementById('loan-due').value,
+                    itemId:document.getElementById('loan-item-select').value, qty:Number(document.getElementById('loan-qty').value),
+                    batchId:document.getElementById('loan-batch-select')?.value || undefined});
+            } catch (err) {
+                showToast(err.message || 'The loan was not saved. Check the entries and try again.', 'error');
+                return;
+            }
             closeModal('loan-modal'); showToast('Equipment custody loan recorded');
         }
 
