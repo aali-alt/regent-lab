@@ -4850,7 +4850,7 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
                 } else
                 teachersList.innerHTML = safeHTML.join((s.teachers || []).map((t, idx) => safeHTML`
                     <div data-teacher-uid="${t.uid}" class="flex flex-col sm:flex-row sm:items-center gap-3 p-3 rounded-xl bg-ris-bg border border-slate-200 text-xs">
-                        <span class="font-extrabold text-ris-navy sm:w-44">👩‍🏫 ${t.name}${t.mustChangePassword ? ' — ⏳ sets own password on first sign-in' : ''}</span>
+                        <span class="font-extrabold text-ris-navy sm:w-44">👩‍🏫 ${t.name}${(secureClient?.directory||[]).find(d=>d.uid===t.uid)?.mustChangePassword ? ' — ⏳ sets own password on first sign-in' : ''}</span>
                         <div class="flex flex-1 items-center gap-2 min-w-0">
                             <input type="password" value="" placeholder="New password (6+ characters)" minlength="6" maxlength="128" autocomplete="new-password" aria-label="New password for ${t.name}" class="w-full min-w-0 px-3 py-2 bg-white border border-slate-300 rounded-lg font-bold text-ris-navy" title="Set a new password. Existing passwords are never displayed.">
                             <button type="button" onclick="updateTeacherPassword(this.closest('[data-teacher-uid]').dataset.teacherUid)" class="px-3 py-2 rounded-lg bg-ris-navy text-white font-extrabold whitespace-nowrap">Save password</button>
