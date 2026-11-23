@@ -1286,11 +1286,12 @@
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">Cabinet *</label>
-                        <select id="inv-cabinet" class="w-full px-3 py-2 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold"></select>
+                        <select id="inv-cabinet" onchange="refreshShelfPicker()" class="w-full px-3 py-2 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold"></select>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">Shelf / Bin *</label>
                         <input type="text" id="inv-shelf" required placeholder="e.g., Shelf 1" class="w-full px-3 py-2 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold">
+                        <select id="inv-shelf-picker" onchange="applyShelfPicker()" class="hidden mt-1.5 w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs font-bold"></select>
                     </div>
                 </div>
                 <div class="grid grid-cols-3 gap-3">
@@ -1363,6 +1364,11 @@
                         <label class="block text-xs font-bold text-slate-700 mb-1">Accent Color *</label>
                         <select id="cab-color" class="w-full px-3 py-2 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold"></select>
                     </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Numbered Shelves (optional)</label>
+                    <input type="number" id="cab-shelf-count" min="1" max="50" step="1" placeholder="e.g., 4" class="w-full px-3 py-2 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold">
+                    <p class="text-[10px] text-slate-400 font-bold mt-1">When set, items are offered Shelf 1..N for this cabinet. Existing free-text locations are kept unchanged.</p>
                 </div>
                 <button type="submit" class="w-full py-3 rounded-xl bg-ris-navy hover:bg-ris-navyDark text-white text-xs font-extrabold">
                     Save Storage Cabinet
@@ -2768,6 +2774,42 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
             return { cabinet, shelf: shelf || item.shelf, inherited };
         }
 
+        function cabinetByCode(code) {
+            return (state.cabinets || []).find(c => c.code === code);
+        }
+
+        function cabinetShelfChoices(code) {
+            const cab = cabinetByCode(code);
+            const n = cab ? Number(cab.shelfCount) : 0;
+            if (!Number.isInteger(n) || n < 1) return null;
+            return Array.from({ length: Math.min(n, 50) }, (_, i) => 'Shelf ' + (i + 1));
+        }
+
+        function shelfOutsideScheme(code, shelf) {
+            const choices = cabinetShelfChoices(code);
+            if (!choices || !shelf) return false;
+            return !choices.includes(shelf);
+        }
+
+        function refreshShelfPicker() {
+            const picker = document.getElementById('inv-shelf-picker');
+            if (!picker) return;
+            const code = document.getElementById('inv-cabinet').value;
+            const choices = cabinetShelfChoices(code);
+            const cur = document.getElementById('inv-shelf').value.trim();
+            if (!choices) { picker.classList.add('hidden'); picker.innerHTML = ''; return; }
+            picker.classList.remove('hidden');
+            const opts = choices.map(c => `<option value="${escapeMarkup(c)}"${c === cur ? ' selected' : ''}>${escapeMarkup(c)}</option>`).join('');
+            const otherSel = cur && !choices.includes(cur) ? ' selected' : '';
+            picker.innerHTML = `<option value="">Pick a shelf...</option>` + opts + `<option value="__other"${otherSel}>Other / keep custom${cur ? ` ("${escapeMarkup(cur)}")` : ''}</option>`;
+        }
+
+        function applyShelfPicker() {
+            const v = document.getElementById('inv-shelf-picker').value;
+            if (!v || v === '__other') { document.getElementById('inv-shelf').focus(); return; }
+            document.getElementById('inv-shelf').value = v;
+        }
+
         // The expiry that matters for alerts: the earliest dated batch with stock, else the plain field.
         function effectiveExpiry(i) {
             if (Array.isArray(i.batches) && i.batches.length) {
@@ -3367,6 +3409,7 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
                 document.getElementById('inv-batch-rows').innerHTML = '';
                 batches.forEach(b => addBatchRow(b));
                 renderBatchEditor();
+                refreshShelfPicker();
             } else {
                 document.getElementById('inv-modal-title').textContent = '+ Add Inventory Item';
                 document.getElementById('inv-code').value = `LAB-${100 + state.inventory.length + 1}`;
@@ -3382,6 +3425,7 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
                 document.getElementById('inv-batches-toggle').checked = false;
                 document.getElementById('inv-batch-rows').innerHTML = '';
                 renderBatchEditor();
+                refreshShelfPicker();
             }
             openModal('inventory-modal');
             if (opts.bottles) {
@@ -3409,6 +3453,9 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
                 expiry: document.getElementById('inv-expiry').value,
                 updatedAt: Date.now()
             };
+            if (shelfOutsideScheme(payload.cabinetCode, payload.shelf)) {
+                showToast(`Note: "${payload.shelf}" is outside ${payload.cabinetCode} numbered shelves - kept as a custom location`, 'info');
+            }
             if (document.getElementById('inv-batches-toggle').checked) {
                 const batches = [];
                 let failed = false;
@@ -3741,12 +3788,14 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
                 });
                 Object.entries(byShelf).forEach(([shelf, bs]) => rows.push({ item: i, shelf, hereQty: bs.reduce((s, b) => s + Number(b.qty), 0), hereCount: bs.length, totalCount: batches.length, noun: containerNoun(batches) }));
             });
-            const shelves = [...new Set(rows.map(r => r.shelf))].sort();
-            const shelvesHTML = rows.length
-                ? safeHTML.join(shelves.map(shelf => safeHTML`
+            const present = [...new Set(rows.map(r => r.shelf))];
+            const shelfChoices = cabinetShelfChoices(code);
+            const orderedShelves = shelfChoices || present.sort();
+            const outsideShelves = shelfChoices ? present.filter(sh => !shelfChoices.includes(sh)).sort() : [];
+            const shelfSection = (shelf, warn) => safeHTML`
                     <div>
-                        <div class="text-[10px] font-black text-slate-400 uppercase mb-1">${shelf}</div>
-                        <div class="space-y-1.5">${safeHTML.join(rows.filter(r => r.shelf === shelf).map(r => {
+                        <div class="text-[10px] font-black ${warn ? 'text-amber-700' : 'text-slate-400'} uppercase mb-1">${warn ? '⚠️ ' : ''}${shelf}${warn ? ' - needs location review' : ''}</div>
+                        <div class="space-y-1.5">${rows.some(r => r.shelf === shelf) ? safeHTML.join(rows.filter(r => r.shelf === shelf).map(r => {
                             const i = r.item;
                             const isLow = Number(i.qty) <= Number(i.minQty);
                             const portion = r.hereCount ? ` • ${r.hereCount === r.totalCount ? r.hereCount : `${r.hereCount} of ${r.totalCount}`} ${r.noun} here` : '';
@@ -3755,8 +3804,10 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
                                     <button type="button" onclick="openItemDetail('${i.id}')" class="font-black text-ris-navy text-left hover:underline">${i.nameEn} <span class="font-bold text-slate-400">(${i.code})</span></button>
                                     <span class="font-black ${isLow ? 'text-amber-700' : 'text-slate-700'} shrink-0">${r.hereQty} ${i.unit.split('/')[0]}${portion}</span>
                                 </div>`;
-                        }))}</div>
-                    </div>`))
+                        })) : safeHTML`<div class="text-[10px] font-bold text-slate-300 pl-1">empty</div>`}</div>
+                    </div>`;
+            const shelvesHTML = (rows.length || shelfChoices)
+                ? safeHTML.join([...orderedShelves.map(shelf => shelfSection(shelf, false)), ...outsideShelves.map(shelf => shelfSection(shelf, true))])
                 : safeHTML`<div class="p-3 rounded-xl bg-slate-50 border border-dashed border-slate-200 text-xs font-bold text-slate-400 text-center">This cabinet is empty.</div>`;
             document.getElementById('cabinet-detail-body').innerHTML = safeHTML`
                 <div>
@@ -3769,7 +3820,7 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
                                     <span class="text-[11px] font-extrabold text-slate-400">${cab.lab}</span>
                                 </div>
                                 <h3 class="text-lg font-black text-ris-navy mt-1.5">${cab.name}</h3>
-                                <p class="text-xs font-bold text-slate-500">🏷️ ${cab.specialty} • ${rows.length} entries</p>
+                                <p class="text-xs font-bold text-slate-500">🏷️ ${cab.specialty} • ${rows.length} entries${cab.shelfCount ? ` • ${cab.shelfCount} numbered shelves` : ''}</p>
                             </div>
                             <button type="button" onclick="closeModal('cabinet-detail-modal')" class="w-8 h-8 rounded-full bg-slate-100 font-bold shrink-0">✕</button>
                         </div>
@@ -4309,11 +4360,13 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
                     document.getElementById('cab-name').value = cab.name;
                     document.getElementById('cab-specialty').value = cab.specialty;
                     document.getElementById('cab-color').value = cab.color;
+                    document.getElementById('cab-shelf-count').value = cab.shelfCount || '';
                 }
             } else {
                 document.getElementById('cab-modal-title').textContent = '+ Add Storage Cabinet';
                 document.getElementById('cab-code').value = `CAB-0${state.cabinets.length + 1}`;
                 document.getElementById('cab-name').value = '';
+                document.getElementById('cab-shelf-count').value = '';
             }
             openModal('cabinet-modal');
         }
@@ -4329,9 +4382,11 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
                 color: document.getElementById('cab-color').value,
                 updatedAt: Date.now()
             };
+            const shelfCountRaw = parseInt(document.getElementById('cab-shelf-count').value, 10);
+            if (Number.isInteger(shelfCountRaw) && shelfCountRaw >= 1) payload.shelfCount = Math.min(shelfCountRaw, 50);
             if (editId) {
                 const cab = state.cabinets.find(c => c.id === editId);
-                if (cab) Object.assign(cab, payload);
+                if (cab) { if (payload.shelfCount === undefined) delete cab.shelfCount; Object.assign(cab, payload); }
             } else {
                 state.cabinets.push({ id: 'cab-' + Date.now(), ...payload });
             }
@@ -4656,6 +4711,8 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
             openCabinetModal,
             saveCabinet,
             deleteCabinet,
+            refreshShelfPicker,
+            applyShelfPicker,
             openTeacherQRModal,
             openCabinetQRModal,
             launchCabinetAuditMode,
