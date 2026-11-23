@@ -188,7 +188,12 @@
             .no-print {
                 display: none !important;
             }
-            /* Nothing outside the print stage may print - including anything injected into the page by browser extensions */
+            /* Nothing outside the print stage may print - including anything injected into the page by browser extensions,
+               whether attached inside <body> or as a sibling of <body> directly under <html> (extension FABs, translate bars).
+               Such a node otherwise escapes the body-level rule and paginates onto a trailing page in print preview. */
+            html > *:not(head):not(body) {
+                display: none !important;
+            }
             body > *:not(#print-stage):not(script):not(style):not(link) {
                 display: none !important;
             }
@@ -4098,7 +4103,7 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
                 </tr>
             `));
             triggerSinglePagePrint(safeHTML`
-                <h2 class="text-base font-black text-ris-red">Low Stock & Expired Reagents Procurement Sheet</h2>
+                <h2 class="text-base font-black text-ris-navy">Low Stock & Expired Reagents Procurement Sheet</h2>
                 <table class="w-full text-left border-collapse">
                     <thead><tr class="bg-slate-100 text-[11px] font-black"><th class="p-2">Code</th><th class="p-2">Item</th><th class="p-2">Current / Min</th><th class="p-2">Expiry</th></tr></thead>
                     <tbody>${rows || safeHTML.raw('<tr><td colspan="4" class="p-3 text-center text-xs">No alerts currently active.</td></tr>')}</tbody>
@@ -4118,7 +4123,7 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
                 </tr>
             `));
             triggerSinglePagePrint(safeHTML`
-                <h2 class="text-base font-black text-ris-red">Official Loss, Breakage & Chemical Disposal Register</h2>
+                <h2 class="text-base font-black text-ris-navy">Official Loss, Breakage & Chemical Disposal Register</h2>
                 <table class="w-full text-left border-collapse">
                     <thead><tr class="bg-slate-100 text-[11px] font-black"><th class="p-2">Date</th><th class="p-2">Item</th><th class="p-2">Qty Lost</th><th class="p-2">Reason</th><th class="p-2">Responsible</th></tr></thead>
                     <tbody>${rows || safeHTML.raw('<tr><td colspan="5" class="p-3 text-center text-xs">No loss or breakage records logged.</td></tr>')}</tbody>
