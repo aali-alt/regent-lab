@@ -311,12 +311,12 @@
                         <input id="fc-current" type="password" autocomplete="current-password" maxlength="128" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl font-bold text-ris-navy text-sm" placeholder="Temporary password">
                     </div>
                     <div>
-                        <label class="block text-[10px] font-extrabold text-slate-500 mb-1">New password (12+ characters) / كلمة السر الجديدة</label>
-                        <input id="fc-new" type="password" minlength="12" maxlength="128" autocomplete="new-password" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl font-bold text-ris-navy text-sm" placeholder="At least 12 characters">
+                        <label class="block text-[10px] font-extrabold text-slate-500 mb-1">New password (6+ characters) / كلمة السر الجديدة</label>
+                        <input id="fc-new" type="password" minlength="6" maxlength="128" autocomplete="new-password" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl font-bold text-ris-navy text-sm" placeholder="At least 6 characters">
                     </div>
                     <div>
                         <label class="block text-[10px] font-extrabold text-slate-500 mb-1">Confirm new password / تأكيد كلمة السر</label>
-                        <input id="fc-confirm" type="password" minlength="12" maxlength="128" autocomplete="new-password" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl font-bold text-ris-navy text-sm" placeholder="Repeat it">
+                        <input id="fc-confirm" type="password" minlength="6" maxlength="128" autocomplete="new-password" class="w-full px-3 py-2.5 bg-ris-bg border border-slate-300 rounded-xl font-bold text-ris-navy text-sm" placeholder="Repeat it">
                     </div>
                     <p id="fc-error" class="hidden text-[11px] font-bold text-ris-red bg-red-50 rounded-lg px-2 py-1.5"></p>
                     <button type="button" onclick="submitForcedPasswordChange()" class="w-full py-3 rounded-xl bg-ris-navy text-white font-black text-sm">Save My Password / احفظ كلمة السر</button>
@@ -1139,7 +1139,7 @@
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
                         <input type="text" id="new-teacher-name" placeholder="Teacher Name (e.g., Ms. Sara Ahmed)" class="px-3.5 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold">
-                        <input type="password" id="new-teacher-pass" minlength="12" autocomplete="new-password" placeholder="Individual password (12+ characters)" class="px-3.5 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold">
+                        <input type="password" id="new-teacher-pass" minlength="6" autocomplete="new-password" placeholder="Individual password (6+ characters)" class="px-3.5 py-2.5 bg-ris-bg border border-slate-300 rounded-xl text-xs font-bold">
                         <button type="button" onclick="addTeacherAccount()" class="py-2.5 px-4 rounded-xl bg-ris-navy hover:bg-ris-navyDark text-white text-xs font-extrabold">
                             + Add Teacher Account
                         </button>
@@ -2197,7 +2197,7 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
             const fail = (msg) => { errBox.textContent = msg; errBox.classList.remove('hidden'); };
             errBox.classList.add('hidden');
             if (!current) return fail('Enter the temporary password you signed in with.');
-            if (next.length < 12 || next.length > 128) return fail('New password must be 12 to 128 characters. / ١٢ حرف على الأقل');
+            if (next.length < 6 || next.length > 128) return fail('New password must be 6 to 128 characters. / ٦ حروف على الأقل');
             if (next !== confirm) return fail('The two new passwords do not match. / غير متطابقتين');
             if (next === current) return fail('Choose a new password different from the temporary one.');
             try {
@@ -4852,7 +4852,7 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
                     <div data-teacher-uid="${t.uid}" class="flex flex-col sm:flex-row sm:items-center gap-3 p-3 rounded-xl bg-ris-bg border border-slate-200 text-xs">
                         <span class="font-extrabold text-ris-navy sm:w-44">👩‍🏫 ${t.name}${t.mustChangePassword ? ' <span class="text-[9px] font-black text-amber-600 bg-amber-50 rounded px-1.5 py-0.5 whitespace-nowrap">⏳ sets own password on first sign-in</span>' : ''}</span>
                         <div class="flex flex-1 items-center gap-2 min-w-0">
-                            <input type="password" value="" placeholder="New password (12+ characters)" minlength="12" maxlength="128" autocomplete="new-password" aria-label="New password for ${t.name}" class="w-full min-w-0 px-3 py-2 bg-white border border-slate-300 rounded-lg font-bold text-ris-navy" title="Set a new password. Existing passwords are never displayed.">
+                            <input type="password" value="" placeholder="New password (6+ characters)" minlength="6" maxlength="128" autocomplete="new-password" aria-label="New password for ${t.name}" class="w-full min-w-0 px-3 py-2 bg-white border border-slate-300 rounded-lg font-bold text-ris-navy" title="Set a new password. Existing passwords are never displayed.">
                             <button type="button" onclick="updateTeacherPassword(this.closest('[data-teacher-uid]').dataset.teacherUid)" class="px-3 py-2 rounded-lg bg-ris-navy text-white font-extrabold whitespace-nowrap">Save password</button>
                             <button type="button" onclick="removeTeacherAccount(this.closest('[data-teacher-uid]').dataset.teacherUid)" aria-label="Disable ${t.name}" class="px-3 py-2 rounded-lg bg-red-50 text-ris-red font-black">✕</button>
                         </div>
@@ -4946,7 +4946,7 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
             if (!teacher) throw new Error('This teacher list changed. Reopen settings before changing an account.');
             const row = [...document.querySelectorAll('[data-teacher-uid]')].find(row => row.dataset.teacherUid === uid);
             const input = row?.querySelector('input[type=password]'), button = row?.querySelector('button');
-            if (!input || input.value.length < 12 || input.value.length > 128) { showToast('Use a new password of 12 to 128 characters.', 'error'); return; }
+            if (!input || input.value.length < 6 || input.value.length > 128) { showToast('Use a new password of 6 to 128 characters.', 'error'); return; }
             button.disabled = true;
             try { await secureClient.resetTeacher(uid, input.value); input.value = ''; showToast('Teacher password changed. Previous sessions revoked.'); }
             finally { button.disabled = false; }
