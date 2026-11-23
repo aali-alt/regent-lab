@@ -55,7 +55,7 @@ export function createSecureClient({firebaseConfig,backendUrl,onState,onAccount,
   }
   function watchSession(profile){
     unsubscribe();account=profile;onAccount(profile);refreshDirectory().catch(()=>onStatus('Account list could not refresh'));
-    const watched=profile.role==='admin'?kinds:['requests','scheduleSlots','loans'];
+    const watched=profile.role==='admin'?kinds:['inventory','cabinets','requests','scheduleSlots','loans'];
     const pending=new Set([...watched,'settings']);snapshot=Object.fromEntries(kinds.map(k=>[k,[]]));snapshot.settings={};snapshot.meta={};
     const receive=kind=>snap=>{
       if(kind==='settings'){
@@ -128,7 +128,7 @@ export function createSecureClient({firebaseConfig,backendUrl,onState,onAccount,
         if(err.code==='STALE_WRITE')err.message='This form is out of date. Close it and open it again before saving.';throw err;}finally{paused--;publish();}
     },
     async submitRequest(value,commandId){if(!ready||!account)throw Error('Sign in and wait for cloud sync first');return call('/requests',value,commandId);},
-    async decideRequest(requestId,decision,batchChoices,dispense){const body={requestId,decision};if(batchChoices&&batchChoices.length)body.batchChoices=batchChoices;if(dispense&&dispense.length)body.dispense=dispense;return call('/requests/decide',body);},
+    async decideRequest(requestId,decision,batchChoices){const body={requestId,decision};if(batchChoices&&batchChoices.length)body.batchChoices=batchChoices;return call('/requests/decide',body);},
     async amendBooking(requestId,slot){return call('/requests/amend',{requestId,...slot});},async cancelRequest(requestId,reason){return call('/requests/cancel',{requestId,reason});},
     async reverseRequest(requestId,reason){return call('/requests/reverse',{requestId,reason});},
     async createSnapshot(){if(!ready||account?.role!=='admin')throw Error('Sign in as administrator and wait for cloud sync first');return intentCall('/admin/snapshots/create',{});},
@@ -141,6 +141,7 @@ export function createSecureClient({firebaseConfig,backendUrl,onState,onAccount,
     async restore(data){if(!ready||account?.role!=='admin')throw Error('Sign in as administrator and wait for cloud sync first');const result=await call('/admin/restore',{data,expectedStamp:datasetStamp(snapshot),epoch});editVersions.clear();pendingIntents.clear();unsubscribe();watchSession(account);return result;},
     async createTeacher(name,password){return intentCall('/admin/accounts/create',{name,password});},
     async resetTeacher(uid,password){return intentCall('/admin/accounts/password',{uid,password});},
+    async changeOwnPassword(currentPassword,password){return call('/teacher/password',{currentPassword,password});},
     async disableTeacher(uid){return call('/admin/accounts/disable',{uid});},
     dispose(){unsubscribe();directoryStop();authStop();}
   };
