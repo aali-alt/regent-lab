@@ -2272,11 +2272,14 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
             const sel = document.getElementById('tp-item-select'), unitSel = document.getElementById('tp-item-unit');
             if (!sel || !unitSel) return;
             const item = getRequestCatalog().find(i => i.id === sel.value);
-            const prev = unitSel.value;
             const units = [...new Set([item && item.unit, ...TP_UNITS].filter(Boolean))];
             if (!units.length) units.push('Piece / قطعة');
             unitSel.innerHTML = safeHTML.join(units.map(u => safeHTML`<option value="${u}">${u}</option>`));
-            unitSel.value = (prev && units.includes(prev)) ? prev : ((item && item.unit) || units[0]);
+            // Default to the selected item's stock unit on every item change, and clear any
+            // typed quantity so an entered amount is never silently relabeled to another unit.
+            unitSel.value = (item && item.unit) || units[0];
+            const qtyInp = document.getElementById('tp-item-qty');
+            if (qtyInp) qtyInp.value = '';
         }
 
         function addTeacherPortalItem() {
