@@ -204,6 +204,18 @@
             #print-stage td > div > .flex {
                 flex-wrap: wrap;
             }
+            /* Keep brand backgrounds when the device print dialog has "Background graphics" off (Android default) */
+            #print-stage, #print-stage * {
+                print-color-adjust: exact !important;
+                -webkit-print-color-adjust: exact !important;
+            }
+            /* Readable fallback grid if a renderer still strips backgrounds */
+            #print-stage table {
+                border-collapse: collapse;
+            }
+            #print-stage th, #print-stage td {
+                border: 1px solid #CBD5E1;
+            }
         }
     </style>
 <link rel="stylesheet" href="https://regent-lab-backend.a-ali-896.workers.dev/assets/brand.css"><link rel="stylesheet" href="https://regent-lab-backend.a-ali-896.workers.dev/assets/symbols.css"></head>
