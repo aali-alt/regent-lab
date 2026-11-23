@@ -1299,13 +1299,13 @@
                 <div class="space-y-2">
                     <label class="flex items-center gap-2 text-xs font-bold text-slate-700">
                         <input type="checkbox" id="inv-batches-toggle" onchange="renderBatchEditor()" class="w-4 h-4">
-                        Track individual bottles / batches (each with its own remaining quantity and expiry)
+                        Track individual bottles / batches (each with its own remaining quantity and expiry) <span class="font-ar font-bold text-slate-500">/ تتبّع كل زجاجة على حدة</span>
                     </label>
                     <div id="inv-batches-editor" class="hidden space-y-2 p-3 rounded-xl bg-ris-bg border border-slate-200">
                         <div id="inv-batch-rows" class="space-y-2"></div>
                         <div class="flex flex-wrap items-center justify-between gap-2">
                             <button type="button" onclick="addBatchRow()" class="px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-[11px] font-extrabold text-ris-navy">+ Add Bottle / Batch</button>
-                            <span class="text-[10px] font-bold text-slate-500">Quantity above follows the bottle total. Dispensing uses the earliest expiry first, or a bottle you choose.</span>
+                            <span class="text-[10px] font-bold text-slate-500">Fill in each bottle's remaining amount; the quantity above is recalculated from the bottles when you save. Dispensing uses the earliest expiry first, or a bottle you choose. <span class="font-ar">اكتب المتبقي في كل زجاجة، والكمية بالأعلى تُحسب منها عند الحفظ.</span></span>
                         </div>
                     </div>
                 </div>
@@ -3160,6 +3160,7 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
                             </div>
                             <div class="flex items-center justify-end text-[11px]">
                                 <div class="space-x-1">
+                                    <button type="button" onclick="openItemDetail('${i.id}')" class="px-2.5 py-1 rounded-lg bg-white border border-slate-300 text-ris-navy font-extrabold">ⓘ Details</button>
                                     <button type="button" onclick="openLossModal('${i.id}')" class="px-2.5 py-1 rounded-lg bg-amber-50 text-amber-900 font-extrabold">⚠️ Loss</button>
                                     <button type="button" onclick="openInventoryModal('${i.id}')" class="px-2.5 py-1 rounded-lg bg-slate-100 text-ris-navy font-extrabold">✎</button>
                                     <button type="button" onclick="deleteInventoryItem('${i.id}')" class="px-2.5 py-1 rounded-lg bg-red-50 text-ris-red font-extrabold">✕</button>
@@ -3203,6 +3204,7 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
                             ${isExpired ? safeHTML.raw('<div class="text-[9px] font-black uppercase">EXPIRED</div>') : isSoon ? safeHTML.raw('<div class="text-[9px] font-black uppercase">EXPIRING SOON</div>') : ''}
                         </td>
                         <td class="p-3.5 text-right space-x-1 whitespace-nowrap">
+                            <button type="button" onclick="openItemDetail('${i.id}')" class="px-2.5 py-1 rounded-lg bg-white border border-slate-300 hover:border-ris-navy text-ris-navy font-extrabold" title="Full details, bottles and location / التفاصيل الكاملة">ⓘ Details</button>
                             <button type="button" onclick="openLossModal('${i.id}')" class="px-2.5 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-900 font-extrabold" title="Record Loss or Breakage">⚠️ Loss</button>
                             <button type="button" onclick="openInventoryModal('${i.id}')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-ris-navy font-extrabold" title="Edit">✎</button>
                             <button type="button" onclick="deleteInventoryItem('${i.id}')" class="px-2.5 py-1 rounded-lg bg-red-50 hover:bg-red-100 text-ris-red font-extrabold" title="Delete">✕</button>
@@ -3311,12 +3313,17 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
 
         function updateBatchTotal() {
             if (!document.getElementById('inv-batches-toggle').checked) return;
-            let total = 0;
-            document.querySelectorAll('#inv-batch-rows .batch-qty').forEach(input => { total += parseFloat(input.value) || 0; });
-            document.getElementById('inv-qty').value = total;
+            let total = 0, seen = false;
+            document.querySelectorAll('#inv-batch-rows .batch-qty').forEach(input => {
+                const v = parseFloat(input.value);
+                if (!isNaN(v)) { total += v; seen = true; }
+            });
+            // Keep the current quantity visible until at least one bottle amount is entered,
+            // so enabling bottle tracking never blanks the existing stock count on screen.
+            if (seen) document.getElementById('inv-qty').value = total;
         }
 
-        function openInventoryModal(editId = '') {
+        function openInventoryModal(editId = '', opts = {}) {
             populateAllDropdowns();
             document.getElementById('inv-edit-id').value = editId;
             if (editId) {
@@ -3358,6 +3365,11 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
                 renderBatchEditor();
             }
             openModal('inventory-modal');
+            if (opts.bottles) {
+                const tgl = document.getElementById('inv-batches-toggle');
+                if (!tgl.checked) { tgl.checked = true; renderBatchEditor(); }
+                setTimeout(() => { const ed = document.getElementById('inv-batches-editor'); if (ed) ed.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 80);
+            }
         }
 
         async function saveInventoryItem(e) {
@@ -3644,7 +3656,11 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
                             </div>
                         </div>`;
                 }))
-                : safeHTML`<div class="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-500">Stock is not split into bottles or batches. Total ${i.qty} ${i.unit}${i.expiry ? `, expiry ${i.expiry}` : ''}.</div>`;
+                : safeHTML`<div class="p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs space-y-2">
+                            <div class="font-bold text-amber-900">No bottles recorded yet. The ${i.qty} ${i.unit} shown is one combined total, not tracked per bottle${i.expiry ? ` (expiry ${i.expiry})` : ''}.</div>
+                            <div class="font-ar font-bold text-amber-800">لم تُسجَّل الزجاجات بعد — العدد إجمالي فقط، وليس لكل زجاجة على حدة.</div>
+                            <button type="button" onclick="closeModal('item-detail-modal'); openInventoryModal('${i.id}', { bottles: true })" class="px-3 py-1.5 rounded-lg bg-ris-navy text-white text-[11px] font-extrabold">+ Add bottles / سجّل الزجاجات</button>
+                        </div>`;
             const movements = (state.logs || []).filter(l => l.item === i.nameEn).slice(0, 5);
             const movementsHTML = movements.length
                 ? safeHTML.join(movements.map(l => safeHTML`<div class="flex items-center justify-between gap-2 text-[11px] py-1 border-b border-slate-100"><span class="font-bold text-slate-600">${l.note}</span><span class="font-black text-ris-navy shrink-0">${l.delta}</span></div>`))
@@ -3681,6 +3697,7 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
                     </div>
                     <div class="flex gap-2 pt-1">
                         <button type="button" onclick="closeModal('item-detail-modal'); openInventoryModal('${i.id}')" class="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-ris-navy text-xs font-extrabold">✎ Edit Item</button>
+                        ${batches.length ? safeHTML`<button type="button" onclick="closeModal('item-detail-modal'); openInventoryModal('${i.id}', { bottles: true })" class="flex-1 py-2.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-900 text-xs font-extrabold">🧴 Bottles (${batches.length})</button>` : safeHTML.raw('')}
                         <button type="button" onclick="closeModal('item-detail-modal'); openLossModal('${i.id}')" class="flex-1 py-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 text-xs font-extrabold">⚠️ Record Loss</button>
                     </div>
                 </div>`;
