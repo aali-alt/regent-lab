@@ -4880,5 +4880,44 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
             });
         });
     </script>
+    <script>
+    // Print isolation hardening: browser-extension widgets (chat/AI assistants) inject
+    // top-level nodes with inline `display: ... !important`, which beats the @media print
+    // stylesheet rules and adds a trailing blank page. At print time, force-hide every
+    // top-level node outside #print-stage with inline !important (last-set inline wins),
+    // force-show the stage, then restore the original inline styles after printing.
+    (function () {
+        var hiddenSnapshot = [];
+        var SKIPPED_TAGS = { SCRIPT: 1, STYLE: 1, LINK: 1, TEMPLATE: 1, META: 1, TITLE: 1, HEAD: 1 };
+        window.addEventListener('beforeprint', function () {
+            hiddenSnapshot = [];
+            var stage = document.getElementById('print-stage');
+            [document.documentElement, document.body].forEach(function (root) {
+                Array.prototype.forEach.call(root.children, function (el) {
+                    if (el === stage || el === document.head || el === document.body) return;
+                    if (SKIPPED_TAGS[el.tagName]) return;
+                    hiddenSnapshot.push([el, el.getAttribute('style')]);
+                    el.style.setProperty('display', 'none', 'important');
+                });
+            });
+            if (stage) {
+                stage.classList.remove('hidden');
+                stage.style.setProperty('display', 'block', 'important');
+            }
+        });
+        window.addEventListener('afterprint', function () {
+            hiddenSnapshot.forEach(function (pair) {
+                var el = pair[0], prev = pair[1];
+                if (prev === null) el.removeAttribute('style'); else el.setAttribute('style', prev);
+            });
+            hiddenSnapshot = [];
+            var stage = document.getElementById('print-stage');
+            if (stage) {
+                stage.style.removeProperty('display');
+                stage.classList.add('hidden');
+            }
+        });
+    })();
+    </script>
 </body>
     </html>
