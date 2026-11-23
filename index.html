@@ -4004,10 +4004,14 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
         }
 
         function printWeeklyScheduleA4() {
-            const tableClone = document.querySelector('#tab-schedule table')?.outerHTML || '';
+            const tableEl = document.querySelector('#tab-schedule table');
+            if (!tableEl) return;
+            const tableClone = tableEl.cloneNode(true);
+            tableClone.classList.remove('min-w-[840px]');
+            tableClone.querySelectorAll('[onclick]').forEach(el => el.removeAttribute('onclick'));
             triggerSinglePagePrint(safeHTML`
                 <h2 class="text-base font-black text-ris-navy">Weekly Science Laboratory Timetable</h2>
-                ${tableClone}
+                ${safeHTML.raw(tableClone.outerHTML)}
             `);
         }
 
