@@ -2863,6 +2863,7 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
                             </div>
                             <div class="font-black text-emerald-950 text-[11px] leading-tight">${r.teacherName}</div>
                             <div class="text-[10px] font-bold text-emerald-800">${r.experiment} (${r.grade})</div>
+                            <div class="text-[9px] font-black text-emerald-700 text-right no-print">📄 Details</div>
                         </div>
                     `));
 
@@ -2929,9 +2930,12 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
                                     <button type="button" onclick="openScheduleSlotModal('${wd.name}', '${it.period}', '${wd.iso}', '${it.data.id}')" class="px-2.5 py-1.5 rounded-lg bg-white text-ris-navy font-black">✎</button>
                                 </div>
                             ` : safeHTML`
-                                <div class="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs">
-                                    <div class="font-black text-emerald-900">${it.period} • ${it.data.lab} (QR)</div>
-                                    <div class="font-bold text-emerald-800">👩‍🏫 ${it.data.teacherName} — ${it.data.experiment}</div>
+                                <div class="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-between gap-2 text-xs cursor-pointer" onclick="openBookingDetail('${it.data.id}')" title="View booking details">
+                                    <div>
+                                        <div class="font-black text-emerald-900">${it.period} • ${it.data.lab} (QR) • ${it.data.status.toUpperCase()}${it.data.reversed ? ' ↩' : ''}</div>
+                                        <div class="font-bold text-emerald-800">👩‍🏫 ${it.data.teacherName} — ${it.data.experiment}</div>
+                                    </div>
+                                    <button type="button" onclick="event.stopPropagation(); openBookingDetail('${it.data.id}')" class="px-2.5 py-1.5 rounded-lg bg-white text-emerald-800 font-black no-print" title="Details, move, reverse">📄</button>
                                 </div>
                             `)) : safeHTML`<div class="text-xs font-bold text-slate-400 py-1">No sessions booked for ${wd.name}.</div>`}
                         </div>
