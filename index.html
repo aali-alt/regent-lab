@@ -188,6 +188,10 @@
             .no-print {
                 display: none !important;
             }
+            /* Nothing outside the print stage may print - including anything injected into the page by browser extensions */
+            body > *:not(#print-stage):not(script):not(style):not(link) {
+                display: none !important;
+            }
             #print-stage {
                 display: block !important;
                 position: static !important;
@@ -2670,7 +2674,7 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
                         sel.innerHTML = '<option value="">Auto - earliest expiry first</option>';
                         [...p.batches].sort((a, b) => (a.expiry || '9999-12-31').localeCompare(b.expiry || '9999-12-31')).forEach(b => {
                             const opt = document.createElement('option'); opt.value = b.id;
-                            opt.textContent = `${b.label || 'Unlabeled batch'} - ${b.qty} ${p.item.unit}${b.expiry ? ` (exp ${b.expiry})` : ''}${b.cabinetCode ? ` - at ${b.cabinetCode}${b.shelf ? ' ' + b.shelf : ''}` : ''}`;
+                            opt.textContent = `${b.metadataComplete === false ? '\u26a0\ufe0f REVIEW: ' : ''}${b.label || 'Unlabeled batch'} - ${b.qty} ${p.item.unit}${b.expiry ? ` (exp ${b.expiry})` : ''}${b.cabinetCode ? ` - at ${b.cabinetCode}${b.shelf ? ' ' + b.shelf : ''}` : ''}`;
                             sel.appendChild(opt);
                         });
                         selects.push({ itemId: p.reqItem.itemId || (p.item && p.item.id), sel });
@@ -3196,6 +3200,7 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
                     const isExpired = effExpiry && effExpiry < today;
                     const isSoon = !isExpired && effExpiry && effExpiry <= soonDate;
                     const batchNote = Array.isArray(i.batches) && i.batches.length > 1 ? ` (${i.batches.length} ${containerNoun(i.batches)})` : '';
+                const reviewNote = Array.isArray(i.batches) && i.batches.some(b => b.metadataComplete === false) ? ' \u00b7 \u26a0\ufe0f bottle details review' : '';
                     return safeHTML`
                         <div class="bg-white p-4 rounded-3xl border ${isLow ? 'border-amber-300' : 'border-ris-border'} shadow-xs space-y-2.5">
                             <div class="flex items-start justify-between gap-2">
@@ -3217,7 +3222,7 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
                             </div>
                             <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-[11px]">
                                 <span class="font-extrabold text-ris-navy">🗄️ ${i.cabinetCode} (${i.shelf})</span>
-                                <span class="font-bold ${isExpired ? 'text-ris-red' : isSoon ? 'text-amber-600' : 'text-slate-500'}">⏳ ${effExpiry || '—'}${batchNote}${isExpired ? ' · EXPIRED' : isSoon ? ' · SOON' : ''}</span>
+                                <span class="font-bold ${isExpired ? 'text-ris-red' : isSoon ? 'text-amber-600' : 'text-slate-500'}">⏳ ${effExpiry || '—'}${batchNote}${reviewNote}${isExpired ? ' · EXPIRED' : isSoon ? ' · SOON' : ''}</span>
                             </div>
                             <div class="flex items-center justify-end text-[11px]">
                                 <div class="space-x-1">
@@ -3238,6 +3243,7 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
                 const isExpired = effExpiry && effExpiry < today;
                 const isSoon = !isExpired && effExpiry && effExpiry <= soonDate;
                 const batchNote = Array.isArray(i.batches) && i.batches.length > 1 ? ` (${i.batches.length} ${containerNoun(i.batches)})` : '';
+                    const reviewNote = Array.isArray(i.batches) && i.batches.some(b => b.metadataComplete === false) ? ' \u00b7 \u26a0\ufe0f bottle details review' : '';
                 return safeHTML`
                     <tr class="hover:bg-slate-50">
                         <td class="p-3.5">
@@ -3261,7 +3267,7 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
                             </div>
                         </td>
                         <td class="p-3.5 font-bold ${isExpired ? 'text-ris-red' : isSoon ? 'text-amber-600' : 'text-slate-500'}">
-                            ${effExpiry || '—'}${batchNote}
+                            ${effExpiry || '—'}${batchNote}${reviewNote}
                             ${isExpired ? safeHTML.raw('<div class="text-[9px] font-black uppercase">EXPIRED</div>') : isSoon ? safeHTML.raw('<div class="text-[9px] font-black uppercase">EXPIRING SOON</div>') : ''}
                         </td>
                         <td class="p-3.5 text-right space-x-1 whitespace-nowrap">
@@ -3347,6 +3353,14 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
             const shelfInput = document.createElement('input');
             shelfInput.type = 'text'; shelfInput.maxLength = 60; shelfInput.placeholder = 'Shelf (blank = same as item)'; shelfInput.value = batch.shelf || ''; shelfInput.title = 'Shelf for this specific container (blank = same as item)';
             shelfInput.className = 'batch-shelf px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs font-bold';
+            const flagInput = document.createElement('input');
+            flagInput.type = 'hidden'; flagInput.className = 'batch-incomplete'; flagInput.value = batch.metadataComplete === false ? '1' : '';
+            const confirmInput = document.createElement('input');
+            confirmInput.type = 'checkbox'; confirmInput.className = 'batch-confirm';
+            const confirmWrap = document.createElement('label');
+            confirmWrap.className = 'batch-confirm-wrap col-span-2 flex items-center gap-2 px-3 py-2 rounded-xl bg-amber-50 border border-amber-300 text-[11px] font-extrabold text-amber-900';
+            confirmWrap.append(confirmInput, document.createTextNode('\u26a0\ufe0f Bottle details incomplete (restored from history). Review the fields above, then tick to confirm they are correct.'));
+            if (batch.metadataComplete === false) { row.classList.add('ring-2', 'ring-amber-400'); } else { confirmWrap.style.display = 'none'; }
             const remove = document.createElement('button');
             remove.type = 'button'; remove.textContent = '✕'; remove.title = 'Remove this bottle';
             remove.className = 'w-8 h-8 rounded-lg bg-red-50 text-ris-red font-black justify-self-end';
@@ -3368,7 +3382,7 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
                     document.querySelectorAll('#inv-batch-rows [data-unit-cap="capacity"]').forEach(c => { c.textContent = 'Capacity' + s; });
                 });
             }
-            row.append(idInput, wrap('Bottle label', labelInput), wrap('Remaining' + unitSuffix, qtyInput, 'remaining'), wrap('Capacity' + unitSuffix, capInput, 'capacity'), wrap('Expiry date', expInput), wrap('Opened date', openedInput), wrap('Cabinet', cabInput), wrap('Shelf', shelfInput), wrap('\u00a0', remove));
+            row.append(idInput, flagInput, wrap('Bottle label', labelInput), wrap('Remaining' + unitSuffix, qtyInput, 'remaining'), wrap('Capacity' + unitSuffix, capInput, 'capacity'), wrap('Expiry date', expInput), wrap('Opened date', openedInput), wrap('Cabinet', cabInput), wrap('Shelf', shelfInput), wrap(' ', remove), confirmWrap);
             rows.appendChild(row);
         }
 
@@ -3459,6 +3473,8 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
             if (document.getElementById('inv-batches-toggle').checked) {
                 const batches = [];
                 let failed = false;
+                let keptFlagged = 0;
+                const origBatches = editId ? (((state.inventory.find(i => i.id === editId) || {}).batches) || []) : [];
                 document.querySelectorAll('#inv-batch-rows .inv-batch-row').forEach(row => {
                     const qty = parseFloat(row.querySelector('.batch-qty').value) || 0;
                     const expiry = row.querySelector('.batch-expiry').value || '';
@@ -3468,9 +3484,22 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
                     const opened = row.querySelector('.batch-opened').value || undefined;
                     const cabinetCode = row.querySelector('.batch-cabinet').value || undefined;
                     const shelf = row.querySelector('.batch-shelf').value.trim() || undefined;
-                    if (qty > 0) {
-                        if (capacity !== undefined && qty > capacity) { showToast('A bottle cannot hold more than its capacity (' + (label || 'unlabeled') + ')', 'error'); failed = true; return; }
-                        batches.push({ id, label, qty, capacity, expiry, opened, cabinetCode, shelf });
+                    const incomplete = (row.querySelector('.batch-incomplete') || {}).value === '1';
+                    const confirmed = !!(row.querySelector('.batch-confirm') || {}).checked;
+                    const preExisting = id && origBatches.some(b => b.id === id);
+                    if (confirmed) {
+                        const missing = [];
+                        if (!label) missing.push('label');
+                        if (capacity === undefined) missing.push('full capacity');
+                        if (!expiry) missing.push('expiry date');
+                        if (capacity !== undefined && qty > capacity) missing.push('quantity above capacity');
+                        if (missing.length) { showToast('Cannot confirm ' + (label || 'unlabeled bottle') + ': ' + missing.join(', ') + ' missing or inconsistent. Enter the real bottle details, or untick confirm and keep it flagged.', 'error'); failed = true; return; }
+                    }
+                    if (qty > 0 || preExisting) {
+                        if (qty > 0 && capacity !== undefined && qty > capacity) { showToast('A bottle cannot hold more than its capacity (' + (label || 'unlabeled') + ')', 'error'); failed = true; return; }
+                        const rec = { id, label, qty, capacity, expiry, opened, cabinetCode, shelf };
+                        if (incomplete && !confirmed) { rec.metadataComplete = false; keptFlagged++; }
+                        batches.push(rec);
                     }
                 });
                 if (failed) return;
@@ -3490,6 +3519,7 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
                 addLogEntry(payload.nameEn, `+${payload.qty} ${payload.unit}`, 'Added new inventory item');
             }
             await persistState();
+            if (typeof keptFlagged === 'number' && keptFlagged > 0) showToast(keptFlagged + ' bottle(s) still marked for details review - flag kept until you confirm', 'info');
             closeModal('inventory-modal');
             refreshAllViews();
             showToast('Inventory record saved & synced');
@@ -3529,7 +3559,7 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
             const batches = (!linked && item && Array.isArray(item.batches)) ? item.batches.filter(b => Number(b.qty) > 0) : [];
             if (!batches.length) { wrap.classList.add('hidden'); sel.innerHTML = ''; return; }
             wrap.classList.remove('hidden');
-            sel.innerHTML = '<option value="">Auto - earliest expiry first</option>' + [...batches].sort((a, b) => (a.expiry || '9999-12-31').localeCompare(b.expiry || '9999-12-31')).map(b => `<option value="${escapeMarkup(b.id)}">${escapeMarkup(b.label || 'Unlabeled batch')} - ${b.qty} ${item.unit}${b.expiry ? ` (exp ${b.expiry})` : ''}${b.cabinetCode ? ` - at ${b.cabinetCode}${b.shelf ? ' ' + b.shelf : ''}` : ''}</option>`).join('');
+            sel.innerHTML = '<option value="">Auto - earliest expiry first</option>' + [...batches].sort((a, b) => (a.expiry || '9999-12-31').localeCompare(b.expiry || '9999-12-31')).map(b => `<option value="${escapeMarkup(b.id)}">${b.metadataComplete === false ? '\u26a0\ufe0f REVIEW: ' : ''}${escapeMarkup(b.label || 'Unlabeled batch')} - ${b.qty} ${item.unit}${b.expiry ? ` (exp ${b.expiry})` : ''}${b.cabinetCode ? ` - at ${b.cabinetCode}${b.shelf ? ' ' + b.shelf : ''}` : ''}</option>`).join('');
         }
 
         async function submitLossRecord(e) {
@@ -3664,7 +3694,7 @@ safeHTML.concat=(left,right)=>safeHTML.join([left,right]);
             const batches = (item && Array.isArray(item.batches)) ? item.batches.filter(b => Number(b.qty) > 0) : [];
             if (!batches.length) { wrap.classList.add('hidden'); sel.innerHTML = ''; return; }
             wrap.classList.remove('hidden');
-            sel.innerHTML = '<option value="">Auto - earliest expiry first</option>' + [...batches].sort((a, b) => (a.expiry || '9999-12-31').localeCompare(b.expiry || '9999-12-31')).map(b => `<option value="${escapeMarkup(b.id)}">${escapeMarkup(b.label || 'Unlabeled batch')} - ${b.qty} ${item.unit}${b.expiry ? ` (exp ${b.expiry})` : ''}${b.cabinetCode ? ` - at ${b.cabinetCode}${b.shelf ? ' ' + b.shelf : ''}` : ''}</option>`).join('');
+            sel.innerHTML = '<option value="">Auto - earliest expiry first</option>' + [...batches].sort((a, b) => (a.expiry || '9999-12-31').localeCompare(b.expiry || '9999-12-31')).map(b => `<option value="${escapeMarkup(b.id)}">${b.metadataComplete === false ? '\u26a0\ufe0f REVIEW: ' : ''}${escapeMarkup(b.label || 'Unlabeled batch')} - ${b.qty} ${item.unit}${b.expiry ? ` (exp ${b.expiry})` : ''}${b.cabinetCode ? ` - at ${b.cabinetCode}${b.shelf ? ' ' + b.shelf : ''}` : ''}</option>`).join('');
         }
 
         async function submitManualLoan(e) {
